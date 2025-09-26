@@ -36,6 +36,14 @@ void step(void){ //step through instructions
   fetch_data();  
   printf("0x%04X : 0x%02X %s\n", address_bus, data_bus, opcodes_string[data_bus]);
 
+  if(data_bus == 0xa2){
+    registers[PC+1] += 1;
+    address_bus += 1;
+    fetch_data();
+    registers[X] = data_bus;
+    
+  }
+  
   registers[PC+1] += 1;
 }
 
@@ -59,6 +67,7 @@ int main(int argc, char* argv[]){
   load_uint16_into_ram(0xFFFC, 0x0080);
 
   RAM[0x8000] = 0xa2;
+  RAM[0x8001] = 0x41;
   
   reset();
   step();  
