@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <sys/mman.h>
 #include <stdint.h>
+#include <string.h>
 
 #include "registers.h"
 #include "pins.h"
@@ -15,20 +16,30 @@ void reset(void){
 }
 
 void step(void){ //step through instructions
-  printf("pc: 0x%02x%02x\n", registers[PC], registers[PC+1]);
+  uint16_t address_bus = ((uint16_t)registers[PC] << 8) + registers[PC+1];
+  
+  printf("0x%04x : %p\n", address_bus, RAM[address_bus]);
+  registers[PC+1] += 1;
+}
+
+void load_into_pc(uint16_t v){
+  registers[PC] = (v >> 8) & 0xff;
+  registers[PC+1] = v & 0xff;
 }
 
 int main(int argc, char* argv[]){
   
   RAM = (uint8_t *)mmap(NULL, 65536, PROT_READ|PROT_WRITE|PROT_EXEC,
 		     MAP_PRIVATE|MAP_ANON ,-1, 0);
-
-  data_bus[0] = 0xea;
   
-  RAM[0xFFFC] = data_bus[0];
-  RAM[0xFFFD] = data_bus[0];
+  memset(RAM, 0xea, 65535); //init ram with only 0xea 
 
-  reset();
+  address_bus = 0xeaea;
+  
+  load_into_pc(address_bus);
+  step();  
+  step();
+  step();
   step();
 
   
