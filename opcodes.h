@@ -32,6 +32,12 @@ void OP_bcc(context *c){ //branch carry clear
   }
 }
 
+void OP_bcs(context *c){ //branch carry set
+  if((c->Registers->P & 1) != 0){
+    c->registers->PC = c->ea;
+  }
+}
+
 void OP_nop(context *c){
   //printf("hello from nop!\n");
   return;
@@ -53,7 +59,7 @@ opcode opcodes[] = {
   {OP_nop, "nop", addr_implied}, {NULL, "sta", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "sax", NULL}, {NULL, "sty", NULL}, {NULL, "sta", NULL}, {NULL, "stx", NULL}, {NULL, "sax", NULL}, {NULL, "dey", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "txa", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "sty", NULL}, {NULL, "sta", NULL}, {NULL, "stx", NULL}, {NULL, "sax", NULL}, 
   {OP_bcc, "bcc", addr_pcr}, {NULL, "sta", NULL}, {OP_nop, "nop", addr_implied}, {OP_nop, "nop", addr_implied}, {NULL, "sty", NULL}, {NULL, "sta", NULL}, {NULL, "stx", NULL}, {NULL, "sax", NULL}, {NULL, "tya", NULL}, {NULL, "sta", NULL}, {NULL, "txs", NULL}, {OP_nop, "nop", addr_implied}, {OP_nop, "nop", addr_implied}, {NULL, "sta", NULL}, {OP_nop, "nop", addr_implied}, {OP_nop, "nop", addr_implied}, 
   {NULL, "ldy", NULL}, {NULL, "lda", NULL}, {OP_ldx, "ldx", addr_imm}, {NULL, "lax", NULL}, {NULL, "ldy", NULL}, {NULL, "lda", NULL}, {NULL, "ldx", NULL}, {NULL, "lax", NULL}, {NULL, "tay", NULL}, {NULL, "lda", NULL}, {NULL, "tax", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "ldy", NULL}, {NULL, "lda", NULL}, {NULL, "ldx", NULL}, {NULL, "lax", NULL}, 
-  {NULL, "bcs", NULL}, {NULL, "lda", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "lax", NULL}, {NULL, "ldy", NULL}, {NULL, "lda", NULL}, {NULL, "ldx", NULL}, {NULL, "lax", NULL}, {NULL, "clv", NULL}, {NULL, "lda", NULL}, {NULL, "tsx", NULL}, {NULL, "lax", NULL}, {NULL, "ldy", NULL}, {NULL, "lda", NULL}, {NULL, "ldx", NULL}, {NULL, "lax", NULL}, 
+  {OP_bcs, "bcs", addr_pcr}, {NULL, "lda", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "lax", NULL}, {NULL, "ldy", NULL}, {NULL, "lda", NULL}, {NULL, "ldx", NULL}, {NULL, "lax", NULL}, {NULL, "clv", NULL}, {NULL, "lda", NULL}, {NULL, "tsx", NULL}, {NULL, "lax", NULL}, {NULL, "ldy", NULL}, {NULL, "lda", NULL}, {NULL, "ldx", NULL}, {NULL, "lax", NULL}, 
   {NULL, "cpy", NULL}, {NULL, "cmp", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "dcp", NULL}, {NULL, "cpy", NULL}, {NULL, "cmp", NULL}, {NULL, "dec", NULL}, {NULL, "dcp", NULL}, {NULL, "iny", NULL}, {NULL, "cmp", NULL}, {NULL, "dex", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "cpy", NULL}, {NULL, "cmp", NULL}, {NULL, "dec", NULL}, {NULL, "dcp", NULL}, 
   {NULL, "bne", NULL}, {NULL, "cmp", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "dcp", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "cmp", NULL}, {NULL, "dec", NULL}, {NULL, "dcp", NULL}, {NULL, "cld", NULL}, {NULL, "cmp", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "dcp", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "cmp", NULL}, {NULL, "dec", NULL}, {NULL, "dcp", NULL}, 
   {NULL, "cpx", NULL}, {NULL, "sbc", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "isb", NULL}, {NULL, "cpx", NULL}, {NULL, "sbc", NULL}, {NULL, "inc", NULL}, {NULL, "isb", NULL}, {NULL, "inx", NULL}, {NULL, "sbc", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "sbc", NULL}, {NULL, "cpx", NULL}, {NULL, "sbc", NULL}, {NULL, "inc", NULL}, {NULL, "isb", NULL}, 
