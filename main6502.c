@@ -6,9 +6,14 @@
 
 #include "registers.h"
 #include "pins.h"
+#include "opcodes.h"
 
 uint8_t registers[REG_SIZE]; //all cpu registers
 uint8_t *RAM;
+
+void print_registers(){
+  printf("X: %x\nY: %x\n", registers[X], registers[Y]);
+}
 
 void fetch_data(void){
   data_bus = RAM[address_bus];
@@ -18,17 +23,19 @@ void fetch_data(void){
 void reset(void){
   address_bus = 0xFFFC;
   fetch_data();
-  registers[PC] = data_bus;
-  address_bus = 0xFFFC;
-  fetch_data();
   registers[PC+1] = data_bus;
+  
+  address_bus = 0xFFFD;
+  fetch_data();
+  registers[PC] = data_bus;
 }
 
 void step(void){ //step through instructions
+  print_registers();
   address_bus = ((uint16_t)registers[PC] << 8) + registers[PC+1];
-  fetch_data();
-  
-  printf("0x%04x : %p\n", address_bus, data_bus);
+  fetch_data();  
+  printf("0x%04X : 0x%02X %s\n", address_bus, data_bus, opcodes_string[data_bus]);
+
   registers[PC+1] += 1;
 }
 
