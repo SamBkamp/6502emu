@@ -4,12 +4,10 @@
 #include <stdint.h>
 #include <string.h>
 
+#include "prot.h"
 #include "registers.h"
 #include "pins.h"
 #include "opcodes.h"
-
-uint8_t registers[REG_SIZE]; //all cpu registers
-uint8_t *RAM;
 
 void print_registers(){
   printf("X: %x\nY: %x\n", registers[X], registers[Y]);
