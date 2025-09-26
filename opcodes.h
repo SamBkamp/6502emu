@@ -16,6 +16,8 @@ void addr_imm(context *c){
   c->ea = c->registers->PC+1;
 }
 
+/* opcode implementations */
+
 void OP_nop(context *c){
   //printf("hello from nop!\n");
   return;
