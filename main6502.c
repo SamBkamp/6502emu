@@ -5,12 +5,11 @@
 #include <string.h>
 
 #include "prot.h"
-#include "registers.h"
 #include "pins.h"
 #include "opcodes.h"
 
 void print_registers(context *c){
-  printf("X: %x\nY: %x\n", c->registers->X, c->registers->Y);
+  printf("X: %x\nY: %x\nflags: %x\n", c->registers->X, c->registers->Y, c->registers->P);
 }
 
 void reset(context *c){
@@ -50,7 +49,10 @@ int main(int argc, char* argv[]){
 
   RAM[0x8000] = 0xa2;
   RAM[0x8001] = 0x41;
-  
+  RAM[0x8002] = 0x90;
+  RAM[0x8003] = 0x3;
+
+  //c.registers->P = 1;
   reset(&c);
   step(&c);  
   step(&c);
