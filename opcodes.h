@@ -1,23 +1,41 @@
 #ifndef OPCODES_6502
 #define OPCODES_6502
 
-char* opcodes_string[256] = {
-  "brk", "ora", "nop", "nop", "tsb", "ora", "asl", "rmb0", "php", "ora", "asl", "nop", "tsb", "ora", "asl", "bbr0",
-  "bpl", "ora", "nop", "slo", "nop", "ora", "asl", "slo", "clc", "ora", "nop", "slo", "nop", "ora", "asl", "slo",
-  "jsr", "and", "nop", "rla", "bit", "and", "rol", "rla", "plp", "and", "rol", "nop", "bit", "and", "rol", "rla",
-  "bmi", "and", "nop", "rla", "nop", "and", "rol", "rla", "sec", "and", "nop", "rla", "nop", "and", "rol", "rla",
-  "rti", "eor", "nop", "sre", "nop", "eor", "lsr", "sre", "pha", "eor", "lsr", "nop", "jmp", "eor", "lsr", "sre",
-  "bvc", "eor", "nop", "sre", "nop", "eor", "lsr", "sre", "cli", "eor", "nop", "sre", "nop", "eor", "lsr", "sre",
-  "rts", "adc", "nop", "rra", "nop", "adc", "ror", "rra", "pla", "adc", "ror", "nop", "jmp", "adc", "ror", "rra",
-  "bvs", "adc", "nop", "rra", "nop", "adc", "ror", "rra", "sei", "adc", "nop", "rra", "nop", "adc", "ror", "rra",
-  "nop", "sta", "nop", "sax", "sty", "sta", "stx", "sax", "dey", "nop", "txa", "nop", "sty", "sta", "stx", "sax",
-  "bcc", "sta", "nop", "nop", "sty", "sta", "stx", "sax", "tya", "sta", "txs", "nop", "nop", "sta", "nop", "nop",
-  "ldy", "lda", "ldx", "lax", "ldy", "lda", "ldx", "lax", "tay", "lda", "tax", "nop", "ldy", "lda", "ldx", "lax",
-  "bcs", "lda", "nop", "lax", "ldy", "lda", "ldx", "lax", "clv", "lda", "tsx", "lax", "ldy", "lda", "ldx", "lax", 
-  "cpy", "cmp", "nop", "dcp", "cpy", "cmp", "dec", "dcp", "iny", "cmp", "dex", "nop", "cpy", "cmp", "dec", "dcp",
-  "bne", "cmp", "nop", "dcp", "nop", "cmp", "dec", "dcp", "cld", "cmp", "nop", "dcp", "nop", "cmp", "dec", "dcp",
-  "cpx", "sbc", "nop", "isb", "cpx", "sbc", "inc", "isb", "inx", "sbc", "nop", "sbc", "cpx", "sbc", "inc", "isb",
-  "beq", "sbc", "nop", "isb", "nop", "sbc", "inc", "isb", "sed", "sbc", "nop", "isb", "nop", "sbc", "inc", "isb"
+typedef struct{
+  void (*func)(void);
+  char* name;
+}opcode;
+
+void OP_nop(void){
+  printf("hello from nop!\n");
+  return;
+}
+
+
+void OP_ldx(void){
+  registers[PC+1] += 1;
+  address_bus += 1;
+  fetch_data();
+  registers[X] = data_bus;
+}
+
+opcode opcodes[] = {
+  {NULL, "brk"}, {NULL, "ora"}, {OP_nop, "nop"}, {NULL, "slo"}, {OP_nop, "nop"}, {NULL, "ora"}, {NULL, "asl"}, {NULL, "slo"}, {NULL, "php"}, {NULL, "ora"}, {NULL, "asl"}, {OP_nop, "nop"}, {OP_nop, "nop"}, {NULL, "ora"}, {NULL, "asl"}, {NULL, "slo"}, 
+{NULL, "bpl"}, {NULL, "ora"}, {OP_nop, "nop"}, {NULL, "slo"}, {OP_nop, "nop"}, {NULL, "ora"}, {NULL, "asl"}, {NULL, "slo"}, {NULL, "clc"}, {NULL, "ora"}, {OP_nop, "nop"}, {NULL, "slo"}, {OP_nop, "nop"}, {NULL, "ora"}, {NULL, "asl"}, {NULL, "slo"}, 
+{NULL, "jsr"}, {NULL, "and"}, {OP_nop, "nop"}, {NULL, "rla"}, {NULL, "bit"}, {NULL, "and"}, {NULL, "rol"}, {NULL, "rla"}, {NULL, "plp"}, {NULL, "and"}, {NULL, "rol"}, {OP_nop, "nop"}, {NULL, "bit"}, {NULL, "and"}, {NULL, "rol"}, {NULL, "rla"}, 
+{NULL, "bmi"}, {NULL, "and"}, {OP_nop, "nop"}, {NULL, "rla"}, {OP_nop, "nop"}, {NULL, "and"}, {NULL, "rol"}, {NULL, "rla"}, {NULL, "sec"}, {NULL, "and"}, {OP_nop, "nop"}, {NULL, "rla"}, {OP_nop, "nop"}, {NULL, "and"}, {NULL, "rol"}, {NULL, "rla"}, 
+{NULL, "rti"}, {NULL, "eor"}, {OP_nop, "nop"}, {NULL, "sre"}, {OP_nop, "nop"}, {NULL, "eor"}, {NULL, "lsr"}, {NULL, "sre"}, {NULL, "pha"}, {NULL, "eor"}, {NULL, "lsr"}, {OP_nop, "nop"}, {NULL, "jmp"}, {NULL, "eor"}, {NULL, "lsr"}, {NULL, "sre"}, 
+{NULL, "bvc"}, {NULL, "eor"}, {OP_nop, "nop"}, {NULL, "sre"}, {OP_nop, "nop"}, {NULL, "eor"}, {NULL, "lsr"}, {NULL, "sre"}, {NULL, "cli"}, {NULL, "eor"}, {OP_nop, "nop"}, {NULL, "sre"}, {OP_nop, "nop"}, {NULL, "eor"}, {NULL, "lsr"}, {NULL, "sre"}, 
+{NULL, "rts"}, {NULL, "adc"}, {OP_nop, "nop"}, {NULL, "rra"}, {OP_nop, "nop"}, {NULL, "adc"}, {NULL, "ror"}, {NULL, "rra"}, {NULL, "pla"}, {NULL, "adc"}, {NULL, "ror"}, {OP_nop, "nop"}, {NULL, "jmp"}, {NULL, "adc"}, {NULL, "ror"}, {NULL, "rra"}, 
+{NULL, "bvs"}, {NULL, "adc"}, {OP_nop, "nop"}, {NULL, "rra"}, {OP_nop, "nop"}, {NULL, "adc"}, {NULL, "ror"}, {NULL, "rra"}, {NULL, "sei"}, {NULL, "adc"}, {OP_nop, "nop"}, {NULL, "rra"}, {OP_nop, "nop"}, {NULL, "adc"}, {NULL, "ror"}, {NULL, "rra"}, 
+{OP_nop, "nop"}, {NULL, "sta"}, {OP_nop, "nop"}, {NULL, "sax"}, {NULL, "sty"}, {NULL, "sta"}, {NULL, "stx"}, {NULL, "sax"}, {NULL, "dey"}, {OP_nop, "nop"}, {NULL, "txa"}, {OP_nop, "nop"}, {NULL, "sty"}, {NULL, "sta"}, {NULL, "stx"}, {NULL, "sax"}, 
+{NULL, "bcc"}, {NULL, "sta"}, {OP_nop, "nop"}, {OP_nop, "nop"}, {NULL, "sty"}, {NULL, "sta"}, {NULL, "stx"}, {NULL, "sax"}, {NULL, "tya"}, {NULL, "sta"}, {NULL, "txs"}, {OP_nop, "nop"}, {OP_nop, "nop"}, {NULL, "sta"}, {OP_nop, "nop"}, {OP_nop, "nop"}, 
+{NULL, "ldy"}, {NULL, "lda"}, {OP_ldx, "ldx"}, {NULL, "lax"}, {NULL, "ldy"}, {NULL, "lda"}, {OP_ldx, "ldx"}, {NULL, "lax"}, {NULL, "tay"}, {NULL, "lda"}, {NULL, "tax"}, {OP_nop, "nop"}, {NULL, "ldy"}, {NULL, "lda"}, {OP_ldx, "ldx"}, {NULL, "lax"}, 
+{NULL, "bcs"}, {NULL, "lda"}, {OP_nop, "nop"}, {NULL, "lax"}, {NULL, "ldy"}, {NULL, "lda"}, {OP_ldx, "ldx"}, {NULL, "lax"}, {NULL, "clv"}, {NULL, "lda"}, {NULL, "tsx"}, {NULL, "lax"}, {NULL, "ldy"}, {NULL, "lda"}, {OP_ldx, "ldx"}, {NULL, "lax"}, 
+{NULL, "cpy"}, {NULL, "cmp"}, {OP_nop, "nop"}, {NULL, "dcp"}, {NULL, "cpy"}, {NULL, "cmp"}, {NULL, "dec"}, {NULL, "dcp"}, {NULL, "iny"}, {NULL, "cmp"}, {NULL, "dex"}, {OP_nop, "nop"}, {NULL, "cpy"}, {NULL, "cmp"}, {NULL, "dec"}, {NULL, "dcp"}, 
+{NULL, "bne"}, {NULL, "cmp"}, {OP_nop, "nop"}, {NULL, "dcp"}, {OP_nop, "nop"}, {NULL, "cmp"}, {NULL, "dec"}, {NULL, "dcp"}, {NULL, "cld"}, {NULL, "cmp"}, {OP_nop, "nop"}, {NULL, "dcp"}, {OP_nop, "nop"}, {NULL, "cmp"}, {NULL, "dec"}, {NULL, "dcp"}, 
+{NULL, "cpx"}, {NULL, "sbc"}, {OP_nop, "nop"}, {NULL, "isb"}, {NULL, "cpx"}, {NULL, "sbc"}, {NULL, "inc"}, {NULL, "isb"}, {NULL, "inx"}, {NULL, "sbc"}, {OP_nop, "nop"}, {NULL, "sbc"}, {NULL, "cpx"}, {NULL, "sbc"}, {NULL, "inc"}, {NULL, "isb"}, 
+{NULL, "beq"}, {NULL, "sbc"}, {OP_nop, "nop"}, {NULL, "isb"}, {OP_nop, "nop"}, {NULL, "sbc"}, {NULL, "inc"}, {NULL, "isb"}, {NULL, "sed"}, {NULL, "sbc"}, {OP_nop, "nop"}, {NULL, "isb"}, {OP_nop, "nop"}, {NULL, "sbc"}, {NULL, "inc"}, {NULL, "isb"}
 };
 
 #endif
