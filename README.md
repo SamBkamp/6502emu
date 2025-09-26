@@ -16,10 +16,10 @@ I began this project on 26/Sep/2025 so if youre reading this, this project is li
 - [ ] Absolute Indexed with X a,x
 - [ ] Absolute Indexed Indirect (a,x)
 - [ ] Absolute Indirect (a)
-- [ ] Accumulator A
+- [x] Accumulator A
 - [x] Immediate Addressing #
 - [x] Implied i
-- [ ] Program Counter Relative r
+- [x] Program Counter Relative r
 - [ ] Stack s
 - [ ] Zero Page zp
 - [ ] Zero Page Indexed Indirect (zp,x)
@@ -30,3 +30,13 @@ I began this project on 26/Sep/2025 so if youre reading this, this project is li
 
 #### op codes implemented:
 - [x] NOP
+- [x] BCC
+- [x] BCS
+- [x] BEQ
+- [x] BMI
+- [x] BNE
+- [x] BPL
+- [x] BRA
+- [x] BVS
+- [x] BVC
+- [x] LDX
