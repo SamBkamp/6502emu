@@ -4,6 +4,7 @@
 uint16_t address_bus;
 uint8_t data_bus;
 
+/*
 //TODO: combine these into 1 byte with masks
 uint8_t BE; //bus enable
 uint8_t IRQB; //interrupt request
@@ -18,5 +19,5 @@ uint8_t SOB; //set overflow
 uint8_t SYNC; //SYNChronize with OpCode fetch
 
 //ignoring ground/VSS because lol
-
+*/
 #endif

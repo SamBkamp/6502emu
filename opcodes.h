@@ -2,40 +2,47 @@
 #define OPCODES_6502
 
 typedef struct{
-  void (*func)(void);
+  void (*func)(context *c);
   char* name;
+  void (*addr_mode)(context *c);
 }opcode;
 
-void OP_nop(void){
-  printf("hello from nop!\n");
+/* addressing moding functions */
+
+void addr_implied(context *c){
+}
+
+void addr_imm(context *c){
+  c->ea = ((((uint16_t)c->registers[PC])<<8) + (uint16_t)c->registers[PC+1])+1;
+}
+
+void OP_nop(context *c){
+  //printf("hello from nop!\n");
   return;
 }
 
-
-void OP_ldx(void){
-  registers[PC+1] += 1;
-  address_bus += 1;
-  fetch_data();
-  registers[X] = data_bus;
+void OP_ldx(context *c){
+  c->registers[PC+1] += 1;
+  c->registers[X] = RAM[c->ea];
 }
 
 opcode opcodes[] = {
-  {NULL, "brk"}, {NULL, "ora"}, {OP_nop, "nop"}, {NULL, "slo"}, {OP_nop, "nop"}, {NULL, "ora"}, {NULL, "asl"}, {NULL, "slo"}, {NULL, "php"}, {NULL, "ora"}, {NULL, "asl"}, {OP_nop, "nop"}, {OP_nop, "nop"}, {NULL, "ora"}, {NULL, "asl"}, {NULL, "slo"}, 
-{NULL, "bpl"}, {NULL, "ora"}, {OP_nop, "nop"}, {NULL, "slo"}, {OP_nop, "nop"}, {NULL, "ora"}, {NULL, "asl"}, {NULL, "slo"}, {NULL, "clc"}, {NULL, "ora"}, {OP_nop, "nop"}, {NULL, "slo"}, {OP_nop, "nop"}, {NULL, "ora"}, {NULL, "asl"}, {NULL, "slo"}, 
-{NULL, "jsr"}, {NULL, "and"}, {OP_nop, "nop"}, {NULL, "rla"}, {NULL, "bit"}, {NULL, "and"}, {NULL, "rol"}, {NULL, "rla"}, {NULL, "plp"}, {NULL, "and"}, {NULL, "rol"}, {OP_nop, "nop"}, {NULL, "bit"}, {NULL, "and"}, {NULL, "rol"}, {NULL, "rla"}, 
-{NULL, "bmi"}, {NULL, "and"}, {OP_nop, "nop"}, {NULL, "rla"}, {OP_nop, "nop"}, {NULL, "and"}, {NULL, "rol"}, {NULL, "rla"}, {NULL, "sec"}, {NULL, "and"}, {OP_nop, "nop"}, {NULL, "rla"}, {OP_nop, "nop"}, {NULL, "and"}, {NULL, "rol"}, {NULL, "rla"}, 
-{NULL, "rti"}, {NULL, "eor"}, {OP_nop, "nop"}, {NULL, "sre"}, {OP_nop, "nop"}, {NULL, "eor"}, {NULL, "lsr"}, {NULL, "sre"}, {NULL, "pha"}, {NULL, "eor"}, {NULL, "lsr"}, {OP_nop, "nop"}, {NULL, "jmp"}, {NULL, "eor"}, {NULL, "lsr"}, {NULL, "sre"}, 
-{NULL, "bvc"}, {NULL, "eor"}, {OP_nop, "nop"}, {NULL, "sre"}, {OP_nop, "nop"}, {NULL, "eor"}, {NULL, "lsr"}, {NULL, "sre"}, {NULL, "cli"}, {NULL, "eor"}, {OP_nop, "nop"}, {NULL, "sre"}, {OP_nop, "nop"}, {NULL, "eor"}, {NULL, "lsr"}, {NULL, "sre"}, 
-{NULL, "rts"}, {NULL, "adc"}, {OP_nop, "nop"}, {NULL, "rra"}, {OP_nop, "nop"}, {NULL, "adc"}, {NULL, "ror"}, {NULL, "rra"}, {NULL, "pla"}, {NULL, "adc"}, {NULL, "ror"}, {OP_nop, "nop"}, {NULL, "jmp"}, {NULL, "adc"}, {NULL, "ror"}, {NULL, "rra"}, 
-{NULL, "bvs"}, {NULL, "adc"}, {OP_nop, "nop"}, {NULL, "rra"}, {OP_nop, "nop"}, {NULL, "adc"}, {NULL, "ror"}, {NULL, "rra"}, {NULL, "sei"}, {NULL, "adc"}, {OP_nop, "nop"}, {NULL, "rra"}, {OP_nop, "nop"}, {NULL, "adc"}, {NULL, "ror"}, {NULL, "rra"}, 
-{OP_nop, "nop"}, {NULL, "sta"}, {OP_nop, "nop"}, {NULL, "sax"}, {NULL, "sty"}, {NULL, "sta"}, {NULL, "stx"}, {NULL, "sax"}, {NULL, "dey"}, {OP_nop, "nop"}, {NULL, "txa"}, {OP_nop, "nop"}, {NULL, "sty"}, {NULL, "sta"}, {NULL, "stx"}, {NULL, "sax"}, 
-{NULL, "bcc"}, {NULL, "sta"}, {OP_nop, "nop"}, {OP_nop, "nop"}, {NULL, "sty"}, {NULL, "sta"}, {NULL, "stx"}, {NULL, "sax"}, {NULL, "tya"}, {NULL, "sta"}, {NULL, "txs"}, {OP_nop, "nop"}, {OP_nop, "nop"}, {NULL, "sta"}, {OP_nop, "nop"}, {OP_nop, "nop"}, 
-{NULL, "ldy"}, {NULL, "lda"}, {OP_ldx, "ldx"}, {NULL, "lax"}, {NULL, "ldy"}, {NULL, "lda"}, {OP_ldx, "ldx"}, {NULL, "lax"}, {NULL, "tay"}, {NULL, "lda"}, {NULL, "tax"}, {OP_nop, "nop"}, {NULL, "ldy"}, {NULL, "lda"}, {OP_ldx, "ldx"}, {NULL, "lax"}, 
-{NULL, "bcs"}, {NULL, "lda"}, {OP_nop, "nop"}, {NULL, "lax"}, {NULL, "ldy"}, {NULL, "lda"}, {OP_ldx, "ldx"}, {NULL, "lax"}, {NULL, "clv"}, {NULL, "lda"}, {NULL, "tsx"}, {NULL, "lax"}, {NULL, "ldy"}, {NULL, "lda"}, {OP_ldx, "ldx"}, {NULL, "lax"}, 
-{NULL, "cpy"}, {NULL, "cmp"}, {OP_nop, "nop"}, {NULL, "dcp"}, {NULL, "cpy"}, {NULL, "cmp"}, {NULL, "dec"}, {NULL, "dcp"}, {NULL, "iny"}, {NULL, "cmp"}, {NULL, "dex"}, {OP_nop, "nop"}, {NULL, "cpy"}, {NULL, "cmp"}, {NULL, "dec"}, {NULL, "dcp"}, 
-{NULL, "bne"}, {NULL, "cmp"}, {OP_nop, "nop"}, {NULL, "dcp"}, {OP_nop, "nop"}, {NULL, "cmp"}, {NULL, "dec"}, {NULL, "dcp"}, {NULL, "cld"}, {NULL, "cmp"}, {OP_nop, "nop"}, {NULL, "dcp"}, {OP_nop, "nop"}, {NULL, "cmp"}, {NULL, "dec"}, {NULL, "dcp"}, 
-{NULL, "cpx"}, {NULL, "sbc"}, {OP_nop, "nop"}, {NULL, "isb"}, {NULL, "cpx"}, {NULL, "sbc"}, {NULL, "inc"}, {NULL, "isb"}, {NULL, "inx"}, {NULL, "sbc"}, {OP_nop, "nop"}, {NULL, "sbc"}, {NULL, "cpx"}, {NULL, "sbc"}, {NULL, "inc"}, {NULL, "isb"}, 
-{NULL, "beq"}, {NULL, "sbc"}, {OP_nop, "nop"}, {NULL, "isb"}, {OP_nop, "nop"}, {NULL, "sbc"}, {NULL, "inc"}, {NULL, "isb"}, {NULL, "sed"}, {NULL, "sbc"}, {OP_nop, "nop"}, {NULL, "isb"}, {OP_nop, "nop"}, {NULL, "sbc"}, {NULL, "inc"}, {NULL, "isb"}
+  {NULL, "brk", NULL}, {NULL, "ora", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "slo", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "ora", NULL}, {NULL, "asl", NULL}, {NULL, "slo", NULL}, {NULL, "php", NULL}, {NULL, "ora", NULL}, {NULL, "asl", NULL}, {OP_nop, "nop", addr_implied}, {OP_nop, "nop", addr_implied}, {NULL, "ora", NULL}, {NULL, "asl", NULL}, {NULL, "slo", NULL}, 
+  {NULL, "bpl", NULL}, {NULL, "ora", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "slo", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "ora", NULL}, {NULL, "asl", NULL}, {NULL, "slo", NULL}, {NULL, "clc", NULL}, {NULL, "ora", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "slo", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "ora", NULL}, {NULL, "asl", NULL}, {NULL, "slo", NULL}, 
+  {NULL, "jsr", NULL}, {NULL, "and", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "rla", NULL}, {NULL, "bit", NULL}, {NULL, "and", NULL}, {NULL, "rol", NULL}, {NULL, "rla", NULL}, {NULL, "plp", NULL}, {NULL, "and", NULL}, {NULL, "rol", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "bit", NULL}, {NULL, "and", NULL}, {NULL, "rol", NULL}, {NULL, "rla", NULL}, 
+  {NULL, "bmi", NULL}, {NULL, "and", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "rla", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "and", NULL}, {NULL, "rol", NULL}, {NULL, "rla", NULL}, {NULL, "sec", NULL}, {NULL, "and", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "rla", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "and", NULL}, {NULL, "rol", NULL}, {NULL, "rla", NULL}, 
+  {NULL, "rti", NULL}, {NULL, "eor", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "sre", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "eor", NULL}, {NULL, "lsr", NULL}, {NULL, "sre", NULL}, {NULL, "pha", NULL}, {NULL, "eor", NULL}, {NULL, "lsr", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "jmp", NULL}, {NULL, "eor", NULL}, {NULL, "lsr", NULL}, {NULL, "sre", NULL}, 
+  {NULL, "bvc", NULL}, {NULL, "eor", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "sre", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "eor", NULL}, {NULL, "lsr", NULL}, {NULL, "sre", NULL}, {NULL, "cli", NULL}, {NULL, "eor", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "sre", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "eor", NULL}, {NULL, "lsr", NULL}, {NULL, "sre", NULL}, 
+  {NULL, "rts", NULL}, {NULL, "adc", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "rra", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "adc", NULL}, {NULL, "ror", NULL}, {NULL, "rra", NULL}, {NULL, "pla", NULL}, {NULL, "adc", NULL}, {NULL, "ror", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "jmp", NULL}, {NULL, "adc", NULL}, {NULL, "ror", NULL}, {NULL, "rra", NULL}, 
+  {NULL, "bvs", NULL}, {NULL, "adc", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "rra", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "adc", NULL}, {NULL, "ror", NULL}, {NULL, "rra", NULL}, {NULL, "sei", NULL}, {NULL, "adc", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "rra", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "adc", NULL}, {NULL, "ror", NULL}, {NULL, "rra", NULL}, 
+  {OP_nop, "nop", addr_implied}, {NULL, "sta", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "sax", NULL}, {NULL, "sty", NULL}, {NULL, "sta", NULL}, {NULL, "stx", NULL}, {NULL, "sax", NULL}, {NULL, "dey", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "txa", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "sty", NULL}, {NULL, "sta", NULL}, {NULL, "stx", NULL}, {NULL, "sax", NULL}, 
+  {NULL, "bcc", NULL}, {NULL, "sta", NULL}, {OP_nop, "nop", addr_implied}, {OP_nop, "nop", addr_implied}, {NULL, "sty", NULL}, {NULL, "sta", NULL}, {NULL, "stx", NULL}, {NULL, "sax", NULL}, {NULL, "tya", NULL}, {NULL, "sta", NULL}, {NULL, "txs", NULL}, {OP_nop, "nop", addr_implied}, {OP_nop, "nop", addr_implied}, {NULL, "sta", NULL}, {OP_nop, "nop", addr_implied}, {OP_nop, "nop", addr_implied}, 
+  {NULL, "ldy", NULL}, {NULL, "lda", NULL}, {OP_ldx, "ldx", addr_imm}, {NULL, "lax", NULL}, {NULL, "ldy", NULL}, {NULL, "lda", NULL}, {NULL, "ldx", NULL}, {NULL, "lax", NULL}, {NULL, "tay", NULL}, {NULL, "lda", NULL}, {NULL, "tax", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "ldy", NULL}, {NULL, "lda", NULL}, {NULL, "ldx", NULL}, {NULL, "lax", NULL}, 
+  {NULL, "bcs", NULL}, {NULL, "lda", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "lax", NULL}, {NULL, "ldy", NULL}, {NULL, "lda", NULL}, {NULL, "ldx", NULL}, {NULL, "lax", NULL}, {NULL, "clv", NULL}, {NULL, "lda", NULL}, {NULL, "tsx", NULL}, {NULL, "lax", NULL}, {NULL, "ldy", NULL}, {NULL, "lda", NULL}, {NULL, "ldx", NULL}, {NULL, "lax", NULL}, 
+  {NULL, "cpy", NULL}, {NULL, "cmp", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "dcp", NULL}, {NULL, "cpy", NULL}, {NULL, "cmp", NULL}, {NULL, "dec", NULL}, {NULL, "dcp", NULL}, {NULL, "iny", NULL}, {NULL, "cmp", NULL}, {NULL, "dex", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "cpy", NULL}, {NULL, "cmp", NULL}, {NULL, "dec", NULL}, {NULL, "dcp", NULL}, 
+  {NULL, "bne", NULL}, {NULL, "cmp", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "dcp", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "cmp", NULL}, {NULL, "dec", NULL}, {NULL, "dcp", NULL}, {NULL, "cld", NULL}, {NULL, "cmp", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "dcp", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "cmp", NULL}, {NULL, "dec", NULL}, {NULL, "dcp", NULL}, 
+  {NULL, "cpx", NULL}, {NULL, "sbc", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "isb", NULL}, {NULL, "cpx", NULL}, {NULL, "sbc", NULL}, {NULL, "inc", NULL}, {NULL, "isb", NULL}, {NULL, "inx", NULL}, {NULL, "sbc", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "sbc", NULL}, {NULL, "cpx", NULL}, {NULL, "sbc", NULL}, {NULL, "inc", NULL}, {NULL, "isb", NULL}, 
+  {NULL, "beq", NULL}, {NULL, "sbc", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "isb", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "sbc", NULL}, {NULL, "inc", NULL}, {NULL, "isb", NULL}, {NULL, "sed", NULL}, {NULL, "sbc", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "isb", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "sbc", NULL}, {NULL, "inc", NULL}, {NULL, "isb", NULL}
 };
 
 #endif
