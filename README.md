@@ -11,7 +11,6 @@ I began this project on 26/Sep/2025 so if youre reading this, this project is li
 ## Implementation progress:
 
 #### Addressing modes:
-
 - [ ] Absolute A
 - [ ] Absolute Indexed Indirect (a,x)
 - [ ] Absolute Indexed with X a,x
@@ -28,3 +27,6 @@ I began this project on 26/Sep/2025 so if youre reading this, this project is li
 - [ ] Zero Page Indexed with Y zp, y
 - [ ] Zero Page Indirect (zp)
 - [ ] Zero Page Indirect Indexed with Y (zp), y
+
+#### op codes implemented:
+- [x] NOP
