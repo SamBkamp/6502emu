@@ -37,13 +37,22 @@ void load_into_pc(uint16_t v){
   registers[PC+1] = v & 0xff;
 }
 
+void load_uint16_into_ram(uint16_t addr, uint16_t val){
+  RAM[addr] = (val >> 8) & 0xff;
+  RAM[addr+1] = val & 0xff;
+}
+
 int main(int argc, char* argv[]){
   
   RAM = (uint8_t *)mmap(NULL, 65536, PROT_READ|PROT_WRITE|PROT_EXEC,
 			MAP_PRIVATE|MAP_ANON ,-1, 0);
   
   memset(RAM, 0xea, 65535); //init ram with only 0xea 
-   
+
+  load_uint16_into_ram(0xFFFC, 0x0080);
+
+  RAM[0x8000] = 0xa2;
+  
   reset();
   step();  
   step();
