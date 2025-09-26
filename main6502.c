@@ -10,21 +10,23 @@
 uint8_t registers[REG_SIZE]; //all cpu registers
 uint8_t *RAM;
 
-void fetch_data(uint16_t v){
-  data_bus = RAM[v];
+void fetch_data(void){
+  data_bus = RAM[address_bus];
 }
 
 
 void reset(void){
-  fetch_data(0xFFFC);
+  address_bus = 0xFFFC;
+  fetch_data();
   registers[PC] = data_bus;
-  fetch_data(0xFFFD);
+  address_bus = 0xFFFC;
+  fetch_data();
   registers[PC+1] = data_bus;
 }
 
 void step(void){ //step through instructions
-  uint16_t address_bus = ((uint16_t)registers[PC] << 8) + registers[PC+1];
-  fetch_data(address_bus);
+  address_bus = ((uint16_t)registers[PC] << 8) + registers[PC+1];
+  fetch_data();
   
   printf("0x%04x : %p\n", address_bus, data_bus);
   registers[PC+1] += 1;
