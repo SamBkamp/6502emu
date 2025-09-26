@@ -5,7 +5,6 @@
 #include <string.h>
 
 #include "prot.h"
-#include "pins.h"
 #include "opcodes.h"
 
 void print_registers(context *c){
