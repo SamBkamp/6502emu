@@ -32,16 +32,13 @@ void step(void){ //step through instructions
   print_registers();
   address_bus = ((uint16_t)registers[PC] << 8) + registers[PC+1];
   fetch_data();  
-  printf("0x%04X : 0x%02X %s\n", address_bus, data_bus, opcodes_string[data_bus]);
+  printf("0x%04X : 0x%02X %s\n", address_bus, data_bus, opcodes[data_bus].name);
 
-  if(data_bus == 0xa2){
-    registers[PC+1] += 1;
-    address_bus += 1;
-    fetch_data();
-    registers[X] = data_bus;
-    
+
+  if(opcodes[data_bus].func != NULL){
+    (*opcodes[data_bus].func)();
   }
-  
+
   registers[PC+1] += 1;
 }
 
