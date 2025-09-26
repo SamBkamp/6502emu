@@ -13,7 +13,7 @@ void addr_implied(context *c){
 }
 
 void addr_imm(context *c){
-  c->ea = ((((uint16_t)c->registers[PC])<<8) + (uint16_t)c->registers[PC+1])+1;
+  c->ea = c->registers->PC+1;
 }
 
 void OP_nop(context *c){
@@ -22,8 +22,8 @@ void OP_nop(context *c){
 }
 
 void OP_ldx(context *c){
-  c->registers[PC+1] += 1;
-  c->registers[X] = RAM[c->ea];
+  c->registers->PC += 1;
+  c->registers->X = RAM[c->ea];
 }
 
 opcode opcodes[] = {

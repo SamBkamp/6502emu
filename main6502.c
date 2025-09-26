@@ -10,40 +10,33 @@
 #include "opcodes.h"
 
 void print_registers(context *c){
-  printf("X: %x\nY: %x\n", c->registers[X], c->registers[Y]);
+  printf("X: %x\nY: %x\n", c->registers->X, c->registers->Y);
 }
 
 void reset(context *c){
-  c->registers[PC+1] = RAM[0xFFFC];  
-  c->registers[PC] = RAM[0xFFFD];
+  c->registers->PC = ((uint16_t)RAM[0xFFFC]) << 8;
+  c->registers->PC += RAM[0xFFFD];
 }
 
 void step(context *c){ //step through instructions
-  uint16_t current_opcode = RAM[((uint16_t)c->registers[PC] << 8) + c->registers[PC+1]];
-  printf("0x%04X : 0x%02X %s\n", ((uint16_t)c->registers[PC] << 8) + c->registers[PC+1], current_opcode, opcodes[current_opcode].name);
+  uint16_t current_opcode = RAM[c->registers->PC];
+  printf("0x%04X : 0x%02X %s\n", c->registers->PC, current_opcode, opcodes[current_opcode].name);
 
   if(opcodes[current_opcode].func != NULL){
     (*opcodes[current_opcode].addr_mode)(c); //set addressing mode
     (*opcodes[current_opcode].func)(c); //call function associated with opcode
   }
 
-  c->registers[PC+1] += 1;
+  c->registers->PC += 1;
 }
 
-void load_into_pc(context *c, uint16_t v){
-  c->registers[PC] = (v >> 8) & 0xff;
-  c->registers[PC+1] = v & 0xff;
-}
-
-void load_uint16_into_ram(uint16_t addr, uint16_t val){
-  RAM[addr] = (val >> 8) & 0xff;
-  RAM[addr+1] = val & 0xff;
-}
 
 int main(int argc, char* argv[]){
 
+  cpu_registers r = {0};
+  
   context c = {
-    .registers = {0},
+    .registers = &r,
     .ea = 0
   };
   
@@ -52,7 +45,8 @@ int main(int argc, char* argv[]){
   
   memset(RAM, 0xea, 65535); //init ram with only 0xea 
 
-  load_uint16_into_ram(0xFFFC, 0x0080);
+  RAM[0xFFFC] = 0x80;
+  RAM[0xFFFD] = 0x00;
 
   RAM[0x8000] = 0xa2;
   RAM[0x8001] = 0x41;
