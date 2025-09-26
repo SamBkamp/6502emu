@@ -1,8 +1,6 @@
 #ifndef PINS_6502
 #define PINS_6502
 
-uint16_t address_bus;
-uint8_t data_bus;
 
 /*
 //TODO: combine these into 1 byte with masks

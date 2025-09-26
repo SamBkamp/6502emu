@@ -13,29 +13,18 @@ void print_registers(context *c){
   printf("X: %x\nY: %x\n", c->registers[X], c->registers[Y]);
 }
 
-void fetch_data(void){
-  data_bus = RAM[address_bus];
-}
-
 void reset(context *c){
-  address_bus = 0xFFFC;
-  fetch_data();
-  c->registers[PC+1] = data_bus;
-  
-  address_bus = 0xFFFD;
-  fetch_data();
-  c->registers[PC] = data_bus;
+  c->registers[PC+1] = RAM[0xFFFC];  
+  c->registers[PC] = RAM[0xFFFD];
 }
 
 void step(context *c){ //step through instructions
-  address_bus = ((uint16_t)c->registers[PC] << 8) + c->registers[PC+1];
-  fetch_data();  
-  printf("0x%04X : 0x%02X %s\n", address_bus, data_bus, opcodes[data_bus].name);
+  uint16_t current_opcode = RAM[((uint16_t)c->registers[PC] << 8) + c->registers[PC+1]];
+  printf("0x%04X : 0x%02X %s\n", ((uint16_t)c->registers[PC] << 8) + c->registers[PC+1], current_opcode, opcodes[current_opcode].name);
 
-
-  if(opcodes[data_bus].func != NULL){
-    (*opcodes[data_bus].addr_mode)(c); //set addressing mode
-    (*opcodes[data_bus].func)(c); //call function associated with opcode
+  if(opcodes[current_opcode].func != NULL){
+    (*opcodes[current_opcode].addr_mode)(c); //set addressing mode
+    (*opcodes[current_opcode].func)(c); //call function associated with opcode
   }
 
   c->registers[PC+1] += 1;
