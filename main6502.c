@@ -25,7 +25,6 @@ void step(context *c){ //step through instructions
     (*opcodes[current_opcode].func)(c); //call function associated with opcode
   }
 
-  c->registers->PC += 1;
 }
 
 

@@ -2,6 +2,15 @@
 #define PROT_6520
 //prototypes for global functions and variables
 
+#define FLAGS_C_MASK 0x1
+#define FLAGS_Z_MASK 0x2
+#define FLAGS_I_MASK 0x4
+#define FLAGS_D_MASK 0x8
+#define FLAGS_B_MASK 0x10
+#define FLAGS_V_MASK 0x40
+#define FLAGS_N_MASK 0x80
+
+
 typedef struct{
   uint8_t A; //accumulator
   uint8_t Y; //index Y
