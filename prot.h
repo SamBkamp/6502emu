@@ -1,4 +1,3 @@
-
 #ifndef PROT_6502
 #define PROT_6520
 //prototypes for global functions and variables

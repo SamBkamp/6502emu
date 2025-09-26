@@ -8,18 +8,14 @@ typedef struct{
 }opcode;
 
 /* addressing moding functions */
-
 void addr_implied(context *c){ //implied i
 }
-
 void addr_accumulator(context *c){ //accumulator A
 }
-
 void addr_imm(context *c){ //immediate #
   c->registers->PC += 1;
   c->ea = c->registers->PC;
 }
-
 void addr_pcr(context *c){ //program counter relative r
   c->registers->PC += 1;
   c->ea = c->registers->PC + RAM[c->registers->PC];
@@ -31,18 +27,15 @@ void OP_bcc(context *c){ //branch carry clear
     c->registers->PC = c->ea;
   }
 }
-
 void OP_bcs(context *c){ //branch carry set
-  if((c->Registers->P & 1) != 0){
+  if((c->registers->P & 1) != 0){
     c->registers->PC = c->ea;
   }
 }
-
 void OP_nop(context *c){
   //printf("hello from nop!\n");
   return;
 }
-
 void OP_ldx(context *c){
   c->registers->X = RAM[c->ea];
 }
