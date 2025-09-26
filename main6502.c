@@ -40,11 +40,8 @@ int main(int argc, char* argv[]){
   RAM = (uint8_t *)mmap(NULL, 65536, PROT_READ|PROT_WRITE|PROT_EXEC,
 			MAP_PRIVATE|MAP_ANON ,-1, 0);
   
-//memset(RAM, 0xea, 65535); //init ram with only 0xea 
-
-  data_bus = 0xea;
-  address_bus = 0xeaea;
-  
+  memset(RAM, 0xea, 65535); //init ram with only 0xea 
+   
   reset();
   step();  
   step();
