@@ -29,7 +29,8 @@ opcode opcodes[] = {
 
 
 void print_registers(context *c){
-  printf("X: %x\nY: %x\nflags: %x\n", c->registers->X, c->registers->Y, c->registers->P);
+  printf("X: %x\nY: %x\nA: %x\nflags: %x\n",
+	 c->registers->X, c->registers->Y, c->registers->A, c->registers->P);
 }
 void print_stack_addr(context *c, uint16_t addr){
   if(addr >= STACK_BOTTOM && addr <= STACK_TOP)
