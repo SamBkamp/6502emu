@@ -66,24 +66,29 @@ int main(int argc, char* argv[]){
   c.RAM = (uint8_t *)mmap(NULL, 65536, PROT_READ|PROT_WRITE|PROT_EXEC,
 			MAP_PRIVATE|MAP_ANON ,-1, 0);
   
-  memset(c.RAM, 0xea, 65535); //init ram with only 0xea 
+  memset(c.RAM, 0xea, 65535); //init ram with only 0xea (nop)
 
+
+  c.RAM[0x02] = 0x05;
+  c.RAM[0x03] = 0x80;
+  
   c.RAM[0xFFFC] = 0x80;
   c.RAM[0xFFFD] = 0x00;
-  
-  c.RAM[0x8000] = 0xa2;
-  c.RAM[0x8001] = 0x41;
-  c.RAM[0x8002] = 0x90;
-  c.RAM[0x8003] = 0x3;
-  
 
-
-  //c.registers->P = 0x2;
+  c.RAM[0x8000] = 0x4c;
+  c.RAM[0x8001] = 0x02;
+  c.RAM[0x8002] = 0x00;
+  
+  c.registers->A = 0x41;
+  printf("-------------- program start --------------\n");
   reset(&c);
-  step(&c);  
-  step(&c);
-  step(&c);
-  step(&c);
+  for(int i = 0; i < 3; i++){
+    step(&c);
+  }
+
+  printf("-------------- program complete --------------\n");
+  printf("0x%04x : 0x%02x\n", 0x002, c.RAM[0x002]);
+  printf("0x%04x : 0x%02x\n", 0x00e, c.RAM[0x00e]);
+  //print_stack_addr(&c, STACK_TOP);
   print_registers(&c);
-  
 }
