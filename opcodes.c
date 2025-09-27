@@ -14,6 +14,9 @@
    ie. pointers to pointers. They will be given a pointer which points at their
    jump location. ALWAYS FOLLOW THE "ONE-AWAY RULE" (one dereference away from final val).
 
+   ONE EXCEPTION: program counter relative (r) addressing returns the direct address to jump
+   to. This is anexception because this addressing mode is only used for branch operations 
+
    ----------------------------------------------------------------------------------------*/
 void addr_implied(context *c){ //implied i
   //doesn't return
@@ -24,15 +27,16 @@ void addr_accumulator(context *c){ //accumulator A
   c->registers->PC ++;
 }
 void addr_abs_indirect(context *c){ //Absolute Indirect (a)
-  //returns pointer to new program counter value 
-  c->ea = (((uint16_t)c->RAM[c->registers->PC+2])<<8)+(uint16_t)c->RAM[c->registers->PC+1];
+  //returns pointer to new program counter value
+  uint16_t hi_byte = ((uint16_t)c->RAM[c->registers->PC+2]);
+  uint16_t lo_byte = (uint16_t)c->RAM[c->registers->PC+1];
+  c->ea = (hi_byte<<8)+lo_byte;
   c->registers->PC += 3;
 }
 void addr_abs(context *c){ //Absolute a
   //returns operand address
   c->ea = c->registers->PC+1;
   c->registers->PC += 3;
-  printf("ea: 0x%x\n", c->ea);
 }
 void addr_imm(context *c){ //immediate #
   //returns operand address
