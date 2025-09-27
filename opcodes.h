@@ -8,6 +8,8 @@ void addr_imm(context *c);
 void addr_pcr(context *c);
 void addr_stack(context *c);
 void addr_zp(context *c);
+void addr_zp_indirect(context *c);
+void addr_abs_indirect(context *c);
 
 /* opcode implementations */
 //BRANCHING CALLS
