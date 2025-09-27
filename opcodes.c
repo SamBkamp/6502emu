@@ -1,10 +1,12 @@
 #include <stdint.h>
+#include <stdio.h>
 
 #include "prot.h"
 #include "opcodes.h"
 
 /* addressing moding functions */
 void addr_implied(context *c){ //implied i
+  c->registers->PC ++;
 }
 void addr_accumulator(context *c){ //accumulator A
 }
@@ -19,6 +21,7 @@ void addr_pcr(context *c){ //program counter relative r
 }
 
 /* opcode implementations */
+/*-------- BRANCHING CALLS --------*/
 void OP_bcc(context *c){ //branch carry clear
   if((c->registers->P & FLAGS_C_MASK) == 0){
     c->registers->PC = c->ea;
@@ -63,11 +66,38 @@ void OP_bvc(context *c){ //branch if v = 0
     c->registers->PC = c->ea;
   }
 }
-void OP_nop(context *c){
-  //printf("hello from nop!\n");
-  return;
+
+/*-------- STATUS FLAG CHANGES --------*/
+void OP_clc(context *c){ //clear carry flag
+  c->registers->P &= ~FLAGS_C_MASK;
 }
+void OP_cld(context *c){ //clear decimal mode flag
+  c->registers->P &= ~FLAGS_D_MASK;
+}
+void OP_cli(context *c){ //clear interrupt flag
+  c->registers->P &= ~FLAGS_I_MASK;
+}
+void OP_clv(context *c){ //clear overflow flag
+  c->registers->P &= ~FLAGS_V_MASK;
+}
+void OP_sec(context *c){ //set carry flag
+  c->registers->P |= FLAGS_C_MASK;
+}
+void OP_sed(context *c){ //set decimal mode flag
+  c->registers->P |= FLAGS_D_MASK;
+}
+void OP_sei(context *c){ //set interrupt flag
+  c->registers->P |= FLAGS_I_MASK;
+}
+
+
+/*-------- LOAD CALLS --------*/
 void OP_ldx(context *c){
   c->registers->X = c->RAM[c->ea];
 }
 
+/*-------- MISC CALLS --------*/
+void OP_nop(context *c){
+  //printf("hello from nop!\n");
+  return;
+}

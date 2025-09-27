@@ -8,6 +8,7 @@ void addr_imm(context *c);
 void addr_pcr(context *c);
 
 /* opcode implementations */
+//BRANCHING CALLS
 void OP_bcc(context *c);
 void OP_bcs(context *c);
 void OP_beq(context *c);
@@ -17,8 +18,21 @@ void OP_bpl(context *c);
 void OP_bra(context *c);
 void OP_bvs(context *c);
 void OP_bvc(context *c);
-void OP_nop(context *c);
+
+//STATUS FLAG CHANGES
+void OP_clc(context *c);
+void OP_cld(context *c);
+void OP_cli(context *c);
+void OP_clv(context *c);
+void OP_sec(context *c);
+void OP_sed(context *c);
+void OP_sei(context *c);
+
+//LOAD CALLS
 void OP_ldx(context *c);
+
+//MISC
+void OP_nop(context *c);
 
 
 #endif
