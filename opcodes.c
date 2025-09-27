@@ -24,14 +24,15 @@ void addr_accumulator(context *c){ //accumulator A
   c->registers->PC ++;
 }
 void addr_abs_indirect(context *c){ //Absolute Indirect (a)
-  //returns new program counter value 
-  c->ea = (((uint16_t)c->registers->PC+1)<<8)+(uint16_t)c->registers->PC+2;
+  //returns pointer to new program counter value 
+  c->ea = (((uint16_t)c->RAM[c->registers->PC+2])<<8)+(uint16_t)c->RAM[c->registers->PC+1];
   c->registers->PC += 3;
 }
 void addr_abs(context *c){ //Absolute a
   //returns operand address
-  c->ea = (((uint16_t)c->RAM[c->registers->PC+2])<<8) + (uint16_t)c->RAM[c->registers->PC+1];
+  c->ea = c->registers->PC+1;
   c->registers->PC += 3;
+  printf("ea: 0x%x\n", c->ea);
 }
 void addr_imm(context *c){ //immediate #
   //returns operand address
@@ -107,6 +108,9 @@ void OP_bvc(context *c){ //branch if v = 0
   if((c->registers->P & FLAGS_V_MASK) == 0){
     c->registers->PC = c->ea;
   }
+}
+void OP_jmp(context *c){ //unconditional jump to EA
+  c->registers->PC = (((uint16_t)c->RAM[c->ea+1]) << 8) + c->RAM[c->ea];
 }
 
 /* ----------- STACK CALLS ----------- */

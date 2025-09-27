@@ -23,6 +23,7 @@ void OP_bpl(context *c);
 void OP_bra(context *c);
 void OP_bvs(context *c);
 void OP_bvc(context *c);
+void OP_jmp(context *c);
 
 //STACK CALLS
 void OP_pha(context *c);
