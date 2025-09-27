@@ -6,37 +6,53 @@
 
 /* addressing moding functions */
 void addr_implied(context *c){ //implied i
+  //doesn't return
   c->registers->PC ++;
 }
 void addr_accumulator(context *c){ //accumulator A
+  //doesn't return
   c->registers->PC ++;
 }
 void addr_abs_indirect(context *c){ //Absolute Indirect (a)
+  //returns new program counter value 
   c->ea = (((uint16_t)c->registers->PC+1)<<8)+(uint16_t)c->registers->PC+2;
   c->registers->PC += 3;
 }
+void addr_abs(context *c){ //Absolute a
+  //returns operand address
+  c->ea = (((uint16_t)c->RAM[c->registers->PC+2])<<8) + (uint16_t)c->RAM[c->registers->PC+1];
+  c->registers->PC += 3;
+}
 void addr_imm(context *c){ //immediate #
-  c->ea = c->RAM[c->registers->PC+1]; //loads a pointer to the next value (immediate value) into ea
+  //returns operand address
+  c->ea = c->registers->PC+1; //loads a pointer to the next value (immediate value) into ea
   c->registers->PC += 2; //moves pc forward 2 bytes so it points to next instruction
-
 }
 void addr_stack(context *c){ //Stack addressing s (basically the same as implied)
+  //returns operand address
   c->registers->PC ++;
 }
 void addr_pcr(context *c){ //program counter relative r
+  //returns new PC value
   c->ea = c->registers->PC+1 + c->RAM[c->registers->PC+1];
   c->registers->PC += 2;
 }
 void addr_zp(context *c){ //zero page zp
+  //returns operand address
   c->ea = (uint16_t)c->RAM[c->registers->PC+1]; //loads the next value
   c->registers->PC += 2;
 }
 void addr_zp_indirect(context *c){ //zero page indirect zp
-  c->ea = (uint16_t)c->RAM[c->RAM[c->registers->PC+1]]; //the next byte is a pointer to the address
+  //returns operand address
+  uint16_t hi_byte = ((uint16_t)c->RAM[c->RAM[c->registers->PC+1]+1])<<8; //1st operand is pointer to low byte in ram so to get the high byte we +1 
+  uint16_t lo_byte = ((uint16_t)c->RAM[c->RAM[c->registers->PC+1]]); //1st operand is pointer to the low byte so we just fetch that
+  c->ea = hi_byte + lo_byte;
   c->registers->PC += 2;
-}//TODO: test this addressing mode
+}
 
-/* opcode implementations */
+
+
+/* ------------- opcode implementations -------------*/
 /*-------- BRANCHING CALLS --------*/
 void OP_bcc(context *c){ //branch carry clear
   if((c->registers->P & FLAGS_C_MASK) == 0){
@@ -134,6 +150,11 @@ void OP_sed(context *c){ //set decimal mode flag
 }
 void OP_sei(context *c){ //set interrupt flag
   c->registers->P |= FLAGS_I_MASK;
+}
+
+/*-------- STORE CALLS --------*/
+void OP_sta(context *c){
+  c->RAM[c->ea] = c->registers->A;
 }
 
 

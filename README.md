@@ -43,7 +43,7 @@ Its all abstracted away but you can still see its shadow in the design.
 - [ ] Zero Page Indexed Indirect (zp,x)
 - [ ] Zero Page Indexed with X zp,x
 - [ ] Zero Page Indexed with Y zp, y
-- [ ] Zero Page Indirect (zp)
+- [x] Zero Page Indirect (zp)
 - [ ] Zero Page Indirect Indexed with Y (zp), y
 
 #### op codes implemented:
@@ -52,3 +52,4 @@ Its all abstracted away but you can still see its shadow in the design.
 - [x] All Status flag change calls
 - [x] All stack push/pull calls
 - [x] LDX
+- [ ] STA (only # and (zp) addressing)

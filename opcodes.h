@@ -10,6 +10,7 @@ void addr_stack(context *c);
 void addr_zp(context *c);
 void addr_zp_indirect(context *c);
 void addr_abs_indirect(context *c);
+void addr_abs(context *c);
 
 /* opcode implementations */
 //BRANCHING CALLS
@@ -40,6 +41,9 @@ void OP_clv(context *c);
 void OP_sec(context *c);
 void OP_sed(context *c);
 void OP_sei(context *c);
+
+//STORE CALLS
+void OP_sta(context *c);
 
 //LOAD CALLS
 void OP_ldx(context *c);
