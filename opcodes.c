@@ -5,6 +5,16 @@
 #include "opcodes.h"
 
 /* addressing moding functions */
+
+/* ---------------------------------------------------------------------------------------
+                                   !NOTICE!
+   all addr_ functions return the POINTER to the variable they operate on.
+   if they operate on immediate values (like eg LDA #$41) a POINTER to the 0x41
+   will be returned. If the functions operate on indirect values (0x6c JMP)
+   ie. pointers to pointers. They will be given a pointer which points at their
+   jump location. ALWAYS FOLLOW THE "ONE-AWAY RULE" (one dereference away from final val).
+
+   ----------------------------------------------------------------------------------------*/
 void addr_implied(context *c){ //implied i
   //doesn't return
   c->registers->PC ++;
