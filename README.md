@@ -39,7 +39,7 @@ Its all abstracted away but you can still see its shadow in the design.
 - [x] Implied i
 - [x] Program Counter Relative r
 - [x] Stack s
-- [ ] Zero Page zp
+- [x] Zero Page zp
 - [ ] Zero Page Indexed Indirect (zp,x)
 - [ ] Zero Page Indexed with X zp,x
 - [ ] Zero Page Indexed with Y zp, y
