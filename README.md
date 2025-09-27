@@ -53,3 +53,4 @@ Its all abstracted away but you can still see its shadow in the design.
 - [x] All stack push/pull calls
 - [x] LDX
 - [ ] STA (only # and (zp) addressing)
+- [ ] JMP (only a and (a) addressing)
