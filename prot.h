@@ -11,8 +11,8 @@
 #define FLAGS_N_MASK 0x80
 
 
-#define STACK_START 0x0100
-#define STACK_END 0x01ff
+#define STACK_BOTTOM 0x0100
+#define STACK_TOP 0x01ff
 
 
 typedef struct{
