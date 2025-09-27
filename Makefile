@@ -8,3 +8,6 @@ build:
 
 dev: main6502.c ${FILES}
 	cc main6502.c ${FILES} ${FLAGS} -o s6C502
+
+clean:
+	rm s6C502
