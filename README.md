@@ -29,11 +29,11 @@ Its all abstracted away but you can still see its shadow in the design.
 ## Implementation progress:
 
 #### Addressing modes:
-- [x] Absolute A
+- [x] Absolute a
 - [ ] Absolute Indexed Indirect (a,x)
 - [ ] Absolute Indexed with X a,x
 - [ ] Absolute Indexed Indirect (a,x)
-- [ ] Absolute Indirect (a)
+- [x] Absolute Indirect (a)
 - [x] Accumulator A
 - [x] Immediate Addressing #
 - [x] Implied i
