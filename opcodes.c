@@ -16,7 +16,7 @@ void addr_imm(context *c){ //immediate #
 
 }
 void addr_stack(context *c){ //Stack addressing s
-  c->registers->ea = (STACK_START + (uint16_t)c->registers->S) + (uint16_t)c-registers->PC+1;
+  c->ea = (STACK_START + (uint16_t)c->registers->S) + (uint16_t)c->registers->PC+1;
   c->registers->PC += 2;
 }
 void addr_pcr(context *c){ //program counter relative r

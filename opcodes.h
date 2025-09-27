@@ -6,6 +6,7 @@ void addr_implied(context *c);
 void addr_accumulator(context *c);
 void addr_imm(context *c);
 void addr_pcr(context *c);
+void addr_stack(context *c);
 
 /* opcode implementations */
 //BRANCHING CALLS
