@@ -29,7 +29,7 @@ Its all abstracted away but you can still see its shadow in the design.
 ## Implementation progress:
 
 #### Addressing modes:
-- [ ] Absolute A
+- [x] Absolute A
 - [ ] Absolute Indexed Indirect (a,x)
 - [ ] Absolute Indexed with X a,x
 - [ ] Absolute Indexed Indirect (a,x)
