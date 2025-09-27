@@ -20,6 +20,15 @@ void OP_bra(context *c);
 void OP_bvs(context *c);
 void OP_bvc(context *c);
 
+//STACK CALLS
+void OP_pha(context *c);
+void OP_php(context *c);
+void OP_phx(context *c);
+void OP_phy(context *c);
+void OP_plp(context *c);
+void OP_plx(context *c);
+void OP_ply(context *c);
+
 //STATUS FLAG CHANGES
 void OP_clc(context *c);
 void OP_cld(context *c);
