@@ -9,9 +9,10 @@ void addr_implied(context *c){ //implied i
   c->registers->PC ++;
 }
 void addr_accumulator(context *c){ //accumulator A
+  c->registers->PC ++;
 }
 void addr_imm(context *c){ //immediate #
-  c->ea = c->registers->PC+1; //loads the next value (immediate value) into ea
+  c->ea = c->registers->PC+1; //loads a pointer to the next value (immediate value) into ea
   c->registers->PC += 2; //moves pc forward 2 bytes so it points to next instruction
 
 }
@@ -20,6 +21,10 @@ void addr_stack(context *c){ //Stack addressing s (basically the same as implied
 }
 void addr_pcr(context *c){ //program counter relative r
   c->ea = c->registers->PC+1 + c->RAM[c->registers->PC+1];
+  c->registers->PC += 2;
+}
+void addr_zp(context *c){ //zero page zp
+  c->ea = (uint16_t)c->RAM[c->registers->PC+1]; //loads the next value
   c->registers->PC += 2;
 }
 
