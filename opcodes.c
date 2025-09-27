@@ -55,9 +55,10 @@ void addr_zp(context *c){ //zero page zp
 }
 void addr_zp_indirect(context *c){ //zero page indirect zp
   //returns operand address
-  uint16_t hi_byte = ((uint16_t)c->RAM[c->RAM[c->registers->PC+1]+1])<<8; //1st operand is pointer to low byte in ram so to get the high byte we +1 
-  uint16_t lo_byte = ((uint16_t)c->RAM[c->RAM[c->registers->PC+1]]); //1st operand is pointer to the low byte so we just fetch that
-  c->ea = hi_byte + lo_byte;
+  uint16_t hi_byte = c->RAM[c->RAM[c->registers->PC+1]+1];
+  uint16_t lo_byte = c->RAM[c->RAM[c->registers->PC+1]];
+  c->ea = (hi_byte << 8) + lo_byte;
+  printf("ea 0x%x\n", c->ea);
   c->registers->PC += 2;
 }
 
