@@ -11,6 +11,10 @@
 #define FLAGS_N_MASK 0x80
 
 
+#define STACK_START 0x0100
+#define STACK_END 0x01ff
+
+
 typedef struct{
   uint8_t A; //accumulator
   uint8_t Y; //index Y
@@ -32,7 +36,6 @@ typedef struct{
   char* name;
   void (*addr_mode)(context *c);
 }opcode;
-
 
 
 /*
