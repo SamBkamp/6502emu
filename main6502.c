@@ -24,12 +24,16 @@ opcode opcodes[] = {
   {NULL, "cpy", NULL}, {NULL, "cmp", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "dcp", NULL}, {NULL, "cpy", NULL}, {NULL, "cmp", NULL}, {NULL, "dec", NULL}, {NULL, "dcp", NULL}, {NULL, "iny", NULL}, {NULL, "cmp", NULL}, {NULL, "dex", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "cpy", NULL}, {NULL, "cmp", NULL}, {NULL, "dec", NULL}, {NULL, "dcp", NULL}, 
   {OP_bne, "bne", addr_pcr}, {NULL, "cmp", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "dcp", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "cmp", NULL}, {NULL, "dec", NULL}, {NULL, "dcp", NULL}, {NULL, "cld", NULL}, {NULL, "cmp", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "dcp", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "cmp", NULL}, {NULL, "dec", NULL}, {NULL, "dcp", NULL}, 
   {NULL, "cpx", NULL}, {NULL, "sbc", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "isb", NULL}, {NULL, "cpx", NULL}, {NULL, "sbc", NULL}, {NULL, "inc", NULL}, {NULL, "isb", NULL}, {NULL, "inx", NULL}, {NULL, "sbc", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "sbc", NULL}, {NULL, "cpx", NULL}, {NULL, "sbc", NULL}, {NULL, "inc", NULL}, {NULL, "isb", NULL}, 
-  {OP_beq, "beq", addr_pcr}, {NULL, "sbc", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "isb", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "sbc", NULL}, {NULL, "inc", NULL}, {NULL, "isb", NULL}, {NULL, "sed", NULL}, {NULL, "sbc", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "isb", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "sbc", NULL}, {NULL, "inc", NULL}, {NULL, "isb", NULL}
+  {OP_beq, "beq", addr_pcr}, {NULL, "sbc", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "isb", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "sbc", NULL}, {NULL, "inc", NULL}, {NULL, "isb", NULL}, {OP_sed, "sed", addr_implied}, {NULL, "sbc", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "isb", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "sbc", NULL}, {NULL, "inc", NULL}, {NULL, "isb", NULL}
 };
 
 
 void print_registers(context *c){
   printf("X: %x\nY: %x\nflags: %x\n", c->registers->X, c->registers->Y, c->registers->P);
+}
+void print_stack_addr(context *c, uint16_t addr){
+  if(addr >= STACK_START && addr <= STACK_END)
+    printf("0x%04x : 0x%02x\n", addr, c->RAM[addr]);
 }
 
 void reset(context *c){
