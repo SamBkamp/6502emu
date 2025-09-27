@@ -23,9 +23,17 @@ typedef struct{
 typedef struct{
   cpu_registers *registers;
   uint16_t ea; //effective address
+  uint8_t *RAM; //ram address
 }context;
 
-uint8_t *RAM;
+
+typedef struct{
+  void (*func)(context *c);
+  char* name;
+  void (*addr_mode)(context *c);
+}opcode;
+
+
 
 /*
 
