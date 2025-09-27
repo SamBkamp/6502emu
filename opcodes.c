@@ -88,16 +88,16 @@ void OP_phy(context *c){ //push Y to stack
   c->registers->S --;
 }
 void OP_plp(context *c){ //pull P from stack
-  c->registers->P = c->RAM[STACK_BOTTOM + (uint16_t)c->registers->S];
   c->registers->S ++;
+  c->registers->P = c->RAM[STACK_BOTTOM + (uint16_t)c->registers->S];
 }
 void OP_plx(context *c){ //pull X from stack
-  c->registers->X = c->RAM[STACK_BOTTOM + (uint16_t)c->registers->S];
   c->registers->S ++;
+  c->registers->X = c->RAM[STACK_BOTTOM + (uint16_t)c->registers->S];
 }
 void OP_ply(context *c){ //pull Y from stack
-  c->registers->Y = c->RAM[STACK_BOTTOM + (uint16_t)c->registers->S];
   c->registers->S ++;
+  c->registers->Y = c->RAM[STACK_BOTTOM + (uint16_t)c->registers->S];
 }
 
 /*-------- STATUS FLAG CHANGES --------*/
