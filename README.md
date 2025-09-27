@@ -30,13 +30,6 @@ I began this project on 26/Sep/2025 so if youre reading this, this project is li
 
 #### op codes implemented:
 - [x] NOP
-- [x] BCC
-- [x] BCS
-- [x] BEQ
-- [x] BMI
-- [x] BNE
-- [x] BPL
-- [x] BRA
-- [x] BVS
-- [x] BVC
+- [x] All Branching call
+- [x] All Status flag change calls	
 - [x] LDX
