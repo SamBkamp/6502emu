@@ -12,6 +12,7 @@ void addr_zp_indirect(context *c);
 void addr_abs_indirect(context *c);
 void addr_abs(context *c);
 void addr_abs_x(context *c);
+void addr_abs_y(context *c);
 
 /* opcode implementations */
 //BRANCHING CALLS

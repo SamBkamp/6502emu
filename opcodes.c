@@ -51,6 +51,11 @@ void addr_abs_x(context *c){ //Asbolute index with X a,x
   c->ea += c->registers->X;
   c->registers->PC += 3;  
 }
+void addr_abs_y(context *c){ //Asbolute index with Y a,y
+  c->ea = get_16_bit_from(c->registers->PC+1, c);
+  c->ea += c->registers->Y;
+  c->registers->PC += 3;  
+}
 void addr_imm(context *c){ //immediate #
   //returns operand address
   c->ea = c->registers->PC+1; //loads a pointer to the next value (immediate value) into ea
