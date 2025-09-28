@@ -49,6 +49,7 @@ void OP_sta(context *c);
 
 //LOAD CALLS
 void OP_ldx(context *c);
+void OP_lda(context *c);
 
 //MISC
 void OP_nop(context *c);

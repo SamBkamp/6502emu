@@ -192,6 +192,9 @@ void OP_sta(context *c){
 void OP_ldx(context *c){
   c->registers->X = c->RAM[c->ea];
 }
+void OP_lda(context *c){
+  c->registers->A = c->RAM[c->ea];
+}
 
 /*-------- MISC CALLS --------*/
 void OP_nop(context *c){
