@@ -26,6 +26,11 @@ cpu_context->RAM[address_bus] = data_bus; //ram write through busses
 ```
 Its all abstracted away but you can still see its shadow in the design.
 
+## TODOS
+
+- [ ] implement remaining opcodes
+- [ ] check each opcode sets flag register appropriately
+
 ## Implementation progress:
 
 #### Addressing modes:
