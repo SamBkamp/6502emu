@@ -30,9 +30,9 @@ Its all abstracted away but you can still see its shadow in the design.
 
 #### Addressing modes:
 - [x] Absolute a
-- [ ] Absolute Indexed Indirect (a,x)
-- [ ] Absolute Indexed with X a,x
-- [ ] Absolute Indexed Indirect (a,x)
+- [x] Absolute Indexed Indirect (a,x)
+- [x] Absolute Indexed with X a,x
+- [x] Absolute Indexed with Y a, x
 - [x] Absolute Indirect (a)
 - [x] Accumulator A
 - [x] Immediate Addressing #
@@ -40,17 +40,18 @@ Its all abstracted away but you can still see its shadow in the design.
 - [x] Program Counter Relative r
 - [x] Stack s
 - [x] Zero Page zp
-- [ ] Zero Page Indexed Indirect (zp,x)
-- [ ] Zero Page Indexed with X zp,x
-- [ ] Zero Page Indexed with Y zp, y
+- [x] Zero Page Indexed Indirect (zp,x)
+- [x] Zero Page Indexed with X zp,x
+- [x] Zero Page Indexed with Y zp, y
 - [x] Zero Page Indirect (zp)
-- [ ] Zero Page Indirect Indexed with Y (zp), y
+- [x] Zero Page Indirect Indexed with Y (zp), y
 
 #### op codes implemented:
 - [x] NOP
 - [x] All Branching call
 - [x] All Status flag change calls
 - [x] All stack push/pull calls
-- [x] LDX
+- [ ] LDX (only a, (a), x, #, zp and (zp) addressing)
 - [ ] STA (only # and (zp) addressing)
+- [ ] LDA (only a, (a), x, #, zp and (zp) addressing)
 - [ ] JMP (only a and (a) addressing)
