@@ -4,6 +4,16 @@
 #include "prot.h"
 #include "opcodes.h"
 
+//helper function to return the 16 bit value stored in little endian. loc points to the lower byte
+uint16_t get_16_bit_from(uint16_t loc, context *c){
+  uint16_t hi_byte = c->RAM[loc+1];
+  uint16_t lo_byte = c->RAM[loc];
+  hi_byte <<= 8;
+  hi_byte &= 0xff00; //probably unneeded
+  hi_byte += lo_byte;
+  return hi_byte;
+}
+
 /* addressing moding functions */
 
 /* ---------------------------------------------------------------------------------------
@@ -28,15 +38,18 @@ void addr_accumulator(context *c){ //accumulator A
 }
 void addr_abs_indirect(context *c){ //Absolute Indirect (a)
   //returns pointer to new program counter value
-  uint16_t hi_byte = ((uint16_t)c->RAM[c->registers->PC+2]);
-  uint16_t lo_byte = (uint16_t)c->RAM[c->registers->PC+1];
-  c->ea = (hi_byte<<8)+lo_byte;
+  c->ea = get_16_bit_from(c->registers->PC+1, c);
   c->registers->PC += 3;
 }
 void addr_abs(context *c){ //Absolute a
   //returns operand address
-  c->ea = c->registers->PC+1;
+  c->ea = get_16_bit_from(c->registers->PC+1, c);
   c->registers->PC += 3;
+}
+void addr_abs_x(context *c){ //Asbolute index with X a,x
+  c->ea = get_16_bit_from(c->registers->PC+1, c);
+  c->ea += c->registers->X;
+  c->registers->PC += 3;  
 }
 void addr_imm(context *c){ //immediate #
   //returns operand address
@@ -57,12 +70,10 @@ void addr_zp(context *c){ //zero page zp
   c->ea = (uint16_t)c->RAM[c->registers->PC+1]; //loads the next value
   c->registers->PC += 2;
 }
-void addr_zp_indirect(context *c){ //zero page indirect zp
+void addr_zp_indirect(context *c){ //zero page indirect (zp)
   //returns operand address
-  uint16_t hi_byte = c->RAM[c->RAM[c->registers->PC+1]+1];
-  uint16_t lo_byte = c->RAM[c->RAM[c->registers->PC+1]];
-  c->ea = (hi_byte << 8) + lo_byte;
-  printf("ea 0x%x\n", c->ea);
+  uint16_t ptr = c->RAM[c->registers->PC+1];
+  c->ea = get_16_bit_from(ptr, c);
   c->registers->PC += 2;
 }
 
