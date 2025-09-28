@@ -54,6 +54,7 @@ void OP_sei(context *c);
 void OP_sta(context *c);
 void OP_stx(context *c);
 void OP_sty(context *c);
+void OP_stz(context *c);
 
 //LOAD CALLS
 void OP_ldx(context *c);

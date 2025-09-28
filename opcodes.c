@@ -80,12 +80,12 @@ void addr_zp(context *c){ //zero page zp
   c->ea = (uint16_t)c->RAM[c->registers->PC+1]; //loads the next value
   c->registers->PC += 2;
 }
-void addr_zp_idx_x(context *c){
+void addr_zp_idx_x(context *c){ //zp, x
   //returns operand address
   c->ea = c->RAM[(c->registers->PC+1)] + c->registers->X;
   c->registers->PC += 2;
 }
-void addr_zp_idx_y(context *c){
+void addr_zp_idx_y(context *c){ //zp, y
   //returns operand address
   c->ea = c->RAM[(c->registers->PC+1)] + c->registers->Y;
   c->registers->PC += 2;
@@ -99,7 +99,7 @@ void addr_zp_indirect(context *c){ //zero page indirect (zp)
 void addr_zp_idx_indirect(context *c){ //zero page indexed indirect (zp, x)
   uint16_t ptr = c->RAM[c->registers->PC+1] + c->registers->X;
   c->ea = get_16_bit_from(ptr, c);
-  c->registers->PC += 2; 
+  c->registers->PC += 2;
 }
 void addr_zp_idx_y_indirect(context *c){ //Zero Page Indirect Indexed with Y (zp), y
   uint16_t ptr = c->RAM[c->registers->PC+1];
@@ -217,7 +217,15 @@ void OP_sei(context *c){ //set interrupt flag
 void OP_sta(context *c){
   c->RAM[c->ea] = c->registers->A;
 }
-
+void OP_stx(context *c){
+  c->RAM[c->ea] = c->registers->X;
+}
+void OP_sty(context *c){
+  c->RAM[c->ea] = c->registers->Y;
+}
+void OP_stz(context *c){
+  c->RAM[c->ea] = 0;
+}
 
 /*-------- LOAD CALLS --------*/
 void OP_ldx(context *c){

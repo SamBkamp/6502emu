@@ -52,5 +52,10 @@ Its all abstracted away but you can still see its shadow in the design.
 - [x] All Status flag change calls
 - [x] All stack push/pull call
 - [x] All load operations 
-- [ ] STA (only # and (zp) addressing)
-- [x] JMP 
+- [x] All store operations	
+- [x] JMP
+- [ ] Returns
+- [ ] Comparisons
+- [ ] Shift operations
+- [ ] Bitwise operations (AND etc)
+- [ ] Increments and Decrements
