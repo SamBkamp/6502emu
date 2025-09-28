@@ -19,8 +19,8 @@ opcode opcodes[] = {
   {OP_bvs, "bvs", addr_pcr}, {NULL, "adc", NULL}, {OP_nop, "nop25", addr_implied}, {NULL, "rra", NULL}, {OP_stz, "stz", addr_zp_idx_x}, {NULL, "adc", NULL}, {NULL, "ror", NULL}, {NULL, "rra", NULL}, {OP_sei, "sei", addr_implied}, {NULL, "adc", NULL}, {OP_ply, "ply", addr_stack}, {NULL, "rra", NULL}, {OP_jmp, "jmp", addr_abs_idx_indirect}, {NULL, "adc", NULL}, {NULL, "ror", NULL}, {NULL, "rra", NULL}, 
   {OP_bra, "bra", addr_pcr}, {OP_sta, "sta", addr_zp_idx_indirect}, {OP_nop, "nop29", addr_implied}, {NULL, "sax", NULL}, {OP_sty, "sty", addr_zp}, {OP_sta, "sta", addr_zp}, {OP_stx, "stx", addr_zp}, {NULL, "sax", NULL}, {NULL, "dey", NULL}, {OP_nop, "nop30", addr_implied}, {NULL, "txa", NULL}, {OP_nop, "nop31", addr_implied}, {OP_sty, "sty", addr_abs}, {OP_sta, "sta", addr_abs}, {OP_stx, "stx", addr_abs}, {NULL, "sax", NULL}, 
   {OP_bcc, "bcc", addr_pcr}, {OP_sta, "sta", addr_zp_idx_y_indirect}, {OP_sta, "sta", addr_zp_indirect}, {OP_nop, "nop33", addr_implied}, {OP_sty, "sty", addr_zp_idx_x}, {OP_sta, "sta", addr_zp_idx_x}, {OP_stx, "stx", addr_zp_idx_y}, {NULL, "sax", NULL}, {NULL, "tya", NULL}, {OP_sta, "sta", addr_abs_y}, {NULL, "txs", NULL}, {OP_nop, "nop34", addr_implied}, {OP_stz, "stz", addr_abs}, {OP_sta, "sta", addr_abs_x}, {OP_stz, "stz", addr_abs_x}, {OP_nop, "nop37", addr_implied}, 
-  {OP_ldy, "ldy", addr_imm}, {OP_lda, "lda", addr_zp_idx_indirect}, {OP_ldx, "ldx", addr_imm}, {NULL, "lax", NULL}, {OP_ldy, "ldy", addr_zp}, {OP_lda, "lda", addr_zp}, {OP_ldx, "ldx", addr_zp}, {NULL, "lax", NULL}, {NULL, "tay", NULL}, {OP_lda, "lda", addr_imm}, {NULL, "tax", NULL}, {OP_nop, "nop38", addr_implied}, {OP_ldy, "ldy", addr_abs}, {OP_lda, "lda", addr_abs}, {OP_ldx, "ldx", addr_abs}, {NULL, "lax", NULL}, 
-  {OP_bcs, "bcs", addr_pcr}, {OP_lda, "lda", addr_zp_idx_y_indirect}, {OP_lda, "lda", addr_zp_indirect}, {NULL, "lax", NULL}, {OP_ldy, "ldy", addr_zp_idx_x}, {OP_lda, "lda", addr_zp_idx_x}, {OP_ldx, "ldx", addr_zp_idx_y}, {NULL, "lax", NULL}, {NULL, "clv", NULL}, {OP_lda, "lda", addr_abs_y}, {NULL, "tsx", NULL}, {NULL, "lax", NULL}, {OP_ldy, "ldy", addr_abs_x}, {OP_lda, "lda", addr_abs_x}, {OP_ldx, "ldx", addr_abs_y}, {NULL, "lax", NULL}, 
+  {OP_ldy, "ldy", addr_imm}, {OP_lda, "lda", addr_zp_idx_indirect}, {OP_ldx, "ldx", addr_imm}, {NULL, "lax", NULL}, {OP_ldy, "ldy", addr_zp}, {OP_lda, "lda", addr_zp}, {OP_ldx, "ldx", addr_zp}, {NULL, "lax", NULL}, {NULL, "tay", NULL}, {OP_lda, "lda", addr_imm}, {NULL, "tax", NULL}, {OP_nop, "nop38", addr_implied}, {OP_ldy, "ldy", addr_abs}, {OP_lda, "lda", addr_abs}, {OP_ldx, "ldx", addr_abs}, {NULL, "lax5", NULL}, 
+  {OP_bcs, "bcs", addr_pcr}, {OP_lda, "lda", addr_zp_idx_y_indirect}, {OP_lda, "lda", addr_zp_indirect}, {NULL, "lax2", NULL}, {OP_ldy, "ldy", addr_zp_idx_x}, {OP_lda, "lda", addr_zp_idx_x}, {OP_ldx, "ldx", addr_zp_idx_y}, {NULL, "lax4", NULL}, {NULL, "clv", NULL}, {OP_lda, "lda", addr_abs_y}, {NULL, "tsx", NULL}, {NULL, "lax1", NULL}, {OP_ldy, "ldy", addr_abs_x}, {OP_lda, "lda", addr_abs_x}, {OP_ldx, "ldx", addr_abs_y}, {NULL, "lax3", NULL}, 
   {NULL, "cpy", NULL}, {NULL, "cmp", NULL}, {OP_nop, "nop40", addr_implied}, {NULL, "dcp", NULL}, {NULL, "cpy", NULL}, {NULL, "cmp", NULL}, {NULL, "dec", NULL}, {NULL, "dcp", NULL}, {NULL, "iny", NULL}, {NULL, "cmp", NULL}, {NULL, "dex", NULL}, {OP_nop, "nop41", addr_implied}, {NULL, "cpy", NULL}, {NULL, "cmp", NULL}, {NULL, "dec", NULL}, {NULL, "dcp", NULL}, 
   {OP_bne, "bne", addr_pcr}, {NULL, "cmp", NULL}, {OP_nop, "nop42", addr_implied}, {NULL, "dcp", NULL}, {OP_nop, "nop43", addr_implied}, {NULL, "cmp", NULL}, {NULL, "dec", NULL}, {NULL, "dcp", NULL}, {NULL, "cld", NULL}, {NULL, "cmp", NULL}, {OP_phx, "phx", addr_stack}, {NULL, "dcp", NULL}, {OP_nop, "nop45", addr_implied}, {NULL, "cmp", NULL}, {NULL, "dec", NULL}, {NULL, "dcp", NULL}, 
   {NULL, "cpx", NULL}, {NULL, "sbc", NULL}, {OP_nop, "nop46", addr_implied}, {NULL, "isb", NULL}, {NULL, "cpx", NULL}, {NULL, "sbc", NULL}, {NULL, "inc", NULL}, {NULL, "isb", NULL}, {NULL, "inx", NULL}, {NULL, "sbc", NULL}, {OP_nop, "nop47", addr_implied}, {NULL, "sbc", NULL}, {NULL, "cpx", NULL}, {NULL, "sbc", NULL}, {NULL, "inc", NULL}, {NULL, "isb", NULL}, 
@@ -43,15 +43,18 @@ void reset(context *c){
   c->registers->S = 0xFF;
 }
 
-void step(context *c){ //step through instructions
+int step(context *c){ //step through instructions returns negative value when 0xbb is encountered
   uint16_t current_opcode = c->RAM[c->registers->PC];
-  printf("0x%04X : 0x%02X %s\n", c->registers->PC, current_opcode, opcodes[current_opcode].name);
 
+  if(current_opcode == 0xbb) return -1;
+  
+  printf("0x%04X : 0x%02X %s\n", c->registers->PC, current_opcode, opcodes[current_opcode].name);  
+  
   if(opcodes[current_opcode].func != NULL){
     (*opcodes[current_opcode].addr_mode)(c); //set addressing mode
     (*opcodes[current_opcode].func)(c); //call function associated with opcode
   }
-
+  return 1;
 }
 
 
@@ -70,32 +73,37 @@ int main(int argc, char* argv[]){
   memset(c.RAM, 0xea, 65535); //init ram with only 0xea (nop)
 
 
-  c.RAM[0x06] = 0x55;
-  c.RAM[0x08] = 0x10;
-  c.RAM[0x09] = 0x80;
+  const char* infile = "example_bins/a.out";
+
+  size_t mount_point = 0x8000;
+
+  FILE *fptr = fopen(infile, "r");
+  if (fptr == NULL) {
+    fprintf(stderr, "File I/O Error: Failed to open file %s\n", infile);
+    return 1;
+  }
+
+  fseek(fptr, 0L, SEEK_END);
+  long file_len = ftell(fptr);
+  rewind(fptr); //reset file cursor
+
+  fread(&c.RAM[mount_point], file_len, 1, fptr);
   
   c.RAM[0xFFFC] = 0x80;
   c.RAM[0xFFFD] = 0x00;
 
-  c.RAM[0x8000] = 0x7c;
-  c.RAM[0x8001] = 0x06;
-  c.RAM[0x8002] = 0x00;
-
-  c.RAM[0x8005] = 0x55;
-
-  
-  c.registers->X = 0x2;
-  c.registers->Y = 0x3;
   print_registers(&c);
   
   printf("-------------- program start --------------\n");
+
   reset(&c);
-  for(int i = 0; i < 7; i++){
-    step(&c);
+  int q = step(&c);
+  while(q > 0 && c.registers->PC < 65535){
+    q = step(&c);
   }
 
   printf("-------------- program complete --------------\n");
-  //printf("0x%04x : 0x%02x\n", 0x002, c.RAM[0x002]);
+  printf("0x%04x : 0x%02x\n", 0xff, c.RAM[0xff]);
   //Print_stack_addr(&c, STACK_TOP);
   print_registers(&c);
 }
