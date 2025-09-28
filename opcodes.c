@@ -38,7 +38,12 @@ void addr_accumulator(context *c){ //accumulator A
 }
 void addr_abs_indirect(context *c){ //Absolute Indirect (a)
   //returns pointer to new program counter value
-  c->ea = get_16_bit_from(c->registers->PC+1, c);
+  c->ea = get_16_bit_from(get_16_bit_from(c->registers->PC+1, c), c);
+  c->registers->PC += 3;
+}
+void addr_abs_idx_indirect(context *c){ //Absolute idexed Indirect (a, x)
+  c->ea = get_16_bit_from(c->registers->PC+1, c) + c->registers->X; //indirect address
+  c->ea = get_16_bit_from(c->ea, c); 
   c->registers->PC += 3;
 }
 void addr_abs(context *c){ //Absolute a
@@ -75,11 +80,32 @@ void addr_zp(context *c){ //zero page zp
   c->ea = (uint16_t)c->RAM[c->registers->PC+1]; //loads the next value
   c->registers->PC += 2;
 }
+void addr_zp_idx_x(context *c){
+  //returns operand address
+  c->ea = c->RAM[(c->registers->PC+1)] + c->registers->X;
+  c->registers->PC += 2;
+}
+void addr_zp_idx_y(context *c){
+  //returns operand address
+  c->ea = c->RAM[(c->registers->PC+1)] + c->registers->Y;
+  c->registers->PC += 2;
+}
 void addr_zp_indirect(context *c){ //zero page indirect (zp)
   //returns operand address
   uint16_t ptr = c->RAM[c->registers->PC+1];
   c->ea = get_16_bit_from(ptr, c);
   c->registers->PC += 2;
+}
+void addr_zp_idx_indirect(context *c){ //zero page indexed indirect (zp, x)
+  uint16_t ptr = c->RAM[c->registers->PC+1] + c->registers->X;
+  c->ea = get_16_bit_from(ptr, c);
+  c->registers->PC += 2; 
+}
+void addr_zp_idx_y_indirect(context *c){ //Zero Page Indirect Indexed with Y (zp), y
+  uint16_t ptr = c->RAM[c->registers->PC+1];
+  c->ea = get_16_bit_from(ptr, c);
+  c->ea += c->registers->Y;
+  c->registers->PC += 2; 
 }
 
 
@@ -131,7 +157,7 @@ void OP_bvc(context *c){ //branch if v = 0
   }
 }
 void OP_jmp(context *c){ //unconditional jump to EA
-  c->registers->PC = (((uint16_t)c->RAM[c->ea+1]) << 8) + c->RAM[c->ea];
+  c->registers->PC = c->ea;
 }
 
 /* ----------- STACK CALLS ----------- */
