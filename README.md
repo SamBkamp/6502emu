@@ -50,8 +50,7 @@ Its all abstracted away but you can still see its shadow in the design.
 - [x] NOP
 - [x] All Branching call
 - [x] All Status flag change calls
-- [x] All stack push/pull calls
-- [ ] LDX (only a, (a), x, #, zp and (zp) addressing)
+- [x] All stack push/pull call
+- [x] All load operations 
 - [ ] STA (only # and (zp) addressing)
-- [ ] LDA (only a, (a), x, #, zp and (zp) addressing)
-- [ ] JMP (only a and (a) addressing)
+- [x] JMP 

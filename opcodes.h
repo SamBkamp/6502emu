@@ -52,10 +52,14 @@ void OP_sei(context *c);
 
 //STORE CALLS
 void OP_sta(context *c);
+void OP_stx(context *c);
+void OP_sty(context *c);
 
 //LOAD CALLS
 void OP_ldx(context *c);
 void OP_lda(context *c);
+void OP_ldy(context *c);
+
 
 //MISC
 void OP_nop(context *c);

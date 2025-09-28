@@ -226,6 +226,9 @@ void OP_ldx(context *c){
 void OP_lda(context *c){
   c->registers->A = c->RAM[c->ea];
 }
+void OP_ldy(context *c){
+  c->registers->Y = c->RAM[c->ea];
+}
 
 /*-------- MISC CALLS --------*/
 void OP_nop(context *c){
