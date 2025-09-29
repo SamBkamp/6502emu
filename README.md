@@ -71,4 +71,4 @@ Its all abstracted away but you can still see its shadow in the design.
 - [ ] Comparisons
 - [ ] Shift operations
 - [ ] Bitwise operations (AND etc)
-- [ ] Increments and Decrements
+- [x] Increments and Decrements
