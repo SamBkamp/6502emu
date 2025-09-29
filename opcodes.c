@@ -173,8 +173,7 @@ void OP_jsr(context *c){ //jump to subroutine
   
   c->registers->PC = c->ea;
 }
-void OP_rts(context *c){ //return from subroutine
-  //push pc to bottom of stack
+void OP_rts(context *c){ //return from subroutine 
   c->ea = get_16_bit_from(STACK_BOTTOM + c->registers->S+1, c);
   c->registers->S +=2;
   
@@ -263,4 +262,22 @@ void OP_ldy(context *c){
 void OP_nop(context *c){
   //printf("hello from nop!\n");
   return;
+}
+void OP_dex(context *c){
+  c->registers->X--;
+}
+void OP_dey(context *c){
+  c->registers->Y--;
+}
+void OP_inx(context *c){
+  c->registers->X++;
+}
+void OP_iny(context *c){
+  c->registers->Y++;
+}
+void OP_inc(context *c){
+  c->RAM[c->ea]++;
+}
+void OP_dec(context *c){
+  c->RAM[c->ea]--;
 }

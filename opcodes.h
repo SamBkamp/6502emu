@@ -65,6 +65,11 @@ void OP_ldy(context *c);
 
 //MISC
 void OP_nop(context *c);
-
+void OP_dex(context *c);
+void OP_dey(context *c);
+void OP_inx(context *c);
+void OP_iny(context *c);
+void OP_dec(context *c);
+void OP_inc(context *c);
 
 #endif
