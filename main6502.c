@@ -7,6 +7,10 @@
 #include "prot.h"
 #include "opcodes.h"
 
+typedef struct{
+  char *infile;
+}cmd_flags;
+
 //TODO: move this somewhere else its so ugly
 opcode opcodes[] = {
   {NULL, "brk", NULL}, {NULL, "ora", NULL}, {OP_nop, "nop1", addr_implied}, {NULL, "slo", NULL}, {OP_nop, "nop2", addr_implied}, {NULL, "ora", NULL}, {NULL, "asl", NULL}, {NULL, "slo", NULL}, {OP_php, "php", addr_stack}, {NULL, "ora", NULL}, {NULL, "asl", NULL}, {OP_nop, "nop3", addr_implied}, {OP_nop, "nop4", addr_implied}, {NULL, "ora", NULL}, {NULL, "asl", NULL}, {NULL, "slo", NULL}, 
@@ -59,9 +63,9 @@ int step(context *c){ //step through instructions returns negative value when 0x
 
 
 int main(int argc, char* argv[]){
-
+  size_t mount_point = 0x8000;
+  cmd_flags flags;
   cpu_registers r = {0};
-  
   context c = {
     .registers = &r,
     .ea = 0
@@ -69,29 +73,34 @@ int main(int argc, char* argv[]){
   
   c.RAM = (uint8_t *)mmap(NULL, 65536, PROT_READ|PROT_WRITE|PROT_EXEC,
 			MAP_PRIVATE|MAP_ANON ,-1, 0);
-  
   memset(c.RAM, 0xea, 65535); //init ram with only 0xea (nop)
 
-
-  const char* infile = "example_bins/a.out";
-
-  size_t mount_point = 0x8000;
-
-  FILE *fptr = fopen(infile, "r");
-  if (fptr == NULL) {
-    fprintf(stderr, "File I/O Error: Failed to open file %s\n", infile);
+  //read command line arguments
+  for(int i = 0; i < argc; i++){
+    if(strcmp(argv[i], "-f") == 0 && argc >= i+1){
+      flags.infile = argv[++i];
+    }
+  }
+  //check infile
+  if(flags.infile == NULL){
+    fprintf(stderr, "Usage: %s -f [filename]\n", argv[0]);
     return 1;
   }
-
+  //open infileu
+  FILE *fptr = fopen(flags.infile, "r");
+  if (fptr == NULL) {
+    fprintf(stderr, "File I/O Error: Failed to open file %s\n", flags.infile);
+    return 1;
+  }
+  //get and check file size
   fseek(fptr, 0L, SEEK_END);  
   long file_len = ftell(fptr);
   rewind(fptr); //reset file cursor
-
   if(file_len >= 65535){
     fprintf(stderr, "File I/O Error: File too large (max 65kb)\n");
     return 1;
   }
-  
+  //read binary file into memory
   fread(&c.RAM[mount_point], file_len, 1, fptr);
   
   c.RAM[0xFFFC] = 0x80;
