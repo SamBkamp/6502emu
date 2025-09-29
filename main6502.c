@@ -64,6 +64,7 @@ int step(context *c){ //step through instructions returns negative value when 0x
 
 int main(int argc, char* argv[]){
   size_t mount_point = 0x8000;
+  size_t memory_size = 0xffff; 
   cmd_flags flags;
   cpu_registers r = {0};
   context c = {
@@ -73,7 +74,7 @@ int main(int argc, char* argv[]){
   
   c.RAM = (uint8_t *)mmap(NULL, 65536, PROT_READ|PROT_WRITE|PROT_EXEC,
 			MAP_PRIVATE|MAP_ANON ,-1, 0);
-  memset(c.RAM, 0xea, 65535); //init ram with only 0xea (nop)
+  memset(c.RAM, 0xea, memory_size); //init ram with only 0xea (nop)
 
   //read command line arguments
   for(int i = 0; i < argc; i++){
@@ -86,7 +87,7 @@ int main(int argc, char* argv[]){
     fprintf(stderr, "Usage: %s -f [filename]\n", argv[0]);
     return 1;
   }
-  //open infileu
+  //open infile
   FILE *fptr = fopen(flags.infile, "r");
   if (fptr == NULL) {
     fprintf(stderr, "File I/O Error: Failed to open file %s\n", flags.infile);
@@ -96,7 +97,7 @@ int main(int argc, char* argv[]){
   fseek(fptr, 0L, SEEK_END);  
   long file_len = ftell(fptr);
   rewind(fptr); //reset file cursor
-  if(file_len >= 65535){
+  if(file_len >= (memory_size-mount_point)){
     fprintf(stderr, "File I/O Error: File too large (max 65kb)\n");
     return 1;
   }
@@ -108,15 +109,13 @@ int main(int argc, char* argv[]){
 
   
   printf("-------------- program start --------------\n");
-
   reset(&c);
   int q = step(&c);
-  while(q > 0 && c.registers->PC < 65535){
+  while(q > 0 && c.registers->PC < memory_size){
     q = step(&c);
   }
-
   printf("-------------- program complete --------------\n");
   printf("0x%04x : 0x%02x\n", 0xff, c.RAM[0xff]);
-  //Print_stack_addr(&c, STACK_TOP);
+  //print_stack_addr(&c, STACK_TOP);
   print_registers(&c);
 }
