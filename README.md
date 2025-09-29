@@ -30,11 +30,14 @@ Its all abstracted away but you can still see its shadow in the design.
 - [ ] implement remaining opcodes
 - [ ] check each opcode sets flag register appropriately
 - [ ] reset doesn't read start address in little endian
-- [ ] operations print operands
+- [/] operations print operands
 - [ ] cycle accuracy
 - [ ] memory page implementation / cross page read penalty
 - [ ] virtual LED pins
 - [ ] clean up main.c (move opcodes, helper functions and cmdline reading out)
+- [ ] munmap at the end of main()
+- [ ] check mmap was successful, crash on exit
+- [ ] more example programs
 
 ## Implementation progress:
 
