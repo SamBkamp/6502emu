@@ -33,7 +33,7 @@ opcode opcodes[] = {
 
 
 void print_registers(context *c){
-  printf("X: %x\nY: %x\nA: %x\nflags: %x\n",
+  printf("X: 0x%x\nY: 0x%x\nA: 0x%x\nflags: %x\n",
 	 c->registers->X, c->registers->Y, c->registers->A, c->registers->P);
 }
 void print_stack_addr(context *c, uint16_t addr){
