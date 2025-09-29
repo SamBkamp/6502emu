@@ -31,6 +31,8 @@ void OP_bra(context *c);
 void OP_bvs(context *c);
 void OP_bvc(context *c);
 void OP_jmp(context *c);
+void OP_jsr(context *c);
+void OP_rts(context *c);
 
 //STACK CALLS
 void OP_pha(context *c);
@@ -60,7 +62,6 @@ void OP_stz(context *c);
 void OP_ldx(context *c);
 void OP_lda(context *c);
 void OP_ldy(context *c);
-
 
 //MISC
 void OP_nop(context *c);

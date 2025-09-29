@@ -49,6 +49,7 @@ void addr_abs_idx_indirect(context *c){ //Absolute idexed Indirect (a, x)
 void addr_abs(context *c){ //Absolute a
   //returns operand address
   c->ea = get_16_bit_from(c->registers->PC+1, c);
+  c->final_addr = c->ea;
   c->registers->PC += 3;
 }
 void addr_abs_x(context *c){ //Asbolute index with X a,x
@@ -159,6 +160,24 @@ void OP_bvc(context *c){ //branch if v = 0
   }
 }
 void OP_jmp(context *c){ //unconditional jump to EA
+  c->registers->PC = c->ea;
+}
+void OP_jsr(context *c){ //jump to subroutine
+  //push pc to bottom of stack
+  uint8_t hi_byte = (c->registers->PC >> 8);
+  uint8_t lo_byte = c->registers->PC;
+  c->RAM[STACK_BOTTOM + (uint16_t)c->registers->S] = hi_byte;
+  c->registers->S--;
+  c->RAM[STACK_BOTTOM + (uint16_t)c->registers->S] = lo_byte;
+  c->registers->S--;
+  
+  c->registers->PC = c->ea;
+}
+void OP_rts(context *c){ //return from subroutine
+  //push pc to bottom of stack
+  c->ea = get_16_bit_from(STACK_BOTTOM + c->registers->S+1, c);
+  c->registers->S +=2;
+  
   c->registers->PC = c->ea;
 }
 
