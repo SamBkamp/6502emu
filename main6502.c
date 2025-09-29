@@ -83,16 +83,20 @@ int main(int argc, char* argv[]){
     return 1;
   }
 
-  fseek(fptr, 0L, SEEK_END);
+  fseek(fptr, 0L, SEEK_END);  
   long file_len = ftell(fptr);
   rewind(fptr); //reset file cursor
 
+  if(file_len >= 65535){
+    fprintf(stderr, "File I/O Error: File too large (max 65kb)\n");
+    return 1;
+  }
+  
   fread(&c.RAM[mount_point], file_len, 1, fptr);
   
   c.RAM[0xFFFC] = 0x80;
   c.RAM[0xFFFD] = 0x00;
 
-  print_registers(&c);
   
   printf("-------------- program start --------------\n");
 
