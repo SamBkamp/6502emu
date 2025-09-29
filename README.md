@@ -27,17 +27,15 @@ cpu_context->RAM[address_bus] = data_bus; //ram write through busses
 Its all abstracted away but you can still see its shadow in the design.
 
 ## TODOS
-
 - [ ] implement remaining opcodes
 - [ ] check each opcode sets flag register appropriately
 - [ ] reset doesn't read start address in little endian
-- [ ] command line file I/O
 - [ ] file IO checking
-- [ ] move the opcodes out of main.c
 - [ ] operations print operands
 - [ ] cycle accuracy
 - [ ] memory page implementation / cross page read penalty
 - [ ] virtual LED pins
+- [ ] clean up main.c (move opcodes, helper functions and cmdline reading out)
 
 ## Implementation progress:
 
