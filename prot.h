@@ -28,6 +28,7 @@ typedef struct{
   cpu_registers *registers;
   uint16_t ea; //effective address
   uint8_t *RAM; //ram address
+  uint16_t final_addr; //for logging
 }context;
 
 

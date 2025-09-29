@@ -27,7 +27,7 @@ opcode opcodes[] = {
   {OP_bcs, "bcs", addr_pcr}, {OP_lda, "lda", addr_zp_idx_y_indirect}, {OP_lda, "lda", addr_zp_indirect}, {NULL, "lax2", NULL}, {OP_ldy, "ldy", addr_zp_idx_x}, {OP_lda, "lda", addr_zp_idx_x}, {OP_ldx, "ldx", addr_zp_idx_y}, {NULL, "lax4", NULL}, {NULL, "clv", NULL}, {OP_lda, "lda", addr_abs_y}, {NULL, "tsx", NULL}, {NULL, "lax1", NULL}, {OP_ldy, "ldy", addr_abs_x}, {OP_lda, "lda", addr_abs_x}, {OP_ldx, "ldx", addr_abs_y}, {NULL, "lax3", NULL}, 
   {NULL, "cpy", NULL}, {NULL, "cmp", NULL}, {OP_nop, "nop40", addr_implied}, {NULL, "dcp", NULL}, {NULL, "cpy", NULL}, {NULL, "cmp", NULL}, {NULL, "dec", NULL}, {NULL, "dcp", NULL}, {NULL, "iny", NULL}, {NULL, "cmp", NULL}, {NULL, "dex", NULL}, {OP_nop, "nop41", addr_implied}, {NULL, "cpy", NULL}, {NULL, "cmp", NULL}, {NULL, "dec", NULL}, {NULL, "dcp", NULL}, 
   {OP_bne, "bne", addr_pcr}, {NULL, "cmp", NULL}, {OP_nop, "nop42", addr_implied}, {NULL, "dcp", NULL}, {OP_nop, "nop43", addr_implied}, {NULL, "cmp", NULL}, {NULL, "dec", NULL}, {NULL, "dcp", NULL}, {NULL, "cld", NULL}, {NULL, "cmp", NULL}, {OP_phx, "phx", addr_stack}, {NULL, "dcp", NULL}, {OP_nop, "nop45", addr_implied}, {NULL, "cmp", NULL}, {NULL, "dec", NULL}, {NULL, "dcp", NULL}, 
-  {NULL, "cpx", NULL}, {NULL, "sbc", NULL}, {OP_nop, "nop46", addr_implied}, {NULL, "isb", NULL}, {NULL, "cpx", NULL}, {NULL, "sbc", NULL}, {NULL, "inc", NULL}, {NULL, "isb", NULL}, {NULL, "inx", NULL}, {NULL, "sbc", NULL}, {OP_nop, "nop47", addr_implied}, {NULL, "sbc", NULL}, {NULL, "cpx", NULL}, {NULL, "sbc", NULL}, {NULL, "inc", NULL}, {NULL, "isb", NULL}, 
+  {NULL, "cpx", NULL}, {NULL, "sbc", NULL}, {OP_nop, "nop46", addr_implied}, {NULL, "isb", NULL}, {NULL, "cpx", NULL}, {NULL, "sbc", NULL}, {NULL, "inc", NULL}, {NULL, "isb", NULL}, {NULL, "inx", NULL}, {NULL, "sbc", NULL}, {OP_nop, "nop", addr_implied}, {NULL, "sbc", NULL}, {NULL, "cpx", NULL}, {NULL, "sbc", NULL}, {NULL, "inc", NULL}, {NULL, "isb", NULL}, 
   {OP_beq, "beq", addr_pcr}, {NULL, "sbc", NULL}, {OP_nop, "nop48", addr_implied}, {NULL, "isb", NULL}, {OP_nop, "nop49", addr_implied}, {NULL, "sbc", NULL}, {NULL, "inc", NULL}, {NULL, "isb", NULL}, {OP_sed, "sed", addr_implied}, {NULL, "sbc", NULL}, {OP_plx, "plx", addr_stack}, {NULL, "isb", NULL}, {OP_nop, "nop51", addr_implied}, {NULL, "sbc", NULL}, {NULL, "inc", NULL}, {NULL, "isb", NULL}
 };
 
@@ -47,17 +47,23 @@ void reset(context *c){
   c->registers->S = 0xFF;
 }
 
-int step(context *c){ //step through instructions returns negative value when 0xbb is encountered
-  uint16_t current_opcode = c->RAM[c->registers->PC];
+//im not sure how much overhead logging adds, Im sure we could a --no-logging flag that wraps the printf in an 'if', though I wonder if assinging current_opcode and _pc could be factored out better for that case specifically
 
-  if(current_opcode == 0xbb) return -1;
-  
-  printf("0x%04X : 0x%02X %s\n", c->registers->PC, current_opcode, opcodes[current_opcode].name);  
-  
+int step(context *c){ 
+  if(c->RAM[c->registers->PC] == 0xbb) return -1; //custom opcode
+
+  uint8_t current_opcode = c->RAM[c->registers->PC]; //only used for logging
+  uint16_t current_pc = c->registers->PC; //only used for logging  
   if(opcodes[current_opcode].func != NULL){
     (*opcodes[current_opcode].addr_mode)(c); //set addressing mode
     (*opcodes[current_opcode].func)(c); //call function associated with opcode
   }
+  //this is so ugly please im sure this can be done better
+  //for cases where opcode doesn't use data from program (eg NOP)
+  if(c->registers->PC - current_pc > 1)
+    printf("0x%04X : 0x%02X %s 0x%x\n", current_pc, current_opcode, opcodes[current_opcode].name, c->final_addr);
+  else
+    printf("0x%04X : 0x%02X %s\n", current_pc, current_opcode, opcodes[current_opcode].name);
   return 1;
 }
 

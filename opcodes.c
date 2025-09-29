@@ -64,6 +64,7 @@ void addr_abs_y(context *c){ //Asbolute index with Y a,y
 void addr_imm(context *c){ //immediate #
   //returns operand address
   c->ea = c->registers->PC+1; //loads a pointer to the next value (immediate value) into ea
+  c->final_addr = c->RAM[c->registers->PC+1];
   c->registers->PC += 2; //moves pc forward 2 bytes so it points to next instruction
 }
 void addr_stack(context *c){ //Stack addressing s (basically the same as implied)
@@ -78,7 +79,8 @@ void addr_pcr(context *c){ //program counter relative r
 void addr_zp(context *c){ //zero page zp
   //returns operand address
   c->ea = (uint16_t)c->RAM[c->registers->PC+1]; //loads the next value
-  c->registers->PC += 2;
+  c->final_addr = c->RAM[c->registers->PC+1];
+  c->registers->PC += 2;  
 }
 void addr_zp_idx_x(context *c){ //zp, x
   //returns operand address
