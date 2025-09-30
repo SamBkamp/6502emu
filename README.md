@@ -10,7 +10,7 @@ You can compile this emulator with `make`, if you are writing code for this proj
 
 ### Compiling for this emulator
 
-I suggest compiling binaries for this emulator with (vasm)[http://sun.hasenbraten.de/vasm/]. For now, all binaries are mounted at 0x8000 by the emulator itself, so assume the start of your program occurs at 0x8000. Also, for now you can (and should) end your program with 0xbb; this unused opcode signals to the emulator that execution has ended. You can do this with `.byte $bb` (make sure you compile with -dotdir). This quitting mechanism will change with the first Beta release though. 
+I suggest compiling binaries for this emulator with [vasm](http://sun.hasenbraten.de/vasm/). For now, all binaries are mounted at 0x8000 by the emulator itself, so assume the start of your program occurs at 0x8000. Also, for now you can (and should) end your program with 0xbb; this unused opcode signals to the emulator that execution has ended. You can do this with `.byte $bb` (make sure you compile with -dotdir). This quitting mechanism will change with the first Beta release though. 
 
 ## How it works
 
