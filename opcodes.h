@@ -43,6 +43,16 @@ void OP_plp(context *c);
 void OP_plx(context *c);
 void OP_ply(context *c);
 
+//ARITHMETIC
+void OP_asl(context *c);
+void OP_aslA(context *c); //hacky implimentation to use accumulator instead of pointer
+void OP_lsr(context *c);
+void OP_lsrA(context *c); //hacky implimentation to use accumulator instead of pointer
+void OP_rol(context *c);
+void OP_rolA(context *c); //hacky implimentation to use accumulator instead of pointer
+void OP_ror(context *c);
+void OP_rorA(context *c); //hacky implimentation to use accumulator instead of pointer
+
 //STATUS FLAG CHANGES
 void OP_clc(context *c);
 void OP_cld(context *c);

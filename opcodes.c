@@ -247,6 +247,48 @@ void OP_stz(context *c){
   c->RAM[c->ea] = 0;
 }
 
+/*---- ARITHEMETIC OPERATIONS ------*/
+void OP_asl(context *c){
+  c->RAM[c->ea] <<= 1;
+}
+void OP_aslA(context *c){ //hacky implementation for accumulator-mode addressing for ASL
+  c->registers->A <<= 1;
+}
+void OP_lsr(context *c){
+  c->RAM[c->ea] <<= 1;
+}
+void OP_lsrA(context *c){ //hacky implementation for accumulator-mode addressing for ASL
+  c->registers->A <<= 1;
+}
+void OP_rol(context *c){
+  uint8_t mask = (c->RAM[c->ea]&0x80)>>7;
+  c->RAM[c->ea] <<= 1;
+  c->RAM[c->ea] += mask;
+  c->registers->P |= (c->RAM[c->ea] & BIT_0_MASK); //set carry
+  c->registers->P |= (c->RAM[c->ea] > 0) ? 0 : FLAGS_Z_MASK; // set zero
+}
+void OP_rolA(context *c){
+  uint8_t mask = (c->registers->A&0x80)>>7;
+  c->registers->A <<= 1;
+  c->registers->A += mask;
+  c->registers->P |= (c->registers->A & BIT_0_MASK); //set carry
+  c->registers->P |= (c->registers->A > 0) ? 0 : FLAGS_Z_MASK; // set zero
+}
+void OP_ror(context *c){  
+  uint8_t mask = (c->RAM[c->ea]&0x01)<<7;
+  c->RAM[c->ea] >>= 1;
+  c->RAM[c->ea] += mask;
+  c->registers->P |= (c->RAM[c->ea] & BIT_7_MASK)> 1 ? FLAGS_C_MASK : 0; //set carry
+  c->registers->P |= (c->RAM[c->ea] > 0) ? 0 : FLAGS_Z_MASK; // set zero
+}
+void OP_rorA(context *c){
+  uint8_t mask = (c->registers->A&0x01)<<7;
+  c->registers->A >>= 1;
+  c->registers->A += mask;
+  c->registers->P |= (c->registers->A & BIT_7_MASK) > 1 ? FLAGS_C_MASK : 0; //set carry
+  c->registers->P |= (c->registers->A > 0) ? 0 : FLAGS_Z_MASK; // set zero
+} 
+
 /*-------- LOAD CALLS --------*/
 void OP_ldx(context *c){
   c->registers->X = c->RAM[c->ea];
