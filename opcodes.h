@@ -2,22 +2,22 @@
 #define OPCODES_6502
 
 /* addressing moding functions */
-void addr_implied(context *c);
-void addr_accumulator(context *c);
-void addr_imm(context *c);
-void addr_pcr(context *c);
-void addr_stack(context *c);
-void addr_zp(context *c);
-void addr_zp_idx_x(context *c);
-void addr_zp_idx_y(context *c);
-void addr_zp_indirect(context *c);
-void addr_zp_idx_indirect(context *c);
-void addr_zp_idx_y_indirect(context *c);
-void addr_abs_indirect(context *c);
-void addr_abs_idx_indirect(context *c);
-void addr_abs(context *c);
-void addr_abs_x(context *c);
-void addr_abs_y(context *c);
+void addr_implied(context *c); // i
+void addr_accumulator(context *c); // A
+void addr_imm(context *c); // #
+void addr_pcr(context *c); // r
+void addr_stack(context *c); //s
+void addr_zp(context *c); // zp
+void addr_zp_idx_x(context *c); // zp,x
+void addr_zp_idx_y(context *c); // zp,y
+void addr_zp_indirect(context *c); // (zp)
+void addr_zp_idx_indirect(context *c); // (zp, x)
+void addr_zp_idx_y_indirect(context *c); // (zp), y
+void addr_abs_indirect(context *c); // (a)
+void addr_abs_idx_indirect(context *c); // (a, x) 
+void addr_abs(context *c); // a
+void addr_abs_x(context *c); // a,x
+void addr_abs_y(context *c); // a,y
 
 /* opcode implementations */
 //BRANCHING CALLS
