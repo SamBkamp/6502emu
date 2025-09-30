@@ -8,11 +8,15 @@ My designs are based on [this spec](https://www.westerndesigncenter.com/wdc/docu
 
 You can compile this emulator with `make`, if you are writing code for this project I suggest you run `make dev` instead. There is also a `make clean` to clean up executable files.
 
+### Compiling for this emulator
+
+I suggest compiling binaries for this emulator with (vasm)[http://sun.hasenbraten.de/vasm/]. For now, all binaries are mounted at 0x8000 by the emulator itself, so assume the start of your program occurs at 0x8000. Also, for now you can (and should) end your program with 0xbb; this unused opcode signals to the emulator that execution has ended. You can do this with `.byte $bb` (make sure you compile with -dotdir). This quitting mechanism will change with the first Beta release though. 
+
 ## How it works
 
 This emulator seeks to emulate a 65C02 connected via data and address bus to a 65k RAM chip.
 
-The "chip" starts with a reset function that reads an address at 0xFFFC/D which it will jump to and begin execution. Execution starts in the `step()` function where it reads the opcode at the program counter, then uses a look-up table declared at the top of `main6502.c` to call 2 functions. First, the addressing mode function, these functions format the addressing mode for the opcode to process. Then the opcode function is called. Each opcode and addressing mode corresponds to a function call declared in `opcodes.h` and defined in `opcodes.c`.
+The "chip" starts with a reset function that reads an address at 0xFFFC/D which it will jump to and begin execution. Execution starts in the `step()` function where it reads the opcode at the program counter, then uses a look-up table declared in `opcode_table.h` to call 2 functions. First, the addressing mode function, these functions format the addressing mode for the opcode to process. Then the opcode function is called. Each opcode and addressing mode corresponds to a function call declared in `opcodes.h` and defined in `opcodes.c`.
 
 There exists a CPU context/state struct defined in the main function. It contains registers, ea and a pointer to the RAM (which is allocated with an mmap call). c.registers is a pointer to a cpu_registers struct (all relevant structs are typedef'd in `prot.h`) and contains all the registers. ea is a 16-bit unsigned integer referring to a calculated effective address. This is how the addressing functions pass their calculations onto the opcodes.
 
