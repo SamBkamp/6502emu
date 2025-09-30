@@ -67,8 +67,9 @@ Its all abstracted away but you can still see its shadow in the design.
 - [x] All load operations 
 - [x] All store operations	
 - [x] JMP
-- [ ] Returns
+- [x] JSR/RTS
+- [ ] RTI
 - [ ] Comparisons
-- [ ] Shift operations
+- [x] Shift operations
 - [ ] Bitwise operations (AND etc)
 - [x] Increments and Decrements
