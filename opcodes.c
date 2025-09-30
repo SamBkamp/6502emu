@@ -287,7 +287,12 @@ void OP_rorA(context *c){
   c->registers->A += mask;
   c->registers->P |= (c->registers->A & BIT_7_MASK) > 1 ? FLAGS_C_MASK : 0; //set carry
   c->registers->P |= (c->registers->A > 0) ? 0 : FLAGS_Z_MASK; // set zero
-} 
+}
+void OP_and(context *c){
+  c->registers->A &= c->RAM[c->ea];
+  c->registers->P |= (c->registers->A > 0) ? 0 : FLAGS_Z_MASK; // set zero
+  c->registers->P |= (c->registers->A & BIT_7_MASK ) > 0 ? FLAGS_N_MASK : 0; // set negative
+}
 
 /*-------- LOAD CALLS --------*/
 void OP_ldx(context *c){
