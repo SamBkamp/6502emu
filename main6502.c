@@ -22,8 +22,8 @@ void print_stack_addr(context *c, uint16_t addr){
 }
 
 void reset(context *c){
-  c->registers->PC = ((uint16_t)c->RAM[0xFFFC]) << 8;
-  c->registers->PC += c->RAM[0xFFFD];
+  c->registers->PC = ((uint16_t)c->RAM[0xFFFD]) << 8;
+  c->registers->PC += c->RAM[0xFFFC];
   c->registers->S = 0xFF;
 }
 
@@ -89,8 +89,8 @@ int main(int argc, char* argv[]){
   //read binary file into memory
   fread(&c.RAM[mount_point], file_len, 1, fptr);
   
-  c.RAM[0xFFFC] = 0x80;
-  c.RAM[0xFFFD] = 0x00;
+  c.RAM[0xFFFC] = 0x00;
+  c.RAM[0xFFFD] = 0x80;
 
   
   printf("-------------- program start --------------\n");
