@@ -29,6 +29,7 @@ Its all abstracted away but you can still see its shadow in the design.
 ## TODOS
 - [ ] implement remaining opcodes
 - [ ] check each opcode sets flag register appropriately
+- [ ] 0xFFFC/D should load from mount_point, not hardcoded
 - [ ] operations print operands
 - [ ] cycle accuracy
 - [ ] memory page implementation / cross page read penalty
