@@ -90,5 +90,7 @@ void OP_inx(context *c);
 void OP_iny(context *c);
 void OP_dec(context *c);
 void OP_inc(context *c);
+void OP_tay(context *c);
+void OP_tya(context *c);
 
 #endif
