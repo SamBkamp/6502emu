@@ -34,9 +34,7 @@ Its all abstracted away but you can still see its shadow in the design.
 - [ ] implement remaining opcodes
 - [ ] check each opcode sets flag register appropriately
 - [ ] 0xFFFC/D should load from mount_point, not hardcoded
-- [ ] operations print operands
-- [ ] cycle accuracy
-- [ ] memory page implementation / cross page read penalty
+- [ ] cycle accuracy (+ memory page implementation / cross page read penalty)
 - [ ] virtual LED pins
 - [ ] clean up main.c (move opcodes, helper functions and cmdline reading out)
 - [ ] munmap at the end of main()
@@ -73,7 +71,7 @@ Its all abstracted away but you can still see its shadow in the design.
 - [x] JMP
 - [x] JSR/RTS
 - [ ] RTI
-- [ ] Comparisons
+- [x] Comparisons
 - [x] Shift operations
-- [ ] Bitwise operations (AND etc)
 - [x] Increments and Decrements
+- [ ] Illegal opcodes
