@@ -75,3 +75,17 @@ Its all abstracted away but you can still see its shadow in the design.
 - [x] Shift operations
 - [x] Increments and Decrements
 - [ ] Illegal opcodes
+- [ ] W65C02(s) Extension codes
+  - [x] BRA
+  - [ ] BBR
+  - [ ] BBS
+  - [x] PHY
+  - [x] PLX
+  - [x] PLY
+  - [ ] RMB
+  - [ ] SMB
+  - [ ] STP
+  - [x] STZ
+  - [ ] TRB
+  - [ ] TSB
+  - [ ] WAI
