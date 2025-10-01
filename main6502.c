@@ -13,8 +13,15 @@ typedef struct{
 }cmd_flags;
 
 void print_registers(context *c){
-  printf("X: 0x%x\nY: 0x%x\nA: 0x%x\nS: 0x%x\nflags: %x\n",
-	 c->registers->X, c->registers->Y, c->registers->A, c->registers->S, c->registers->P);
+  printf("X: 0x%x\nY: 0x%x\nA: 0x%x\nS: 0x%x\n",
+	 c->registers->X, c->registers->Y, c->registers->A, c->registers->S );
+  //format flags
+  printf("flags:\n N | V | B | 1 | D | I | Z | C |\n");
+  for(int i = 7; i >= 0; i--){
+    printf(" %d |",
+	   (c->registers->P & (1 << i)) >> i);    
+  }
+  printf("\n");
 }
 void print_stack_addr(context *c, uint16_t addr){
   if(addr >= STACK_BOTTOM && addr <= STACK_TOP)
