@@ -73,8 +73,9 @@ void addr_stack(context *c){ //Stack addressing s (basically the same as implied
   c->registers->PC ++;
 }
 void addr_pcr(context *c){ //program counter relative r
-  //returns new PC value
-  c->ea = c->registers->PC+1 + c->RAM[c->registers->PC+1];
+  //returns new PC value 
+  c->ea = (uint16_t)(c->registers->PC+2 + (int8_t)c->RAM[c->registers->PC+1]);
+  c->final_addr = c->ea;
   c->registers->PC += 2;
 }
 void addr_zp(context *c){ //zero page zp
