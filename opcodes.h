@@ -57,6 +57,10 @@ void OP_bit(context *c);
 void OP_eor(context *c);
 void OP_ora(context *c);
 
+//COMPARISONS
+void OP_cpx(context *c);
+void OP_cpy(context *c);
+
 //STATUS FLAG CHANGES
 void OP_clc(context *c);
 void OP_cld(context *c);

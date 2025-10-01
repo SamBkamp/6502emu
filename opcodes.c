@@ -310,6 +310,21 @@ void OP_ora(context *c){
   c->registers->P |= (c->registers->A & BIT_7_MASK) > 0 ? FLAGS_N_MASK : 0; // set negative if bit 7 set
 }
 
+/*-------- COMPARE CALLS --------*/
+void OP_cpx(context *c){
+  uint8_t ret = c->registers->X - c->RAM[c->ea];
+  c->registers->P |= (ret & BIT_7_MASK) > 0 ? FLAGS_N_MASK : 0; // set negative if bit 7 set
+  c->registers->P |= c->registers->X >= c->RAM[c->ea] ? FLAGS_C_MASK : 0; // set carry if x >= m
+  c->registers->P |= c->registers->X == c->RAM[c->ea] ? FLAGS_Z_MASK : 0; // set zero if x = m
+}
+
+void OP_cpy(context *c){
+  uint8_t ret = c->registers->Y - c->RAM[c->ea];
+  c->registers->P |= (ret & BIT_7_MASK) > 0 ? FLAGS_N_MASK : 0; // set negative if bit 7 set
+  c->registers->P |= c->registers->Y >= c->RAM[c->ea] ? FLAGS_C_MASK : 0; // set carry if y >= m
+  c->registers->P |= c->registers->Y == c->RAM[c->ea] ? FLAGS_Z_MASK : 0; // set zero if y = m
+}
+
 /*-------- LOAD CALLS --------*/
 void OP_ldx(context *c){
   c->registers->X = c->RAM[c->ea];
