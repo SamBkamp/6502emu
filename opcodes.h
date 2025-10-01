@@ -55,6 +55,7 @@ void OP_rorA(context *c); //hacky implimentation to use accumulator instead of p
 void OP_and(context *c);
 void OP_bit(context *c);
 void OP_eor(context *c);
+void OP_ora(context *c);
 
 //STATUS FLAG CHANGES
 void OP_clc(context *c);

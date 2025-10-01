@@ -304,6 +304,11 @@ void OP_eor(context *c){
   c->registers->P |= (c->registers->A > 0) ? 0 : FLAGS_Z_MASK; // set zero if zero
   c->registers->P |= (c->registers->A & BIT_7_MASK) > 0 ? FLAGS_N_MASK : 0; // set negative if bit 7 set
 }
+void OP_ora(context *c){
+  c->registers->A |= c->RAM[c->ea];
+  c->registers->P |= (c->registers->A > 0) ? 0 : FLAGS_Z_MASK; // set zero if zero
+  c->registers->P |= (c->registers->A & BIT_7_MASK) > 0 ? FLAGS_N_MASK : 0; // set negative if bit 7 set
+}
 
 /*-------- LOAD CALLS --------*/
 void OP_ldx(context *c){
