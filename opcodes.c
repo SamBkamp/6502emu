@@ -293,6 +293,12 @@ void OP_and(context *c){
   c->registers->P |= (c->registers->A > 0) ? 0 : FLAGS_Z_MASK; // set zero
   c->registers->P |= (c->registers->A & BIT_7_MASK ) > 0 ? FLAGS_N_MASK : 0; // set negative
 }
+void OP_bit(context *c){
+  uint8_t res = c->registers->A & c->RAM[c->ea];
+  c->registers->P |= (res > 0) ? 0 : FLAGS_Z_MASK; // set zero
+  c->registers->P &= (~FLAGS_N_MASK)+(c->RAM[c->ea] & BIT_7_MASK); //set N (7th bit) to bit 7 of memory val
+  c->registers->P &= (~FLAGS_V_MASK)+(c->RAM[c->ea] & BIT_6_MASK); //set V (6th bit) to bit 6 of memory val
+}
 
 /*-------- LOAD CALLS --------*/
 void OP_ldx(context *c){

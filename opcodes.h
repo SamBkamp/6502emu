@@ -53,6 +53,7 @@ void OP_rolA(context *c); //hacky implimentation to use accumulator instead of p
 void OP_ror(context *c);
 void OP_rorA(context *c); //hacky implimentation to use accumulator instead of pointer
 void OP_and(context *c);
+void OP_bit(context *c);
 
 //STATUS FLAG CHANGES
 void OP_clc(context *c);
