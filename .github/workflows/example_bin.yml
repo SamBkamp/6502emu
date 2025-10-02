@@ -20,5 +20,5 @@ jobs:
     - name: symlinking
       run: cd example_bins && ln -s ../vasm6502_oldstyle/linux/vasm6502_oldstyle vasm
     - name: make
-      run: make
+      run: cd example_bins && make
     
