@@ -36,12 +36,13 @@ void reset(context *c){
   c->registers->PC = ((uint16_t)c->RAM[0xFFFD]) << 8;
   c->registers->PC += c->RAM[0xFFFC];
   c->registers->S = 0xFF;
+  c->registers->P = 0x3C;
 }
 
 //im not sure how much overhead logging adds, Im sure we could a --no-logging flag that wraps the printf in an 'if', though I wonder if assinging current_opcode and _pc could be factored out better for that case specifically
 int step(context *c){ 
   if(c->RAM[c->registers->PC] == 0xbb) return -1; //custom opcode
-
+  
   uint8_t current_opcode = c->RAM[c->registers->PC]; //only used for logging
   uint16_t current_pc = c->registers->PC; //only used for logging  
   if(opcodes[current_opcode].func != NULL){
