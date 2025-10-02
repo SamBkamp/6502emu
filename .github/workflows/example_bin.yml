@@ -18,9 +18,7 @@ jobs:
     - name: unpackaging
       run: unzip vasm6502.zip
     - name: symlinking
-      run: cd example_bins && ln -s ../vasm6502_oldstyle/linux/vasm6502_oldstyle vasm
-    - name: erm
-      run: file example_bins/vasm
+      run: ln -s vasm6502_oldstyle/linux/vasm6502_oldstyle vasm && export PATH=$(pwd):$PATH
     - name: make
       run: cd example_bins && make
     
