@@ -15,6 +15,7 @@
 ;
 ; Output: Weekday in A (0=Sunday, 1=Monday, ..., 6=Saturday)
 
+  	  .org $8000
 TMP      .EQU $6          ; Temporary storage
 
 WEEKDAY:
@@ -34,7 +35,8 @@ MARCH    EOR #$7F        ; Invert A so carry works right
          LSR
          CLC             ; Add it to y+m+d and fall through
          ADC TMP
+	 .byte $bb
 MOD7     ADC #7          ; Returns (A+3) modulo 7
          BCC MOD7        ; for A in 0..255
-         .byte $bb
+         RTS 
 MTAB     DB 1,5,6,3,1,5,3,0,4,2,6,4   	; Month offsets

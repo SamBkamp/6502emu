@@ -1,0 +1,5 @@
+	.org $8000
+	LDA #$01
+	TAY
+	CPY #$FF
+	.byte $bb
