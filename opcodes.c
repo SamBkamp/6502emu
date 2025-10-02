@@ -311,34 +311,51 @@ void OP_ora(context *c){
   c->registers->P |= (c->registers->A & BIT_7_MASK) > 0 ? FLAGS_N_MASK : 0; // set negative if bit 7 set
 }
 void OP_adc(context *c){
-  c->registers->A += (c->RAM[c->ea] + (c->registers->P & FLAGS_C_MASK));
+  uint8_t M = c->RAM[c->ea];
+  uint8_t C = c->registers->P & FLAGS_C_MASK;
+  uint16_t res = c->registers->A + M + C; //size promotion to handle overflows (carries)
+  c->registers->A = res & 0xFF;
   c->registers->P |= (c->registers->A > 0) ? 0 : FLAGS_Z_MASK; // set zero if zero
   c->registers->P |= (c->registers->A & BIT_7_MASK) > 0 ? FLAGS_N_MASK : 0; // set negative if bit 7 set
-  c->registers->P |= (c->registers->A<c->RAM[c->ea]
-		      || c->registers->A < (c->registers->P & FLAGS_C_MASK)) ? FLAGS_V_MASK : 0; //set overflow if result is lower than operands
-  
+  c->registers->P |= res > 0xff ? FLAGS_C_MASK : 0;
 }
 void OP_sbc(context *c){
-  c->registers->A = c->registers->A - (c->RAM[c->ea] - ~(c->registers->P & FLAGS_C_MASK));
+  uint8_t M = c->RAM[c->ea];
+  uint8_t C = c->registers->P & FLAGS_C_MASK;
+
+  //c->registers->A = c->registers->A + ~(M + (1-C))+1; <-- FULL 2s COMPLEMENT VERSION
+  
+  c->registers->A = c->registers->A + (~M) + C; //simplified version
   c->registers->P |= (c->registers->A > 0) ? 0 : FLAGS_Z_MASK; // set zero if zero
   c->registers->P |= (c->registers->A & BIT_7_MASK) > 0 ? FLAGS_N_MASK : 0; // set negative if bit 7 set
-    c->registers->P &= (c->registers->A > c->RAM[c->ea]
-			|| c->registers->A > (c->registers->P & FLAGS_C_MASK)) ? ~FLAGS_C_MASK : 0xff; //set overflow if result is larger than operands
+
+  c->registers->P |= c->registers->A >= M ? FLAGS_C_MASK : 0; //set carry bit if right side operand M is less than A IN UNSINGED COMPARISON (IE when the result of the subtraction is positive or 0)
+  //carry bit only cleared when borrowing from the carry bit occured during the subtraction
 }
 
 /*-------- COMPARE CALLS --------*/
 void OP_cpx(context *c){
   uint8_t ret = c->registers->X - c->RAM[c->ea];
-  c->registers->P |= (ret & BIT_7_MASK) > 0 ? FLAGS_N_MASK : 0; // set negative if bit 7 set
-  c->registers->P |= c->registers->X >= c->RAM[c->ea] ? FLAGS_C_MASK : 0; // set carry if x >= m
-  c->registers->P |= c->registers->X == c->RAM[c->ea] ? FLAGS_Z_MASK : 0; // set zero if x = m
+  c->registers->P = (ret & BIT_7_MASK) > 0 ? c->registers->P | FLAGS_N_MASK
+    : c->registers->P & ~FLAGS_N_MASK; // set negative if bit 7 set
+  
+  c->registers->P = c->registers->X >= c->RAM[c->ea] ? c->registers->P | FLAGS_C_MASK
+    : c->registers->P & ~FLAGS_C_MASK; // set carry if y >= ms
+  
+  c->registers->P = c->registers->X == c->RAM[c->ea] ? c->registers->P | FLAGS_Z_MASK
+    : c->registers->P & ~FLAGS_Z_MASK;  // set zero if y = m
 }
 
 void OP_cpy(context *c){
   uint8_t ret = c->registers->Y - c->RAM[c->ea];
-  c->registers->P |= (ret & BIT_7_MASK) > 0 ? FLAGS_N_MASK : 0; // set negative if bit 7 set
-  c->registers->P |= c->registers->Y >= c->RAM[c->ea] ? FLAGS_C_MASK : 0; // set carry if y >= m
-  c->registers->P |= c->registers->Y == c->RAM[c->ea] ? FLAGS_Z_MASK : 0; // set zero if y = m
+  c->registers->P = (ret & BIT_7_MASK) > 0 ? c->registers->P | FLAGS_N_MASK
+    : c->registers->P & ~FLAGS_N_MASK; // set negative if bit 7 set
+  
+  c->registers->P = c->registers->Y >= c->RAM[c->ea] ? c->registers->P | FLAGS_C_MASK
+    : c->registers->P & ~FLAGS_C_MASK; // set carry if y >= ms
+  
+  c->registers->P = c->registers->Y == c->RAM[c->ea] ? c->registers->P | FLAGS_Z_MASK
+    : c->registers->P & ~FLAGS_Z_MASK;  // set zero if y = m
 }
 
 /*-------- LOAD CALLS --------*/
