@@ -35,6 +35,7 @@ MARCH    EOR #$7F        ; Invert A so carry works right
          LSR
          CLC             ; Add it to y+m+d and fall through
          ADC TMP
+	 JSR MOD7
 	 .byte $bb
 MOD7     ADC #7          ; Returns (A+3) modulo 7
          BCC MOD7        ; for A in 0..255
