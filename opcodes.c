@@ -395,6 +395,19 @@ void OP_cpy(context *c){
     : c->registers->P & ~FLAGS_Z_MASK;  // set zero if y = m
 }
 
+void OP_cmp(context *c){
+  uint8_t ret = c->registers->A - c->RAM[c->ea];
+  
+  c->registers->P = c->registers->A >= c->RAM[c->ea] ? c->registers->P | FLAGS_C_MASK
+    : c->registers->P & ~FLAGS_C_MASK; // set carry if a >= m
+  
+  c->registers->P = c->registers->A == c->RAM[c->ea] ? c->registers->P | FLAGS_Z_MASK
+    : c->registers->P & ~FLAGS_Z_MASK;  // set zero if a = m
+
+  c->registers->P = c->registers->P & ~FLAGS_N_MASK; //reset n bit
+  c->registers->P |= ret & BIT_7_MASK; //set n bit if bit 7 of ret is set
+}
+
 /*-------- LOAD CALLS --------*/
 void OP_ldx(context *c){
   c->registers->X = c->RAM[c->ea];

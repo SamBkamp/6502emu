@@ -62,6 +62,7 @@ void OP_sbc(context *c);
 //COMPARISONS
 void OP_cpx(context *c);
 void OP_cpy(context *c);
+void OP_cmp(context *c);
 
 //STATUS FLAG CHANGES
 void OP_clc(context *c);
