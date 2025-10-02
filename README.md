@@ -4,6 +4,11 @@
 
 This is a simple 65C02 (modern 6502) emulator. Lets see if I bit off more than I can chew
 
+Usage:
+```
+./s65C02 -f <bin>
+```
+
 My designs are based on [this spec](https://www.westerndesigncenter.com/wdc/documentation/w65c02s.pdf) documentation from Western Design Center
 
 ## Compilation
@@ -46,24 +51,12 @@ Its all abstracted away but you can still see its shadow in the design.
 ## Implementation progress:
 
 #### Addressing modes:
-- [x] Absolute a
-- [x] Absolute Indexed Indirect (a,x)
-- [x] Absolute Indexed with X a,x
-- [x] Absolute Indexed with Y a, x
-- [x] Absolute Indirect (a)
-- [x] Accumulator A
-- [x] Immediate Addressing #
-- [x] Implied i
-- [x] Program Counter Relative r
-- [x] Stack s
-- [x] Zero Page zp
-- [x] Zero Page Indexed Indirect (zp,x)
-- [x] Zero Page Indexed with X zp,x
-- [x] Zero Page Indexed with Y zp, y
-- [x] Zero Page Indirect (zp)
-- [x] Zero Page Indirect Indexed with Y (zp), y
+
+All implemented! :)
 
 #### op codes implemented:
+192/256 (75%)
+███████████████░░░░░
 - [x] NOP
 - [x] All Branching call
 - [x] All Status flag change calls
@@ -73,6 +66,7 @@ Its all abstracted away but you can still see its shadow in the design.
 - [x] JMP
 - [x] JSR/RTS
 - [ ] RTI
+- [ ] BRK
 - [x] Comparisons
 - [x] Shift operations
 - [x] Increments and Decrements

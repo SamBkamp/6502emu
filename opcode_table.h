@@ -91,7 +91,7 @@ opcode opcodes[] = {
   {NULL, "sre", NULL},
 
   //0x50
-  {NULL, "bvc", NULL},
+  {OP_bvc, "bvc", addr_pcr},
   {OP_eor, "eor", addr_zp_idx_y_indirect},
   {OP_nop, "nop18", addr_implied},
   {NULL, "sre", NULL},
@@ -196,25 +196,25 @@ opcode opcodes[] = {
   {OP_ldy, "ldy", addr_abs},
   {OP_lda, "lda", addr_abs},
   {OP_ldx, "ldx", addr_abs},
-  {NULL, "lax5", NULL},
+  {NULL, "lax", NULL},
 
   //0xB0
   {OP_bcs, "bcs", addr_pcr},
   {OP_lda, "lda", addr_zp_idx_y_indirect},
   {OP_lda, "lda", addr_zp_indirect},
-  {NULL, "lax2", NULL},
+  {NULL, "lax", NULL},
   {OP_ldy, "ldy", addr_zp_idx_x},
   {OP_lda, "lda", addr_zp_idx_x},
   {OP_ldx, "ldx", addr_zp_idx_y},
-  {NULL, "lax4", NULL},
+  {NULL, "lax", NULL},
   {NULL, "clv", NULL},
   {OP_lda, "lda", addr_abs_y},
   {NULL, "tsx", NULL},
-  {NULL, "lax1", NULL},
+  {NULL, "lax", NULL},
   {OP_ldy, "ldy", addr_abs_x},
   {OP_lda, "lda", addr_abs_x},
   {OP_ldx, "ldx", addr_abs_y},
-  {NULL, "lax3", NULL},
+  {NULL, "lax", NULL},
 
   //0xC0
   {OP_cpy, "cpy", addr_imm},

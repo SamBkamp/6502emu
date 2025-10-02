@@ -56,8 +56,6 @@ int step(context *c){
   else
     printf("0x%04X : 0x%02X %s\n", current_pc, current_opcode, opcodes[current_opcode].name);
 
-  //print_registers(c);
-  //printf("\n");
   return 1;
 }
 
