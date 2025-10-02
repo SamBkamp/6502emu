@@ -12,6 +12,10 @@ typedef struct{
   char *infile;
 }cmd_flags;
 
+void license(){
+  printf("Copyright (c) 2025 Sam Bonnekamp under the MIT license. Read included License.txt or mit-license.org\n");
+}
+
 void print_registers(context *c){
   printf("X: 0x%x\nY: 0x%x\nA: 0x%x\nS: 0x%x\n",
 	 c->registers->X, c->registers->Y, c->registers->A, c->registers->S );
@@ -99,11 +103,16 @@ int main(int argc, char* argv[]){
   c.RAM[0xFFFC] = 0x00;
   c.RAM[0xFFFD] = 0x80;
 
+  license();
+  
+  c.registers->Y = (2025-1900);
+  c.registers->X = 10;
+  c.registers->A = 1;
   
   printf("-------------- program start --------------\n");
   reset(&c);
   int q = step(&c);
-  int max_step = 5;
+  int max_step = 100;
   int steps = 0;
   while(q > 0 && c.registers->PC < memory_size && steps < max_step){    
     q = step(&c);
