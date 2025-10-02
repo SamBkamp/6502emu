@@ -16,9 +16,9 @@ jobs:
     - name: download vasm
       run: wget http://www.ibaug.de/vasm/vasm6502.zip
     - name: unpackaging
-      run unzip vasm6502.zip
+      run: unzip vasm6502.zip
     - name: symlinking
-      run cd src && ln -s ../vasm6502_oldstyle/linux/vasm6502_oldstyle vasm
+      run: cd src && ln -s ../vasm6502_oldstyle/linux/vasm6502_oldstyle vasm
     - name: make
       run: make
     
