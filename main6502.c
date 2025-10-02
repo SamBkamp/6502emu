@@ -20,7 +20,7 @@ void print_registers(context *c){
   printf("X: 0x%x\nY: 0x%x\nA: 0x%x\nS: 0x%x\n",
 	 c->registers->X, c->registers->Y, c->registers->A, c->registers->S );
   //format flags
-  printf("flags:\n N | V | B | 1 | D | I | Z | C |\n");
+  printf("flags:\n N | V | 1 | B | D | I | Z | C |\n");
   for(int i = 7; i >= 0; i--){
     printf(" %d |",
 	   (c->registers->P & (1 << i)) >> i);    
@@ -55,6 +55,9 @@ int step(context *c){
     printf("0x%04X : 0x%02X %s 0x%x\n", current_pc, current_opcode, opcodes[current_opcode].name, c->final_addr);
   else
     printf("0x%04X : 0x%02X %s\n", current_pc, current_opcode, opcodes[current_opcode].name);
+
+  //print_registers(c);
+  //printf("\n");
   return 1;
 }
 
