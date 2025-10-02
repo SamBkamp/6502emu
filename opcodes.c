@@ -250,86 +250,123 @@ void OP_stz(context *c){
 
 /*---- ARITHEMETIC OPERATIONS ------*/
 void OP_asl(context *c){
+  c->registers->P = (c->registers->P & ~FLAGS_C_MASK); 
+  c->registers->P |= (c->RAM[c->ea] & BIT_7_MASK)>>7; //set c to old bit 7
   c->RAM[c->ea] <<= 1;
+  c->registers->P = (c->RAM[c->ea] > 0) ? c->registers->P & ~FLAGS_Z_MASK
+    : c->registers->P | FLAGS_Z_MASK; // set zero if zero
 }
 void OP_aslA(context *c){ //hacky implementation for accumulator-mode addressing for ASL
+  c->registers->P = (c->registers->P & ~FLAGS_C_MASK); 
+  c->registers->P |= (c->registers->A & BIT_7_MASK)>>7; //set c to old bit 7
   c->registers->A <<= 1;
+  c->registers->P = (c->registers->A > 0) ? c->registers->P & ~FLAGS_Z_MASK
+    : c->registers->P | FLAGS_Z_MASK; // set zero if zero
 }
 void OP_lsr(context *c){
-  c->RAM[c->ea] <<= 1;
+  c->registers->P = (c->registers->P & ~FLAGS_C_MASK) | (c->RAM[c->ea] & BIT_0_MASK); //set c to old bit 0
+  c->RAM[c->ea] >>= 1;
+  c->registers->P = (c->RAM[c->ea] > 0) ? c->registers->P & ~FLAGS_Z_MASK
+    : c->registers->P | FLAGS_Z_MASK; // set zero if zero
 }
 void OP_lsrA(context *c){ //hacky implementation for accumulator-mode addressing for ASL
-  c->registers->A <<= 1;
+  c->registers->P = (c->registers->P & ~FLAGS_C_MASK) | (c->registers->A & BIT_0_MASK); //set c to old bit 0
+  c->registers->A >>= 1;  
+  c->registers->P = (c->registers->A > 0) ? c->registers->P & ~FLAGS_Z_MASK
+    : c->registers->P | FLAGS_Z_MASK; // set zero if zero
 }
 void OP_rol(context *c){
+  c->registers->P = (c->registers->P & ~FLAGS_C_MASK); 
+  c->registers->P |= (c->RAM[c->ea] & BIT_7_MASK)>>7; //set c to old bit 7
   uint8_t mask = (c->RAM[c->ea]&0x80)>>7;
   c->RAM[c->ea] <<= 1;
   c->RAM[c->ea] += mask;
-  c->registers->P |= (c->RAM[c->ea] & BIT_0_MASK); //set carry
-  c->registers->P |= (c->RAM[c->ea] > 0) ? 0 : FLAGS_Z_MASK; // set zero
+  c->registers->P = (c->RAM[c->ea] > 0) ? c->registers->P & ~FLAGS_Z_MASK
+    : c->registers->P | FLAGS_Z_MASK; // set zero if zero
 }
 void OP_rolA(context *c){
+  c->registers->P = (c->registers->P & ~FLAGS_C_MASK); 
+  c->registers->P |= (c->registers->A & BIT_7_MASK)>>7; //set c to old bit 7
   uint8_t mask = (c->registers->A&0x80)>>7;
   c->registers->A <<= 1;
   c->registers->A += mask;
-  c->registers->P |= (c->registers->A & BIT_0_MASK); //set carry
-  c->registers->P |= (c->registers->A > 0) ? 0 : FLAGS_Z_MASK; // set zero
+  c->registers->P = (c->registers->A > 0) ? c->registers->P & ~FLAGS_Z_MASK
+    : c->registers->P | FLAGS_Z_MASK; // set zero if zero
 }
-void OP_ror(context *c){  
+void OP_ror(context *c){
+  c->registers->P = (c->registers->P & ~FLAGS_C_MASK); 
+  c->registers->P |= (c->RAM[c->ea] & BIT_0_MASK); //set c to old bit 0
   uint8_t mask = (c->RAM[c->ea]&0x01)<<7;
   c->RAM[c->ea] >>= 1;
   c->RAM[c->ea] += mask;
-  c->registers->P |= (c->RAM[c->ea] & BIT_7_MASK)> 1 ? FLAGS_C_MASK : 0; //set carry
-  c->registers->P |= (c->RAM[c->ea] > 0) ? 0 : FLAGS_Z_MASK; // set zero
+  c->registers->P = (c->registers->P & ~FLAGS_N_MASK); 
+  c->registers->P |= (c->RAM[c->ea] & BIT_7_MASK); //set N to bit 7
+  c->registers->P = (c->RAM[c->ea] > 0) ? c->registers->P & ~FLAGS_Z_MASK
+    : c->registers->P | FLAGS_Z_MASK; // set zero if zero
 }
 void OP_rorA(context *c){
+  c->registers->P = (c->registers->P & ~FLAGS_C_MASK); 
+  c->registers->P |= (c->registers->A & BIT_0_MASK); //set c to old bit 7
   uint8_t mask = (c->registers->A&0x01)<<7;
   c->registers->A >>= 1;
   c->registers->A += mask;
-  c->registers->P |= (c->registers->A & BIT_7_MASK) > 1 ? FLAGS_C_MASK : 0; //set carry
-  c->registers->P |= (c->registers->A > 0) ? 0 : FLAGS_Z_MASK; // set zero
+  c->registers->P = (c->registers->P & ~FLAGS_N_MASK); 
+  c->registers->P |= (c->registers->A & BIT_7_MASK); //set N to bit 7
+  c->registers->P = (c->registers->A > 0) ? c->registers->P & ~FLAGS_Z_MASK
+    : c->registers->P | FLAGS_Z_MASK; // set zero if zero
 }
 void OP_and(context *c){
   c->registers->A &= c->RAM[c->ea];
-  c->registers->P |= (c->registers->A > 0) ? 0 : FLAGS_Z_MASK; // set zero
+  c->registers->P = (c->registers->A > 0) ? c->registers->P & ~FLAGS_Z_MASK
+    : c->registers->P | FLAGS_Z_MASK; // set zero if zero
   c->registers->P |= (c->registers->A & BIT_7_MASK ) > 0 ? FLAGS_N_MASK : 0; // set negative
 }
 void OP_bit(context *c){
   uint8_t res = c->registers->A & c->RAM[c->ea];
-  c->registers->P |= (res > 0) ? 0 : FLAGS_Z_MASK; // set zero
+ c->registers->P = (res > 0) ? c->registers->P & ~FLAGS_Z_MASK
+   : c->registers->P | FLAGS_Z_MASK; // set zero if zero
   c->registers->P &= (~FLAGS_N_MASK)+(c->RAM[c->ea] & BIT_7_MASK); //set N (7th bit) to bit 7 of memory val
   c->registers->P &= (~FLAGS_V_MASK)+(c->RAM[c->ea] & BIT_6_MASK); //set V (6th bit) to bit 6 of memory val
 }
 void OP_eor(context *c){
   c->registers->A ^= c->RAM[c->ea];
-  c->registers->P |= (c->registers->A > 0) ? 0 : FLAGS_Z_MASK; // set zero if zero
-  c->registers->P |= (c->registers->A & BIT_7_MASK) > 0 ? FLAGS_N_MASK : 0; // set negative if bit 7 set
+  c->registers->P = (c->registers->A > 0) ? c->registers->P & ~FLAGS_Z_MASK
+    : c->registers->P | FLAGS_Z_MASK; // set zero if zero
+  c->registers->P &= (~FLAGS_N_MASK)+(c->registers->A & BIT_7_MASK); //set N (7th bit) to bit 7 of memory val
 }
 void OP_ora(context *c){
   c->registers->A |= c->RAM[c->ea];
-  c->registers->P |= (c->registers->A > 0) ? 0 : FLAGS_Z_MASK; // set zero if zero
-  c->registers->P |= (c->registers->A & BIT_7_MASK) > 0 ? FLAGS_N_MASK : 0; // set negative if bit 7 set
+  
+  c->registers->P = (c->registers->A > 0) ? c->registers->P & ~FLAGS_Z_MASK
+    : c->registers->P | FLAGS_Z_MASK; // set zero if zero
+  c->registers->P &= (~FLAGS_N_MASK)+(c->registers->A & BIT_7_MASK); //set N (7th bit) to bit 7 of A
 }
 void OP_adc(context *c){
   uint8_t M = c->RAM[c->ea];
   uint8_t C = c->registers->P & FLAGS_C_MASK;
   uint16_t res = c->registers->A + M + C; //size promotion to handle overflows (carries)
   c->registers->A = res & 0xFF;
-  c->registers->P |= (c->registers->A > 0) ? 0 : FLAGS_Z_MASK; // set zero if zero
-  c->registers->P |= (c->registers->A & BIT_7_MASK) > 0 ? FLAGS_N_MASK : 0; // set negative if bit 7 set
-  c->registers->P |= res > 0xff ? FLAGS_C_MASK : 0;
+  
+  c->registers->P = (c->registers->A > 0) ? c->registers->P & ~FLAGS_Z_MASK
+    : c->registers->P | FLAGS_Z_MASK; // set zero if zero
+  c->registers->P &= (~FLAGS_N_MASK)+(c->registers->A & BIT_7_MASK); //set N (7th bit) to bit 7 of A
+  c->registers->P = res > 0xff ? c->registers->P | FLAGS_C_MASK
+    : c->registers->P & ~FLAGS_C_MASK; //set carry flag if theres an overflow
 }
 void OP_sbc(context *c){
   uint8_t M = c->RAM[c->ea];
   uint8_t C = c->registers->P & FLAGS_C_MASK;
 
-  //c->registers->A = c->registers->A + ~(M + (1-C))+1; <-- FULL 2s COMPLEMENT VERSION
-  
+  //c->registers->A = c->registers->A + ~(M + (1-C))+1; <-- FULL 2s COMPLEMENT VERSION  
   c->registers->A = c->registers->A + (~M) + C; //simplified version
-  c->registers->P |= (c->registers->A > 0) ? 0 : FLAGS_Z_MASK; // set zero if zero
-  c->registers->P |= (c->registers->A & BIT_7_MASK) > 0 ? FLAGS_N_MASK : 0; // set negative if bit 7 set
 
-  c->registers->P |= c->registers->A >= M ? FLAGS_C_MASK : 0; //set carry bit if right side operand M is less than A IN UNSINGED COMPARISON (IE when the result of the subtraction is positive or 0)
+  
+  c->registers->P = (c->registers->A > 0) ? c->registers->P & ~FLAGS_Z_MASK
+    : c->registers->P | FLAGS_Z_MASK; // set zero if zero
+  c->registers->P &= (~FLAGS_N_MASK)+(c->registers->A & BIT_7_MASK); //set N (7th bit) to bit 7 of A
+
+  c->registers->P = c->registers->A >= M ? c->registers->P | FLAGS_C_MASK
+    : c->registers->P & ~FLAGS_C_MASK; //set carry bit if right side operand M is less than A IN UNSINGED COMPARISON (IE when the result of the subtraction is positive or 0)
   //carry bit only cleared when borrowing from the carry bit occured during the subtraction
 }
 
