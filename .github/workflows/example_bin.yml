@@ -1,4 +1,4 @@
-name: example binaries compilation
+name: example binaries
 
 on:
   push:
