@@ -316,6 +316,14 @@ void OP_adc(context *c){
   c->registers->P |= (c->registers->A & BIT_7_MASK) > 0 ? FLAGS_N_MASK : 0; // set negative if bit 7 set
   c->registers->P |= (c->registers->A<c->RAM[c->ea]
 		      || c->registers->A < (c->registers->P & FLAGS_C_MASK)) ? FLAGS_V_MASK : 0; //set overflow if result is lower than operands
+  
+}
+void OP_sbc(context *c){
+  c->registers->A = c->registers->A - (c->RAM[c->ea] - ~(c->registers->P & FLAGS_C_MASK));
+  c->registers->P |= (c->registers->A > 0) ? 0 : FLAGS_Z_MASK; // set zero if zero
+  c->registers->P |= (c->registers->A & BIT_7_MASK) > 0 ? FLAGS_N_MASK : 0; // set negative if bit 7 set
+    c->registers->P &= (c->registers->A > c->RAM[c->ea]
+			|| c->registers->A > (c->registers->P & FLAGS_C_MASK)) ? ~FLAGS_C_MASK : 0xff; //set overflow if result is larger than operands
 }
 
 /*-------- COMPARE CALLS --------*/

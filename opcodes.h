@@ -57,6 +57,7 @@ void OP_bit(context *c);
 void OP_eor(context *c);
 void OP_ora(context *c);
 void OP_adc(context *c);
+void OP_sbc(context *c);
 
 //COMPARISONS
 void OP_cpx(context *c);
