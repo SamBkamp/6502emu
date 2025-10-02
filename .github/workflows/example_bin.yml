@@ -18,7 +18,7 @@ jobs:
     - name: unpackaging
       run: unzip vasm6502.zip
     - name: symlinking
-      run: cd src && ln -s ../vasm6502_oldstyle/linux/vasm6502_oldstyle vasm
+      run: cd example_bins && ln -s ../vasm6502_oldstyle/linux/vasm6502_oldstyle vasm
     - name: make
       run: make
     
