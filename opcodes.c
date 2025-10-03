@@ -499,22 +499,22 @@ void OP_txs(context *c){ //no flags affected
 }
 void OP_brk(context *c){ //brk has a 2 byte opcode code
   c->registers->P |= FLAGS_B_MASK; //set break
-  uint16_t pc_hi_byte = (c->registers->PC+1)& 0xFF00;
-  uint16_t pc_lo_byte = (c->registers->PC+1)& 0xFF;
-  c->registers->S --;
-  c->RAM[STACK_BOTTOM + c->registers->S] = pc_lo_byte; //push lo byte
+  uint16_t pc_hi_byte = (c->registers->PC)& 0xFF00;
+  uint16_t pc_lo_byte = (c->registers->PC)& 0xFF;
   c->registers->S --;
   c->RAM[STACK_BOTTOM + c->registers->S] = pc_hi_byte >> 8; //push hi byte
+  c->registers->S --;
+  c->RAM[STACK_BOTTOM + c->registers->S] = pc_lo_byte; //push lo byte
   c->registers->S --;
   c->RAM[STACK_BOTTOM + c->registers->S] = c->registers->P; //push flags to stack
   
   c->registers->PC = get_16_bit_from(IRQB_VEC, c); //jump to vector location
 }
 void OP_rti(context *c){ //return from interrupt
-  
-  c->ea = get_16_bit_from(STACK_BOTTOM + c->registers->S+1, c); //pop address from stack
-  c->registers->S += 2;
   c->registers->P = c->RAM[STACK_BOTTOM + c->registers->S]; //pop flags
   c->registers->S ++;
+  c->ea = get_16_bit_from(STACK_BOTTOM + c->registers->S, c); //pop address from stack
+  c->registers->S += 2;
   c->registers->PC = c->ea;
+  c->registers->P &= ~FLAGS_B_MASK; //unset break
 }
