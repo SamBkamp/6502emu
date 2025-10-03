@@ -61,7 +61,6 @@ int step(context *c){
 
 
 int main(int argc, char* argv[]){
-  size_t mount_point = 0x8000;
   size_t memory_size = 0xffff; 
   cmd_flags flags;
   cpu_registers r = {0};
@@ -72,7 +71,6 @@ int main(int argc, char* argv[]){
   
   c.RAM = (uint8_t *)mmap(NULL, 65536, PROT_READ|PROT_WRITE|PROT_EXEC,
 			MAP_PRIVATE|MAP_ANON ,-1, 0);
-  memset(c.RAM, 0xea, memory_size); //init ram with only 0xea (nop)
 
   //read command line arguments
   for(int i = 0; i < argc; i++){
@@ -95,15 +93,13 @@ int main(int argc, char* argv[]){
   fseek(fptr, 0L, SEEK_END);  
   long file_len = ftell(fptr);
   rewind(fptr); //reset file cursor
-  if(file_len > (memory_size-mount_point)+1){
-    fprintf(stderr, "File I/O Error: File too large (max %zub)\n", (memory_size-mount_point));
+  if(file_len > memory_size+1){
+    fprintf(stderr, "File I/O Error: File too large (max %zub)\n", memory_size);
     return 1;
   }
   //read binary file into memory
-  fread(&c.RAM[mount_point], file_len, 1, fptr);
-  
-  c.RAM[0xFFFC] = 0x00;
-  c.RAM[0xFFFD] = 0x80;
+  fread(c.RAM, 1, file_len, fptr);
+ 
 
   license();
   
