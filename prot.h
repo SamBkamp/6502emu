@@ -1,5 +1,5 @@
 #ifndef PROT_6502
-#define PROT_6520
+#define PROT_6502
 //prototypes for global functions and variables
 
 #define FLAGS_C_MASK 0x1
