@@ -42,6 +42,7 @@ void OP_phy(context *c);
 void OP_plp(context *c);
 void OP_plx(context *c);
 void OP_ply(context *c);
+void OP_pla(context *c);
 
 //ARITHMETIC
 void OP_asl(context *c);

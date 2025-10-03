@@ -56,7 +56,7 @@ Its all abstracted away but you can still see its shadow in the design.
 All implemented! :)
 
 #### op codes implemented:
-96/256 (77%)
+197/256 (77%)
 ███████████████░░░░░
 
 Unimplemented:
@@ -67,7 +67,6 @@ Unimplemented:
 - sre
 - cli
 - rra
-- pla
 - sax
 - lax
 - clv

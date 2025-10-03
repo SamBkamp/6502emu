@@ -117,7 +117,7 @@ opcode opcodes[] = {
   {OP_adc, "adc", addr_zp},
   {OP_ror, "ror", addr_zp},
   {NULL, "rra", NULL},
-  {NULL, "pla", NULL},
+  {OP_pla, "pla", addr_implied},
   {OP_adc, "adc", addr_imm},
   {OP_rorA, "ror", addr_accumulator},
   {OP_nop, "nop24", addr_implied},
