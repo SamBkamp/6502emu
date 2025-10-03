@@ -7,7 +7,34 @@
 #include "prot.h"
 #include "opcodes.h"
 #include "opcode_table.h"
-#include "helper.h"
+
+
+void reset(context *c){
+  c->registers->PC = ((uint16_t)c->RAM[0xFFFD]) << 8;
+  c->registers->PC += c->RAM[0xFFFC];
+  c->registers->S = 0xFF;
+  c->registers->P = 0x3C;
+}
+
+int step(context *c){ 
+  if(c->RAM[c->registers->PC] == 0xbb) return -1; //custom opcode
+  
+  uint8_t current_opcode = c->RAM[c->registers->PC]; //only used for logging
+  uint16_t current_pc = c->registers->PC; //only used for logging  
+  if(opcodes[current_opcode].func != NULL){
+    (*opcodes[current_opcode].addr_mode)(c); //set addressing mode
+    (*opcodes[current_opcode].func)(c); //call function associated with opcode
+  }
+  //↓ this is so ugly please im sure this can be done better
+  //for cases where opcode doesn't use data from program (eg NOP)
+  if(c->registers->PC - current_pc > 1)
+    printf("0x%04X : 0x%02X %s 0x%x\n", current_pc, current_opcode, opcodes[current_opcode].name, c->final_addr);
+  else
+    printf("0x%04X : 0x%02X %s\n", current_pc, current_opcode, opcodes[current_opcode].name);
+
+  return 1;
+}
+
 
 
 int main(int argc, char* argv[]){
