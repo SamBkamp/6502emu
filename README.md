@@ -39,13 +39,14 @@ Its all abstracted away but you can still see its shadow in the design.
 
 ## TODOS
 - [ ] implement remaining opcodes
+- [ ] helper functions for common flag setting (set n flag to b7 of operand/register & set z flag)
 - [ ] check each opcode sets flag register appropriately
+- [ ] check mmap was successful, crash on failure	
+- [ ] munmap at the end of main()
+- [ ] virtual LED pins
 - [ ] 0xFFFC/D should load from mount_point, not hardcoded
 - [ ] cycle accuracy (+ memory page implementation / cross page read penalty)
-- [ ] virtual LED pins
 - [ ] clean up main.c (move opcodes, helper functions and cmdline reading out)
-- [ ] munmap at the end of main()
-- [ ] check mmap was successful, crash on failure
 - [ ] more example programs
 
 ## Implementation progress:
