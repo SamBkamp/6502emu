@@ -444,11 +444,40 @@ void OP_dec(context *c){
 }
 void OP_tay(context *c){
   c->registers->Y = c->registers->A;
-  c->registers->P |= c->registers->Y == 0 ? FLAGS_Z_MASK : 0; // set zero if y = 0
-  c->registers->P |= (c->registers->Y & BIT_7_MASK); // set n if b7 is set
+  c->registers->P &= ~FLAGS_Z_MASK; //clear Z flag
+  c->registers->P |= c->registers->Y == 0 ? FLAGS_Z_MASK : 0; //set zero flag if its 0
+  c->registers->P &= ~FLAGS_N_MASK; //clear N flag
+  c->registers->P |= c->registers->Y & BIT_7_MASK; //set Z flag to bit 7 of Y
 }
 void OP_tya(context *c){
   c->registers->A = c->registers->Y;
-  c->registers->P |= c->registers->A == 0 ? FLAGS_Z_MASK : 0; // set zero if a = 0
-  c->registers->P |= (c->registers->A & BIT_7_MASK); // set n if b7 is set
+  c->registers->P &= ~FLAGS_Z_MASK; //clear Z flag
+  c->registers->P |= c->registers->A == 0 ? FLAGS_Z_MASK : 0; //set zero flag if its 0
+  c->registers->P &= ~FLAGS_N_MASK; //clear N flag
+  c->registers->P |= c->registers->A & BIT_7_MASK; //set Z flag to bit 7 of A
 }
+void OP_txa(context *c){
+  c->registers->A = c->registers->X;
+  c->registers->P &= ~FLAGS_Z_MASK; //clear Z flag
+  c->registers->P |= c->registers->A == 0 ? FLAGS_Z_MASK : 0; //set zero flag if its 0
+  c->registers->P &= ~FLAGS_N_MASK; //clear N flag
+  c->registers->P |= c->registers->A & BIT_7_MASK; //set Z flag to bit 7 of A
+}
+void OP_tax(context *c){
+  c->registers->X = c->registers->A;
+  c->registers->P &= ~FLAGS_Z_MASK; //clear Z flag
+  c->registers->P |= c->registers->X == 0 ? FLAGS_Z_MASK : 0; //set zero flag if its 0
+  c->registers->P &= ~FLAGS_N_MASK; //clear N flag
+  c->registers->P |= c->registers->X & BIT_7_MASK; //set Z flag to bit 7 of X
+}
+void OP_tsx(context *c){
+  c->registers->X = c->registers->S;
+  c->registers->P &= ~FLAGS_Z_MASK; //clear Z flag
+  c->registers->P |= c->registers->X == 0 ? FLAGS_Z_MASK : 0; //set zero flag if its 0
+  c->registers->P &= ~FLAGS_N_MASK; //clear N flag
+  c->registers->P |= c->registers->X & BIT_7_MASK; //set Z flag to bit 7 of X
+}
+void OP_txs(context *c){ //no flags affected
+  c->registers->S = c->registers->X;
+}
+

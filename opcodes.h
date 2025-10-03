@@ -94,5 +94,9 @@ void OP_dec(context *c);
 void OP_inc(context *c);
 void OP_tay(context *c);
 void OP_tya(context *c);
+void OP_tax(context *c);
+void OP_txa(context *c);
+void OP_tsx(context *c);
+void OP_txs(context *c);
 
 #endif
