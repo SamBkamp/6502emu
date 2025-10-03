@@ -48,8 +48,10 @@ int main(int argc, char* argv[]){
   };
 
   //check mmap
-  if (c.RAM == (void *)-1)
+  if (c.RAM == (void *)-1){
     fprintf(stderr, "mmap failed\n");
+    return 1;
+  }
   
   cmd_flags flags = read_cmd_line(argc, argv);
 
