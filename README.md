@@ -41,11 +41,8 @@ Its all abstracted away but you can still see its shadow in the design.
 - [ ] implement remaining opcodes
 - [ ] helper functions for common flag setting (set n flag to b7 of operand/register & set z flag)
 - [ ] check each opcode sets flag register appropriately
-- [ ] check mmap was successful, crash on failure	
-- [ ] munmap at the end of main()
 - [ ] virtual LED pins
 - [ ] cycle accuracy (+ memory page implementation / cross page read penalty)
-- [ ] clean up main.c (move opcodes, helper functions and cmdline reading out)
 - [ ] more example programs
 
 ## Implementation progress:

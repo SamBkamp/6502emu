@@ -47,6 +47,10 @@ int main(int argc, char* argv[]){
 			MAP_PRIVATE|MAP_ANON ,-1, 0)
   };
 
+  //check mmap
+  if (c.RAM == (void *)-1)
+    fprintf(stderr, "mmap failed\n");
+  
   cmd_flags flags = read_cmd_line(argc, argv);
 
   //check if infile supplied
@@ -70,7 +74,6 @@ int main(int argc, char* argv[]){
   }
   printf("-------------- program complete --------------\n");
   printf("0x%04x : 0x%02x\n", 0x80ff, c.RAM[0x80ff]);
-  //print_stack_addr(&c, STACK_BOTTOM + c.registers->S + 2);
-  //print_stack_addr(&c, STACK_BOTTOM + c.registers->S + 1);
   print_registers(&c);
+  munmap(c.RAM, memory_size); //release heap memory
 }
