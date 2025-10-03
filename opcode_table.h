@@ -264,7 +264,7 @@ opcode opcodes[] = {
   {OP_inx, "inx", addr_implied},
   {OP_sbc, "sbc", addr_imm},
   {OP_nop, "nop", addr_implied},
-  {NULL, "sbc", NULL},
+  {OP_nop, "nop", addr_implied},
   {OP_cpx, "cpx", addr_abs},
   {OP_sbc, "sbc", addr_abs},
   {OP_inc, "inc", addr_abs},
