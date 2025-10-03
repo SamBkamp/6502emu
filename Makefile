@@ -1,13 +1,15 @@
 FLAGS := -Wall -Werror
 FILES := opcodes.c
 
-all: build
+all: s65C02
 
-build:
-	cc main6502.c ${FILES} -o s65C02
+main.o:
+	cc -c main6502.c ${FLAGS} -o main.o
+opcodes.o:
+	cc -c opcodes.c ${FLAGS} -o opcodes.o
 
-dev: main6502.c ${FILES}
-	cc main6502.c ${FILES} ${FLAGS} -o s65C02
+s65C02: main.o opcodes.o
+	cc main.o opcodes.o -o s65C02
 
 clean:
-	rm s65C02
+	rm s65C02 main.o opcodes.o

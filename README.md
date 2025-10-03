@@ -13,11 +13,11 @@ My designs are based on [this spec](https://www.westerndesigncenter.com/wdc/docu
 
 ## Compilation
 
-You can compile this emulator with `make`, if you are writing code for this project I suggest you run `make dev` instead. There is also a `make clean` to clean up executable files.
+You can compile this emulator with `make`. There is also a `make clean` to clean up executable and object files.
 
 ### Compiling for this emulator
 
-I suggest compiling binaries for this emulator with [vasm](http://sun.hasenbraten.de/vasm/). For now, all binaries are mounted at 0x8000 by the emulator itself, so assume the start of your program occurs at 0x8000. Also, for now you can (and should) end your program with 0xbb; this unused opcode signals to the emulator that execution has ended. You can do this with `.byte $bb` (make sure you compile with -dotdir). This quitting mechanism will change with the first Beta release though. 
+I suggest compiling binaries for this emulator with [vasm](http://sun.hasenbraten.de/vasm/). For now you can (and should) end your program with 0xbb; this unused opcode signals to the emulator that execution has ended. You can do this with `.byte $bb` (make sure you compile with -dotdir). This quitting mechanism will change with the first Beta release though. 
 
 ## How it works
 
@@ -44,7 +44,6 @@ Its all abstracted away but you can still see its shadow in the design.
 - [ ] check mmap was successful, crash on failure	
 - [ ] munmap at the end of main()
 - [ ] virtual LED pins
-- [ ] 0xFFFC/D should load from mount_point, not hardcoded
 - [ ] cycle accuracy (+ memory page implementation / cross page read penalty)
 - [ ] clean up main.c (move opcodes, helper functions and cmdline reading out)
 - [ ] more example programs
@@ -56,8 +55,6 @@ Its all abstracted away but you can still see its shadow in the design.
 All implemented! :)
 
 #### op codes implemented:
-197/256 (77%)
-███████████████░░░░░
 
 Unimplemented:
 - slo
@@ -71,4 +68,3 @@ Unimplemented:
 - dcp
 - cld
 - isb
-- sbc
