@@ -3,9 +3,9 @@ FILES := opcodes.c
 
 all: s65C02
 
-main.o:
+main.o: main6502.c
 	cc -c main6502.c ${FLAGS} -o main.o
-opcodes.o:
+opcodes.o: opcodes.c
 	cc -c opcodes.c ${FLAGS} -o opcodes.o
 
 s65C02: main.o opcodes.o
