@@ -1,0 +1,26 @@
+; Author: Sam Bonnekamp
+; Date: 2025
+; takes a number in x and y and returns the value of x multiplied y in the a register
+	
+	.org 0
+	.org $8000
+	LDX #$3
+	LDY #$4
+	JSR calc
+	.byte $bb	
+calc:
+	LDA #0 ;init result with 0
+	STY $F ;store second operand to 0xF
+	STX $E ;store first operand to 0xE
+	LDX #0 ;init x with 0
+	CLC
+add:
+	INX ;increase x
+	ADC $E
+	CPX $F
+	BCC add
+	LDX $E ;reset x
+	LDY $F ;set y
+	RTS
+	.org $FFFC
+	.word $8000
