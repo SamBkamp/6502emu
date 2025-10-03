@@ -2,15 +2,15 @@ FLAGS := -Fbin -dotdir -o
 SOURCE := src
 ASSEMBLER := vasm
 
-all: dow.bin example.bin jmpret.bin brk.bin
+all: dow.bin multiplication.bin jmpret.bin brk.bin
 
 dow.bin: ${SOURCE}/dow.vasm
 	echo "\e[32m COMPILING dow.vasm \e[0m"
 	${ASSEMBLER} ${FLAGS} dow.bin ${SOURCE}/dow.vasm
 	echo "\n"	
-example.bin: ${SOURCE}/example.vasm 
+multiplication.bin: ${SOURCE}/multiplication.vasm
 	echo "\e[32m COMPILING example.vasm \e[0m"
-	${ASSEMBLER} ${FLAGS} example.bin ${SOURCE}/example.vasm
+	${ASSEMBLER} ${FLAGS} multiplication.bin ${SOURCE}/multiplication.vasm
 	echo "\n"
 jmpret.bin: ${SOURCE}/jmpret.vasm
 	echo "\e[32m COMPILING jmpret.vasm \e[0m"	

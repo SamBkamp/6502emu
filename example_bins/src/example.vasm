@@ -1,8 +1,0 @@
-	.org 0
-	.org $8000
-	LDA #$01
-	TAY
-	CPY #$FF
-	.byte $bb
-	.org $FFFC
-	.word $8000
