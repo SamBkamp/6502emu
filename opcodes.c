@@ -496,4 +496,11 @@ void OP_tsx(context *c){
 void OP_txs(context *c){ //no flags affected
   c->registers->S = c->registers->X;
 }
-
+void OP_brk(context *c){ //brk has a 2 byte opcode code
+  c->registers->P |= FLAGS_B_MASK; //set break
+  c->registers->S --;
+  c->RAM[STACK_BOTTOM + c->registers->S] = (c->registers->PC+1); //push program counter to stack (+2 so it points after opcode and padding byte)
+  c->registers->S --;
+  c->RAM[STACK_BOTTOM + c->registers->S] = c->registers->P; //push flags to stack
+  c->registers->PC = get_16_bit_from(IRQB_VEC, c);
+}

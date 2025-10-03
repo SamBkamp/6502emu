@@ -1,7 +1,7 @@
 //TODO: move this somewhere else its so ugly
 opcode opcodes[] = {
   //0x00
-  {NULL, "brk", NULL},
+  {OP_brk, "brk", addr_implied},
   {OP_ora, "ora", addr_zp_idx_indirect},
   {OP_nop, "nop1", addr_implied},
   {NULL, "slo", NULL},

@@ -99,5 +99,5 @@ void OP_tax(context *c);
 void OP_txa(context *c);
 void OP_tsx(context *c);
 void OP_txs(context *c);
-
+void OP_brk(context *c);
 #endif
