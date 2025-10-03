@@ -26,8 +26,8 @@ int step(context *c){
     (*opcodes[current_opcode].func)(c); //call function associated with opcode
   }
   //↓ this is so ugly please im sure this can be done better
-  //for cases where opcode doesn't use data from program (eg NOP)
-  if(c->registers->PC - current_pc > 1)
+  //for cases where opcode doesn't use data from program (eg NOP) AND BRK AND NOT RTI
+  if((c->registers->PC - current_pc > 1 || current_opcode == 0) && current_opcode != 0x40)
     printf("0x%04X : 0x%02X %s 0x%x\n", current_pc, current_opcode, opcodes[current_opcode].name, c->final_addr);
   else
     printf("0x%04X : 0x%02X %s\n", current_pc, current_opcode, opcodes[current_opcode].name);
@@ -61,7 +61,7 @@ int main(int argc, char* argv[]){
     return 1;
   }
   //load file into memory
-  if(load_file(c.RAM, flags.infile, memory_size) == 0)
+  if(load_file(c.RAM, flags.infile, memory_size+1) == 0)
     return 1;
   //print license
   license();

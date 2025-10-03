@@ -542,15 +542,15 @@ void OP_txs(context *c){ //no flags affected
 }
 void OP_brk(context *c){ //brk has a 2 byte opcode code
   c->registers->P |= FLAGS_B_MASK; //set break
-  uint16_t pc_hi_byte = (c->registers->PC)& 0xFF00;
-  uint16_t pc_lo_byte = (c->registers->PC)& 0xFF;
+  uint16_t pc_hi_byte = (c->registers->PC+1)& 0xFF00; //+1 offset to make space for brk pad
+  uint16_t pc_lo_byte = (c->registers->PC+1)& 0xFF;
   c->registers->S --;
   c->RAM[STACK_BOTTOM + c->registers->S] = pc_hi_byte >> 8; //push hi byte
   c->registers->S --;
   c->RAM[STACK_BOTTOM + c->registers->S] = pc_lo_byte; //push lo byte
   c->registers->S --;
   c->RAM[STACK_BOTTOM + c->registers->S] = c->registers->P; //push flags to stack
-  
+  c->final_addr = c->RAM[c->registers->PC]; //for logging
   c->registers->PC = get_16_bit_from(IRQB_VEC, c); //jump to vector location
 }
 void OP_rti(context *c){ //return from interrupt

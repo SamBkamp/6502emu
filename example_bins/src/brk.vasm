@@ -5,7 +5,9 @@
 
 	.org $8000
 	LDA #$01
-	BRK
+	BRK 
+	.byte $05
+	LDY #69
 	.byte $bb
 	.org $FFFC
 	.word $8000	
