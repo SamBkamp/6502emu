@@ -1,7 +1,13 @@
+	.org $0
+	.org $1
+	LDA #$02
+	RTI
+
 	.org $8000
 	LDA #$01
 	BRK
 	.byte $bb
-
+	.org $FFFC
+	.word $8000	
 	.org $FFFE
 	.word $1

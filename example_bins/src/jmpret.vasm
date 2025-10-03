@@ -1,7 +1,10 @@
-     JSR $80FF
-     LDY #$20
-     .byte $bb
-     
-     .org $ff
-     LDA #$69
-     RTS
+	.org 0	
+	JSR $FF
+	LDY #$20
+	.byte $bb
+	
+	.org $ff
+	LDA #$69
+	RTS
+	.org $FFFC
+	.word 0
