@@ -182,33 +182,49 @@ void OP_rts(context *c){ //return from subroutine
 }
 
 /* ----------- STACK CALLS ----------- */
-void OP_pha(context *c){ //push A to stack
+void OP_pha(context *c){ //push A to stack (registers unaffected)
   c->RAM[STACK_BOTTOM + (uint16_t)c->registers->S] = c->registers->A;
   c->registers->S --;
 }
-void OP_php(context *c){ //push P to stack
+void OP_php(context *c){ //push P to stack (registers unaffected)
   c->RAM[STACK_BOTTOM + (uint16_t)c->registers->S] = c->registers->P;
   c->registers->S --;
 }
-void OP_phx(context *c){ //push X to stack
+void OP_phx(context *c){ //push X to stack (registers unaffected)
   c->RAM[STACK_BOTTOM + (uint16_t)c->registers->S] = c->registers->X;
   c->registers->S --;
 }
-void OP_phy(context *c){ //push Y to stack
+void OP_phy(context *c){ //push Y to stack (registers unaffected)
   c->RAM[STACK_BOTTOM + (uint16_t)c->registers->S] = c->registers->Y;
   c->registers->S --;
 }
-void OP_plp(context *c){ //pull P from stack
+void OP_plp(context *c){ //pull P from stack (registers affected through pull)
   c->registers->S ++;
   c->registers->P = c->RAM[STACK_BOTTOM + (uint16_t)c->registers->S];
 }
 void OP_plx(context *c){ //pull X from stack
   c->registers->S ++;
   c->registers->X = c->RAM[STACK_BOTTOM + (uint16_t)c->registers->S];
+  c->registers->P &= ~FLAGS_Z_MASK; //clear Z flag
+  c->registers->P |= c->registers->X == 0 ? FLAGS_Z_MASK : 0; //set zero flag if its 0
+  c->registers->P &= ~FLAGS_N_MASK; //clear N flag
+  c->registers->P |= c->registers->X & BIT_7_MASK; //set Z flag to bit 7 of X
 }
 void OP_ply(context *c){ //pull Y from stack
   c->registers->S ++;
   c->registers->Y = c->RAM[STACK_BOTTOM + (uint16_t)c->registers->S];
+  c->registers->P &= ~FLAGS_Z_MASK; //clear Z flag
+  c->registers->P |= c->registers->Y == 0 ? FLAGS_Z_MASK : 0; //set zero flag if its 0
+  c->registers->P &= ~FLAGS_N_MASK; //clear N flag
+  c->registers->P |= c->registers->Y & BIT_7_MASK; //set Z flag to bit 7 of X
+}
+void OP_pla(context *c){
+  c->registers->S ++;
+  c->registers->A = c->RAM[STACK_BOTTOM + (uint16_t)c->registers->S];
+  c->registers->P &= ~FLAGS_Z_MASK; //clear Z flag
+  c->registers->P |= c->registers->A == 0 ? FLAGS_Z_MASK : 0; //set zero flag if its 0
+  c->registers->P &= ~FLAGS_N_MASK; //clear N flag
+  c->registers->P |= c->registers->A & BIT_7_MASK; //set Z flag to bit 7 of X
 }
 
 /*-------- STATUS FLAG CHANGES --------*/
