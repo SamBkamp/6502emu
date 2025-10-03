@@ -39,34 +39,67 @@ void print_stack_addr(context *c, uint16_t addr){
 
 
 //loads file filename into dest
-int load_file(void *dest, char* filename, size_t max_size){
-  //open infile
-  FILE *fp = fopen(filename, "r");
-  if (fp == NULL) {
-    //fprintf(stderr, "File I/O Error: Failed to open file %s\n", filename); // keeping this here for reference, this is UB
-    fprintf(stderr, "File I/O Error: No file was passed.\n");
-    return 0;
-  }
-  //get and check file size
-  fseek(fp, 0L, SEEK_END);  
-  int file_len = ftell(fp);
-  if(file_len > max_size){
-    fprintf(stderr, "File I/O Error: File too large (max %zub)\n", max_size);
-    return 0;
-  }
-  rewind(fp); //reset file cursor  
-  //read binary file into memory
-  fread(dest, 1, file_len, fp);
+uint16_t load_file(void *dest, const char *filename, size_t max_size) {
+    if (!filename) {
+      fprintf(stderr, "File I/O Error: No filename provided.\n");
+      return 0;
+    }
+    FILE *fp = fopen(filename, "rb");
+    if (fp == NULL) {
+        fprintf(stderr, "File I/O Error: Failed to open file %s\n", filename);
+        return 0;
+    }
 
-  return file_len;
+    // get file size
+    if (fseek(fp, 0L, SEEK_END) != 0) {
+        perror("fseek");
+        fclose(fp);
+        return 0;
+    }
+
+    long len = ftell(fp);
+    if (len < 0) {
+        perror("ftell");
+        fclose(fp);
+        return 0;
+    }
+
+    if (len > 0x10000) { // larger than 6502 address space
+        fprintf(stderr, "File I/O Error: File too large (max 65536b)\n");
+        fclose(fp);
+        return 0;
+    }
+
+    uint16_t file_len = (uint16_t)len;
+    if (file_len > max_size) {
+        fprintf(stderr, "File I/O Error: File too large (max %zub)\n", max_size);
+        fclose(fp);
+        return 0;
+    }
+
+    rewind(fp);
+
+    size_t bytes_read = fread(dest, 1, file_len, fp);
+    fclose(fp);
+
+    if (bytes_read != file_len) {
+        fprintf(stderr, "File I/O Error: Short read (%zu/%u)\n", bytes_read, file_len);
+        return 0;
+    }
+
+    return file_len;
 }
 
 cmd_flags read_cmd_line(int argc, char** argv){
-  cmd_flags flags;
+  cmd_flags flags = {0}; // in C everything has to be initialized to *something*
+                        // otherwise it will contain garbage data until it is filled
+                       // with something at runtime.
   //read command line arguments
-  for(int i = 0; i < argc; i++){
-    if(strcmp(argv[i], "-f") == 0 && argc >= i+1){
-      flags.infile = argv[++i];
+  for(int i = 1; i < argc; i++){
+    // we dont need to check argv[0] since its always the program name;
+    // instead, start at argv[1]
+    if (strcmp(argv[i], "-f") == 0 && i + 1 < argc) {
+        flags.infile = argv[++i];
     }
   }
   return flags;
