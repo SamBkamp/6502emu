@@ -37,12 +37,12 @@ cpu_context->RAM[address_bus] = data_bus; //ram write through busses
 ```
 Its all abstracted away but you can still see its shadow in the design.
 
-## TODOS
-- [ ] implement remaining opcodes
-- [ ] helper functions for common flag setting (set n flag to b7 of operand/register & set z flag)
+## TODO
 - [ ] check each opcode sets flag register appropriately
+- [ ] helper functions for common flag setting (set n flag to b7 of operand/register & set z flag)
 - [ ] virtual LED pins
 - [ ] cycle accuracy (+ memory page implementation / cross page read penalty)
+- [ ] implement remaining illegal opcodes
 - [ ] more example programs
 
 ## Implementation progress:
@@ -54,14 +54,15 @@ All implemented! :)
 #### op codes implemented:
 
 Unimplemented:
-- slo
-- rla
-- sre
-- cli
-- rra
-- sax
-- lax
-- clv
-- dcp
-- cld
-- isb
+- Standard flags:
+  - All implemented! :)
+  
+- Illegal Opcodes:
+  - slo
+  - rla
+  - sre
+  - rra
+  - sax
+  - lax
+  - dcp
+  - isb
