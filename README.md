@@ -56,33 +56,22 @@ Its all abstracted away but you can still see its shadow in the design.
 All implemented! :)
 
 #### op codes implemented:
-192/256 (75%)
+96/256 (77%)
 ███████████████░░░░░
-- [x] NOP
-- [x] All Branching call
-- [x] All Status flag change calls
-- [x] All stack push/pull call
-- [x] All load operations 
-- [x] All store operations	
-- [x] JMP
-- [x] JSR/RTS
-- [ ] RTI
-- [ ] BRK
-- [x] Comparisons
-- [x] Shift operations
-- [x] Increments and Decrements
-- [ ] Illegal opcodes
-- [ ] W65C02(s) Extension codes
-  - [x] BRA
-  - [ ] BBR
-  - [ ] BBS
-  - [x] PHY
-  - [x] PLX
-  - [x] PLY
-  - [ ] RMB
-  - [ ] SMB
-  - [ ] STP
-  - [x] STZ
-  - [ ] TRB
-  - [ ] TSB
-  - [ ] WAI
+
+Unimplemented:
+- brk
+- slo
+- rla
+- rti
+- sre
+- cli
+- rra
+- pla
+- sax
+- lax
+- clv
+- dcp
+- cld
+- isb
+- sbc
