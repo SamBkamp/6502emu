@@ -43,7 +43,8 @@ int load_file(void *dest, char* filename, size_t max_size){
   //open infile
   FILE *fp = fopen(filename, "r");
   if (fp == NULL) {
-    fprintf(stderr, "File I/O Error: Failed to open file %s\n", filename);
+    //fprintf(stderr, "File I/O Error: Failed to open file %s\n", filename); // keeping this here for reference, this is UB
+    fprintf(stderr, "File I/O Error: No file was passed.\n");
     return 0;
   }
   //get and check file size
