@@ -95,8 +95,8 @@ int main(int argc, char* argv[]){
   fseek(fptr, 0L, SEEK_END);  
   long file_len = ftell(fptr);
   rewind(fptr); //reset file cursor
-  if(file_len >= (memory_size-mount_point)){
-    fprintf(stderr, "File I/O Error: File too large (max 65kb)\n");
+  if(file_len > (memory_size-mount_point)+1){
+    fprintf(stderr, "File I/O Error: File too large (max %zub)\n", (memory_size-mount_point));
     return 1;
   }
   //read binary file into memory
