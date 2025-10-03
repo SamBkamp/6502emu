@@ -19,6 +19,12 @@
   	 .org $8000
 TMP      .EQU $6          ; Temporary storage
 
+START:
+	 LDA #1
+	 LDX #10
+	 LDY #125
+	 JSR WEEKDAY
+	 .byte $bb
 WEEKDAY:
          CPX #3          ; Year starts in March to bypass
          BCS MARCH       ; leap year problem
@@ -36,8 +42,6 @@ MARCH    EOR #$7F        ; Invert A so carry works right
          LSR
          CLC             ; Add it to y+m+d and fall through
          ADC TMP
-	 JSR MOD7
-	 .byte $bb
 MOD7     ADC #7          ; Returns (A+3) modulo 7
          BCC MOD7        ; for A in 0..255
          RTS 

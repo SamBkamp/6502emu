@@ -54,18 +54,11 @@ int main(int argc, char* argv[]){
     fprintf(stderr, "Usage: %s -f [filename]\n", argv[0]);
     return 1;
   }
-  
   //load file into memory
   if(load_file(c.RAM, flags.infile, memory_size) == 0)
     return 1;
-
   //print license
   license();
-  
-  c.registers->Y = (2025-1900);
-  c.registers->X = 10;
-  c.registers->A = 1;
-  
   printf("-------------- program start --------------\n");
   reset(&c);
   int q = step(&c);
