@@ -23,6 +23,9 @@
 #define STACK_BOTTOM 0x0100
 #define STACK_TOP 0x01ff
 
+#define IRQB_VEC 0xFFFE //low byte
+#define RESB_VEC 0xFFFC //low byte
+
 
 typedef struct{
   uint8_t A; //accumulator
