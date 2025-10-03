@@ -100,4 +100,5 @@ void OP_txa(context *c);
 void OP_tsx(context *c);
 void OP_txs(context *c);
 void OP_brk(context *c);
+void OP_rti(context *c);
 #endif

@@ -73,7 +73,7 @@ opcode opcodes[] = {
   {NULL, "rla", NULL},
 
   //0x40
-  {NULL, "rti", NULL},
+  {OP_rti, "rti", addr_implied},
   {OP_eor, "eor", addr_zp_indirect},
   {OP_nop, "nop15", addr_implied},
   {NULL, "sre", NULL},

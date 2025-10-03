@@ -60,10 +60,8 @@ All implemented! :)
 ███████████████░░░░░
 
 Unimplemented:
-- brk
 - slo
 - rla
-- rti
 - sre
 - cli
 - rra
