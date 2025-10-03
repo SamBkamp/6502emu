@@ -352,7 +352,7 @@ void OP_and(context *c){
   c->registers->A &= c->RAM[c->ea];
   c->registers->P = (c->registers->A > 0) ? c->registers->P & ~FLAGS_Z_MASK
     : c->registers->P | FLAGS_Z_MASK; // set zero if zero
-  c->registers->P = (c->registers->A & BIT_7_MASK ) > 0 ? c->registers->P &= FLAGS_N_MASK : c->registers->P |= FLAGS_N_MASK; // set negative
+  c->registers->P = (c->registers->A & BIT_7_MASK ) > 0 ? c->registers->P & FLAGS_N_MASK : c->registers->P | ~FLAGS_N_MASK; // set negative
 }
 void OP_bit(context *c){
   uint8_t res = c->registers->A & c->RAM[c->ea];
