@@ -15,7 +15,6 @@
 ;
 ; Output: Weekday in A (0=Sunday, 1=Monday, ..., 6=Saturday)
 
-  	 .org 0
   	 .org $8000
 TMP      .EQU $6          ; Temporary storage
 
