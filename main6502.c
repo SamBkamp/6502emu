@@ -52,7 +52,6 @@ int main(int argc, char* argv[]){
     fprintf(stderr, "mmap failed\n");
     return 1;
   }
-  
   cmd_flags flags = read_cmd_line(argc, argv);
 
   //check if infile supplied
