@@ -290,9 +290,10 @@ void OP_stz(context *c){
 
 /*---- ARITHEMETIC OPERATIONS ------*/
 void OP_asl(context *c){
+  uint8_t data = bus_read(c->ea, c);
   c->registers->P = (c->registers->P & ~FLAGS_C_MASK);  //clear old C
-  c->registers->P |= (bus_read(c->ea, c) & BIT_7_MASK)>>7; //set c to old bit 7
-  c->RAM[c->ea] <<= 1; //do the shift left
+  c->registers->P |= (data & BIT_7_MASK)>>7; //set c to old bit 7
+  bus_write(c->ea, data << 1, c); //do the shift left
   c->registers->P = (bus_read(c->ea, c) > 0) ? c->registers->P & ~FLAGS_Z_MASK
     : c->registers->P | FLAGS_Z_MASK; // set zero if zero
 }
@@ -316,12 +317,14 @@ void OP_lsrA(context *c){ //hacky implementation for accumulator-mode addressing
     : c->registers->P | FLAGS_Z_MASK; // set zero if zero
 }
 void OP_rol(context *c){
+  uint8_t data = bus_read(c->ea, c);
   c->registers->P = (c->registers->P & ~FLAGS_C_MASK); //clear old C
-  c->registers->P |= (bus_read(c->ea, c) & BIT_7_MASK)>>7; //set c to old bit 7
-  uint8_t mask = (bus_read(c->ea, c)&0x80)>>7;
-  c->RAM[c->ea] <<= 1;
-  c->RAM[c->ea] += mask;
-  c->registers->P = (bus_read(c->ea, c) > 0) ? c->registers->P & ~FLAGS_Z_MASK
+  c->registers->P |= (data & BIT_7_MASK)>>7; //set c to old bit 7
+  uint8_t mask = (data&0x80)>>7;
+  data <<= 1;
+  data += mask;
+  bus_write(c->ea, data, c);
+  c->registers->P = (data > 0) ? c->registers->P & ~FLAGS_Z_MASK
     : c->registers->P | FLAGS_Z_MASK; // set zero if zero
 }
 void OP_rolA(context *c){
@@ -338,8 +341,9 @@ void OP_ror(context *c){
   c->registers->P = (c->registers->P & ~FLAGS_C_MASK); //clear old C
   c->registers->P |= (d & BIT_0_MASK); //set c to old bit 0
   uint8_t mask = (d&0x01)<<7; //store old bit 7 and move to 0
-  c->RAM[c->ea] >>= 1; //shift right
-  c->RAM[c->ea] += mask; //add old bit 7 back
+  d >>= 1; //shift right
+  d += mask; //add old bit 7 back
+  bus_write(c->ea, d, c);
   c->registers->P = (c->registers->P & ~FLAGS_N_MASK); //clear old N
   c->registers->P |= (d & BIT_7_MASK); //set N to bit 7
   c->registers->P = (d > 0) ? c->registers->P & ~FLAGS_Z_MASK
@@ -499,16 +503,20 @@ void OP_iny(context *c){
   c->registers->P &= (~FLAGS_N_MASK)+(c->registers->Y & BIT_7_MASK); //set N (7th bit) to bit 7 of A
 }
 void OP_inc(context *c){
-  c->RAM[c->ea]++;
-  c->registers->P = (bus_read(c->ea, c) > 0) ? c->registers->P & ~FLAGS_Z_MASK
+  uint8_t data = bus_read(c->ea, c);
+  data++;
+  c->registers->P = (data > 0) ? c->registers->P & ~FLAGS_Z_MASK
     : c->registers->P | FLAGS_Z_MASK; // set zero if zero
-  c->registers->P &= (~FLAGS_N_MASK)+(bus_read(c->ea, c) & BIT_7_MASK); //set N (7th bit) to bit 7 of A
+  c->registers->P &= (~FLAGS_N_MASK)+(data & BIT_7_MASK); //set N (7th bit) to bit 7 of A
+  bus_write(c->ea, data, c);
 }
 void OP_dec(context *c){
-  c->RAM[c->ea]--;
-  c->registers->P = (bus_read(c->ea, c) > 0) ? c->registers->P & ~FLAGS_Z_MASK
+  uint8_t data = bus_read(c->ea, c);
+  data--;
+  c->registers->P = data > 0 ? c->registers->P & ~FLAGS_Z_MASK
     : c->registers->P | FLAGS_Z_MASK; // set zero if zero
-  c->registers->P &= (~FLAGS_N_MASK)+(bus_read(c->ea, c) & BIT_7_MASK); //set N (7th bit) to bit 7 of A
+  c->registers->P &= (~FLAGS_N_MASK)+(data & BIT_7_MASK); //set N (7th bit) to bit 7 of A
+  bus_write(c->ea, data, c);
 }
 void OP_tay(context *c){
   c->registers->Y = c->registers->A;
