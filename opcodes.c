@@ -5,13 +5,6 @@
 #include "prot.h"
 #include "opcodes.h"
 
-void bus_write(uint16_t address, uint8_t data, context *c){
-  c->RAM[address] = data;
-}
-uint8_t bus_read(uint16_t address, context *c){
-  return c->RAM[address];
-}
-
 //helper function to return the 16 bit value stored in little endian. loc points to the lower byte
 uint16_t get_16_bit_from(uint16_t loc, context *c){
   uint16_t hi_byte = bus_read(loc+1, c);

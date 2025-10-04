@@ -9,17 +9,24 @@
 #include "opcode_table.h"
 
 
+void bus_write(uint16_t address, uint8_t data, context *c){
+  address_space[address] = data;
+}
+uint8_t bus_read(uint16_t address, context *c){
+  return address_space[address];
+}
+
 void reset(context *c){
-  c->registers->PC = ((uint16_t)c->RAM[0xFFFD]) << 8;
-  c->registers->PC += c->RAM[0xFFFC];
+  c->registers->PC = ((uint16_t)bus_read(0xFFFD, c)) << 8;
+  c->registers->PC += bus_read(0xFFFC, c);
   c->registers->S = 0xFF;
   c->registers->P = 0x3C;
 }
 
 int step(context *c){ 
-  if(c->RAM[c->registers->PC] == 0xbb) return -1; //custom opcode
+  if(bus_read(c->registers->PC, c) == 0xbb) return -1; //custom opcode
   
-  uint8_t current_opcode = c->RAM[c->registers->PC]; //only used for logging
+  uint8_t current_opcode = bus_read(c->registers->PC, c); //only used for logging
   uint16_t current_pc = c->registers->PC; //only used for logging  
   if(opcodes[current_opcode].func != NULL){
     (*opcodes[current_opcode].addr_mode)(c); //set addressing mode
@@ -43,12 +50,13 @@ int main(int argc, char* argv[]){
   context c = {
     .registers = &r,
     .ea = 0,
-    .RAM = (uint8_t *)mmap(NULL, memory_size, PROT_READ|PROT_WRITE|PROT_EXEC,
-			MAP_PRIVATE|MAP_ANON ,-1, 0)
+    .RAM = 0
   };
+  address_space = mmap(NULL, memory_size, PROT_READ|PROT_WRITE|PROT_EXEC,
+		       MAP_PRIVATE|MAP_ANON ,-1, 0);
 
   //check mmap
-  if (c.RAM == (void *)-1){
+  if (address_space == (void *)-1){
     fprintf(stderr, "mmap failed\n");
     return 1;
   }
@@ -61,7 +69,7 @@ int main(int argc, char* argv[]){
     return 1;
   }
   //load file into memory
-  if(load_file(c.RAM, flags.infile, memory_size+1) == 0)
+  if(load_file(address_space, flags.infile, memory_size+1) == 0)
     return 1;
   //print license
   license();
@@ -75,7 +83,7 @@ int main(int argc, char* argv[]){
     steps++;    
   }
   printf("-------------- program complete --------------\n");
-  printf("0x%04x : 0x%02x\n", 0x80ff, c.RAM[0x80ff]);
+  printf("0x%04x : 0x%02x\n", 0x80ff, address_space[0x80ff]);
   print_registers(&c);
-  munmap(c.RAM, memory_size); //release heap memory
+  munmap(address_space, memory_size); //release heap memory
 }
