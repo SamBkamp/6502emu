@@ -8,25 +8,41 @@
 #include "opcodes.h"
 #include "opcode_table.h"
 
+uint8_t *address_space;
+chip chips[2];
 
-void bus_write(uint16_t address, uint8_t data, context *c){
-  address_space[address] = data;
-}
-uint8_t bus_read(uint16_t address, context *c){
+uint8_t ROM_read(uint16_t address){
   return address_space[address];
 }
 
+void ROM_write(uint16_t address, uint8_t data){
+  ;
+}
+
+void bus_write(uint16_t address, uint8_t data){
+  if(address > 0x8000)
+    (*chips[0].chip_write)(address, data);
+  else
+    address_space[address] = data;
+}
+uint8_t bus_read(uint16_t address){
+  if(BIT_7_MASK > 0x8000)
+    return (*chips[0].chip_read)(address);
+  else    
+    return address_space[address];
+}
+
 void reset(context *c){
-  c->registers->PC = ((uint16_t)bus_read(0xFFFD, c)) << 8;
-  c->registers->PC += bus_read(0xFFFC, c);
+  c->registers->PC = ((uint16_t)bus_read(0xFFFD)) << 8;
+  c->registers->PC += bus_read(0xFFFC);
   c->registers->S = 0xFF;
   c->registers->P = 0x3C;
 }
 
 int step(context *c){ 
-  if(bus_read(c->registers->PC, c) == 0xbb) return -1; //custom opcode
+  if(bus_read(c->registers->PC) == 0xbb) return -1; //custom opcode
   
-  uint8_t current_opcode = bus_read(c->registers->PC, c); //only used for logging
+  uint8_t current_opcode = bus_read(c->registers->PC); //only used for logging
   uint16_t current_pc = c->registers->PC; //only used for logging  
   if(opcodes[current_opcode].func != NULL){
     (*opcodes[current_opcode].addr_mode)(c); //set addressing mode
@@ -67,6 +83,11 @@ int main(int argc, char* argv[]){
     fprintf(stderr, "Usage: %s -f [filename]\n", argv[0]);
     return 1;
   }
+  chips[0] = (chip){
+    .name = "ROM",
+    .chip_read = ROM_read,
+    .chip_write = ROM_write
+  };
   //load file into memory
   if(load_file(address_space, flags.infile, memory_size+1) == 0)
     return 1;
