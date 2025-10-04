@@ -8,6 +8,7 @@
 #include "opcodes.h"
 #include "opcode_table.h"
 #include "modules/ROM.h"
+#include "modules/RAM.h"
 
 uint8_t *address_space;
 chip chips[2];
@@ -16,15 +17,15 @@ chip chips[2];
 
 void bus_write(uint16_t address, uint8_t data){
   if(address >= 0x8000)
-    (*chips[0].chip_write)(address-0x8000, data);
+    (*chips[1].chip_write)(address-0x8000, data);
   else
-    address_space[address] = data;
+    (*chips[0].chip_write)(address, data);
 }
 uint8_t bus_read(uint16_t address){
   if(address >= 0x8000)
-    return (*chips[0].chip_read)(address-0x8000);
+    return (*chips[1].chip_read)(address-0x8000);
   else    
-    return address_space[address];
+    return (*chips[0].chip_read)(address);
 }
 
 void reset(context *c){
@@ -61,16 +62,7 @@ int main(int argc, char* argv[]){
   context c = {
     .registers = &r,
     .ea = 0,
-    .RAM = 0
   };
-  address_space = mmap(NULL, memory_size, PROT_READ|PROT_WRITE|PROT_EXEC,
-		       MAP_PRIVATE|MAP_ANON ,-1, 0);
-
-  //check mmap
-  if (address_space == (void *)-1){
-    fprintf(stderr, "mmap failed\n");
-    return 1;
-  }
   
   cmd_flags flags = read_cmd_line(argc, argv);
 
@@ -79,13 +71,23 @@ int main(int argc, char* argv[]){
     fprintf(stderr, "Usage: %s -f [filename]\n", argv[0]);
     return 1;
   }
+  // INIT EXTERNAL CHIPS
   chips[0] = (chip){
+    .name = "RAM",
+    .chip_read = RAM_read,
+    .chip_write = RAM_write,
+    .chip_init = RAM_init
+  };
+  chips[1] = (chip){
     .name = "ROM",
     .chip_read = ROM_read,
     .chip_write = ROM_write,
     .chip_init = ROM_init
   };
-  uint8_t *add = (*chips[0].chip_init)();
+  uint8_t *add = (*chips[1].chip_init)();
+  (*chips[0].chip_init)();
+  //END INIT EXTNERNAL CHIPS
+  
   //load file into memory
   if(load_file(add, flags.infile, 32768+1) == 0)
     return 1;
@@ -101,7 +103,6 @@ int main(int argc, char* argv[]){
     steps++;    
   }
   printf("-------------- program complete --------------\n");
-  printf("0x%04x : 0x%02x\n", 0x80ff, address_space[0x80ff]);
   print_registers(&c);
-  munmap(address_space, memory_size); //release heap memory
+  //munmap(address_space, memory_size); //release heap memory
 }
