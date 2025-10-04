@@ -53,9 +53,14 @@ typedef struct{
   void (*addr_mode)(context *c);
 }opcode;
 
-uint8_t *address_space;
-void bus_write(uint16_t address, uint8_t data, context* c);
-uint8_t bus_read(uint16_t address, context* c);
+typedef struct{
+  char* name;
+  uint8_t (*chip_read)(uint16_t address);
+  void (*chip_write)(uint16_t address, uint8_t data);
+}chip;
+
+void bus_write(uint16_t address, uint8_t data);
+uint8_t bus_read(uint16_t address);
 
 /*
 
