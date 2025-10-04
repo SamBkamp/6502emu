@@ -16,16 +16,16 @@ chip chips[2];
 
 
 void bus_write(uint16_t address, uint8_t data){
-  if(address >= 0x8000)
-    (*chips[1].chip_write)(address-0x8000, data);
-  else
-    (*chips[0].chip_write)(address, data);
+  uint16_t a = address%0x8000; //0x8000 is bucket size
+  a = address-a; //round down to closest bucket (either 0x0 or 0x8000)
+  a >>= 15;  //make a equal to MSB
+  return (*chips[a].chip_write)(address-(0x8000*a), data);
 }
 uint8_t bus_read(uint16_t address){
-  if(address >= 0x8000)
-    return (*chips[1].chip_read)(address-0x8000);
-  else    
-    return (*chips[0].chip_read)(address);
+  uint16_t a = address%0x8000;
+  a = address-a;
+  a >>= 15;  
+  return (*chips[a].chip_read)(address-(0x8000*a));
 }
 
 void reset(context *c){
