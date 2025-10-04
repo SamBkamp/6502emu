@@ -1,5 +1,5 @@
 #ifndef PROT_6502
-#define PROT_6520
+#define PROT_6502
 //prototypes for global functions and variables
 
 #define FLAGS_C_MASK 0x1
@@ -75,6 +75,6 @@ typedef struct{
 void license();
 void print_registers(context *c);
 void print_stack_addr(context *c, uint16_t addr);
-int load_file(void *dest, char* filename, size_t max_size);
+uint16_t load_file(void *dest, const char* filename, size_t max_size);
 cmd_flags read_cmd_line(int argc, char** argv);
 #endif
