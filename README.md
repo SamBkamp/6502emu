@@ -1,3 +1,6 @@
+# THIS BRANCH IS A WEIRD IDEA IM WORKING ON
+# I wanted to see if I could emulate the address and data bus in a more accurate way such that you could extend the program with your own virtual chips that have read and write functions
+
 [![C CI](https://github.com/SamBkamp/6502emu/actions/workflows/c-CI.yml/badge.svg?branch=main)](https://github.com/SamBkamp/6502emu/actions/workflows/c-CI.yml)
 [![Example Binaries](https://github.com/SamBkamp/6502emu/actions/workflows/example_bin.yml/badge.svg)](https://github.com/SamBkamp/6502emu/actions/workflows/example_bin.yml)
 # 65C02 Emu
