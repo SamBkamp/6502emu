@@ -2,7 +2,6 @@
 ; Date: 2025
 ; takes a number in x and y and returns the value of x multiplied y in the a register
 	
-	.org 0
 	.org $8000
 	LDX #$3
 	LDY #$4
