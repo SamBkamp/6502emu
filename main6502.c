@@ -7,27 +7,22 @@
 #include "prot.h"
 #include "opcodes.h"
 #include "opcode_table.h"
+#include "modules/ROM.h"
 
 uint8_t *address_space;
 chip chips[2];
 
-uint8_t ROM_read(uint16_t address){
-  return address_space[address];
-}
 
-void ROM_write(uint16_t address, uint8_t data){
-  ;
-}
 
 void bus_write(uint16_t address, uint8_t data){
-  if(address > 0x8000)
-    (*chips[0].chip_write)(address, data);
+  if(address >= 0x8000)
+    (*chips[0].chip_write)(address-0x8000, data);
   else
     address_space[address] = data;
 }
 uint8_t bus_read(uint16_t address){
-  if(BIT_7_MASK > 0x8000)
-    return (*chips[0].chip_read)(address);
+  if(address >= 0x8000)
+    return (*chips[0].chip_read)(address-0x8000);
   else    
     return address_space[address];
 }
@@ -87,10 +82,12 @@ int main(int argc, char* argv[]){
   chips[0] = (chip){
     .name = "ROM",
     .chip_read = ROM_read,
-    .chip_write = ROM_write
+    .chip_write = ROM_write,
+    .chip_init = ROM_init
   };
+  uint8_t *add = (*chips[0].chip_init)();
   //load file into memory
-  if(load_file(address_space, flags.infile, memory_size+1) == 0)
+  if(load_file(add, flags.infile, 32768+1) == 0)
     return 1;
   //print license
   license();
