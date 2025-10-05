@@ -3,7 +3,7 @@ FILES := main6502.c opcodes.c prot.c ${MODULES}/ROM.c ${MODULES}/RAM.c
 OBJ_FOLDER := obj
 OBJECTS := $(foreach var, ${FILES},${OBJ_FOLDER}/$(basename $(notdir ${var})).o)
 
-.PHONY: clean
+.PHONY: clean all cleanobj
 
 all: ${OBJ_FOLDER} s65C02
 
@@ -19,3 +19,5 @@ s65C02: ${OBJECTS}
 
 clean:
 	rm -rf s65C02 ${OBJ_FOLDER}
+cleanobj:
+	rm -rf ${OBJ_FOLDER}
