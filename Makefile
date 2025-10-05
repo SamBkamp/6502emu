@@ -1,17 +1,23 @@
-FLAGS := -Wall -Werror
-FILES := opcodes.c
+FLAGS := -Wall -Werror -ggdb
+FILES := main6502.c opcodes.c prot.c ${MODULES}/ROM.c ${MODULES}/RAM.c
+OBJ_FOLDER := obj
+OBJECTS := $(foreach var, ${FILES},${OBJ_FOLDER}/$(basename $(notdir ${var})).o)
 
-all: s65C02
+.PHONY: clean all cleanobj
 
-prot.o: prot.c
-	cc -c prot.c ${FLAGS} -o prot.o
-main.o: main6502.c
-	cc -c main6502.c ${FLAGS} -o main.o
-opcodes.o: opcodes.c
-	cc -c opcodes.c ${FLAGS} -o opcodes.o
+all: ${OBJ_FOLDER} s65C02
 
-s65C02: main.o opcodes.o prot.o
-	cc main.o opcodes.o prot.o -o s65C02
+${OBJ_FOLDER}:
+	mkdir -p $@
+${OBJ_FOLDER}/%.o: modules/%.c
+	cc -c  $< ${FLAGS} -o $@
+${OBJ_FOLDER}/%.o: %.c
+	cc -c  $< ${FLAGS} -o $@
+
+s65C02: ${OBJECTS}
+	cc ${OBJECTS} ${FLAGS} -o s65C02
 
 clean:
-	rm s65C02 main.o opcodes.o prot.o
+	rm -rf s65C02 ${OBJ_FOLDER}
+cleanobj:
+	rm -rf ${OBJ_FOLDER}

@@ -7,8 +7,8 @@
 
 //helper function to return the 16 bit value stored in little endian. loc points to the lower byte
 uint16_t get_16_bit_from(uint16_t loc, context *c){
-  uint16_t hi_byte = c->RAM[loc+1];
-  uint16_t lo_byte = c->RAM[loc];
+  uint16_t hi_byte = bus_read(loc+1);
+  uint16_t lo_byte = bus_read(loc);
   hi_byte <<= 8;
   hi_byte &= 0xff00; //probably unneeded
   hi_byte += lo_byte;
@@ -66,7 +66,7 @@ void addr_abs_y(context *c){ //Asbolute index with Y a,y
 void addr_imm(context *c){ //immediate #
   //returns operand address
   c->ea = c->registers->PC+1; //loads a pointer to the next value (immediate value) into ea
-  c->final_addr = c->RAM[c->registers->PC+1];
+  c->final_addr = bus_read(c->registers->PC+1);
   c->registers->PC += 2; //moves pc forward 2 bytes so it points to next instruction
 }
 void addr_stack(context *c){ //Stack addressing s (basically the same as implied)
@@ -75,39 +75,39 @@ void addr_stack(context *c){ //Stack addressing s (basically the same as implied
 }
 void addr_pcr(context *c){ //program counter relative r
   //returns new PC value 
-  c->ea = (uint16_t)(c->registers->PC+2 + (int8_t)c->RAM[c->registers->PC+1]);
+  c->ea = (uint16_t)(c->registers->PC+2 + (int8_t)bus_read(c->registers->PC+1));
   c->final_addr = c->ea;
   c->registers->PC += 2;
 }
 void addr_zp(context *c){ //zero page zp
   //returns operand address
-  c->ea = (uint16_t)c->RAM[c->registers->PC+1]; //loads the next value
-  c->final_addr = c->RAM[c->registers->PC+1];
+  c->ea = (uint16_t)bus_read(c->registers->PC+1); //loads the next value
+  c->final_addr = bus_read(c->registers->PC+1);
   c->registers->PC += 2;  
 }
 void addr_zp_idx_x(context *c){ //zp, x
   //returns operand address
-  c->ea = c->RAM[(c->registers->PC+1)] + c->registers->X;
+  c->ea = bus_read(c->registers->PC+1) + c->registers->X;
   c->registers->PC += 2;
 }
 void addr_zp_idx_y(context *c){ //zp, y
   //returns operand address
-  c->ea = c->RAM[(c->registers->PC+1)] + c->registers->Y;
+  c->ea = bus_read(c->registers->PC+1) + c->registers->Y;
   c->registers->PC += 2;
 }
 void addr_zp_indirect(context *c){ //zero page indirect (zp)
   //returns operand address
-  uint16_t ptr = c->RAM[c->registers->PC+1];
+  uint16_t ptr = bus_read(c->registers->PC+1);
   c->ea = get_16_bit_from(ptr, c);
   c->registers->PC += 2;
 }
 void addr_zp_idx_indirect(context *c){ //zero page indexed indirect (zp, x)
-  uint16_t ptr = c->RAM[c->registers->PC+1] + c->registers->X;
+  uint16_t ptr = bus_read(c->registers->PC+1) + c->registers->X;
   c->ea = get_16_bit_from(ptr, c);
   c->registers->PC += 2;
 }
 void addr_zp_idx_y_indirect(context *c){ //Zero Page Indirect Indexed with Y (zp), y
-  uint16_t ptr = c->RAM[c->registers->PC+1];
+  uint16_t ptr = bus_read(c->registers->PC+1);
   c->ea = get_16_bit_from(ptr, c);
   c->ea += c->registers->Y;
   c->registers->PC += 2; 
@@ -183,9 +183,9 @@ void OP_jsr(context *c){ //jump to subroutine
   //push pc to bottom of stack
   uint8_t hi_byte = (c->registers->PC >> 8);
   uint8_t lo_byte = c->registers->PC;
-  c->RAM[STACK_BOTTOM + (uint16_t)c->registers->S] = hi_byte;
+  bus_write(STACK_BOTTOM + (uint16_t)c->registers->S, hi_byte);
   c->registers->S--;
-  c->RAM[STACK_BOTTOM + (uint16_t)c->registers->S] = lo_byte;
+  bus_write(STACK_BOTTOM + (uint16_t)c->registers->S, lo_byte);
   c->registers->S--;
   
   c->registers->PC = c->ea;
@@ -200,28 +200,28 @@ void OP_rts(context *c){ //return from subroutine
 
 /* ----------- STACK CALLS ----------- */
 void OP_pha(context *c){ //push A to stack (registers unaffected)
-  c->RAM[STACK_BOTTOM + (uint16_t)c->registers->S] = c->registers->A;
+  bus_write(STACK_BOTTOM + (uint16_t)c->registers->S, c->registers->A);
   c->registers->S --;
 }
 void OP_php(context *c){ //push P to stack (registers unaffected)
-  c->RAM[STACK_BOTTOM + (uint16_t)c->registers->S] = c->registers->P;
+  bus_write(STACK_BOTTOM + (uint16_t)c->registers->S, c->registers->P);
   c->registers->S --;
 }
 void OP_phx(context *c){ //push X to stack (registers unaffected)
-  c->RAM[STACK_BOTTOM + (uint16_t)c->registers->S] = c->registers->X;
+  bus_write(STACK_BOTTOM + (uint16_t)c->registers->S, c->registers->X);
   c->registers->S --;
 }
 void OP_phy(context *c){ //push Y to stack (registers unaffected)
-  c->RAM[STACK_BOTTOM + (uint16_t)c->registers->S] = c->registers->Y;
+  bus_write(STACK_BOTTOM + (uint16_t)c->registers->S, c->registers->Y);
   c->registers->S --;
 }
 void OP_plp(context *c){ //pull P from stack (registers affected through pull)
   c->registers->S ++;
-  c->registers->P = c->RAM[STACK_BOTTOM + (uint16_t)c->registers->S];
+  c->registers->P = bus_read(STACK_BOTTOM + (uint16_t)c->registers->S);
 }
 void OP_plx(context *c){ //pull X from stack
   c->registers->S ++;
-  c->registers->X = c->RAM[STACK_BOTTOM + (uint16_t)c->registers->S];
+  c->registers->X = bus_read(STACK_BOTTOM + (uint16_t)c->registers->S);
   c->registers->P &= ~FLAGS_Z_MASK; //clear Z flag
   c->registers->P |= c->registers->X == 0 ? FLAGS_Z_MASK : 0; //set zero flag if its 0
   c->registers->P &= ~FLAGS_N_MASK; //clear N flag
@@ -229,7 +229,7 @@ void OP_plx(context *c){ //pull X from stack
 }
 void OP_ply(context *c){ //pull Y from stack
   c->registers->S ++;
-  c->registers->Y = c->RAM[STACK_BOTTOM + (uint16_t)c->registers->S];
+  c->registers->Y = bus_read(STACK_BOTTOM + (uint16_t)c->registers->S);
   c->registers->P &= ~FLAGS_Z_MASK; //clear Z flag
   c->registers->P |= c->registers->Y == 0 ? FLAGS_Z_MASK : 0; //set zero flag if its 0
   c->registers->P &= ~FLAGS_N_MASK; //clear N flag
@@ -237,7 +237,7 @@ void OP_ply(context *c){ //pull Y from stack
 }
 void OP_pla(context *c){
   c->registers->S ++;
-  c->registers->A = c->RAM[STACK_BOTTOM + (uint16_t)c->registers->S];
+  c->registers->A = bus_read(STACK_BOTTOM + (uint16_t)c->registers->S);
   c->registers->P &= ~FLAGS_Z_MASK; //clear Z flag
   c->registers->P |= c->registers->A == 0 ? FLAGS_Z_MASK : 0; //set zero flag if its 0
   c->registers->P &= ~FLAGS_N_MASK; //clear N flag
@@ -269,24 +269,25 @@ void OP_sei(context *c){ //set interrupt flag
 
 /*-------- STORE CALLS --------*/
 void OP_sta(context *c){
-  c->RAM[c->ea] = c->registers->A;
+  bus_write(c->ea, c->registers->A);
 }
 void OP_stx(context *c){
-  c->RAM[c->ea] = c->registers->X;
+  bus_write(c->ea, c->registers->X);
 }
 void OP_sty(context *c){
-  c->RAM[c->ea] = c->registers->Y;
+  bus_write(c->ea, c->registers->Y);
 }
 void OP_stz(context *c){
-  c->RAM[c->ea] = 0;
+  bus_write(c->ea, 0);
 }
 
 /*---- ARITHEMETIC OPERATIONS ------*/
 void OP_asl(context *c){
+  uint8_t data = bus_read(c->ea);
   c->registers->P = (c->registers->P & ~FLAGS_C_MASK);  //clear old C
-  c->registers->P |= (c->RAM[c->ea] & BIT_7_MASK)>>7; //set c to old bit 7
-  c->RAM[c->ea] <<= 1; //do the shift left
-  c->registers->P = (c->RAM[c->ea] > 0) ? c->registers->P & ~FLAGS_Z_MASK
+  c->registers->P |= (data & BIT_7_MASK)>>7; //set c to old bit 7
+  bus_write(c->ea, data << 1); //do the shift left
+  c->registers->P = (bus_read(c->ea) > 0) ? c->registers->P & ~FLAGS_Z_MASK
     : c->registers->P | FLAGS_Z_MASK; // set zero if zero
 }
 void OP_aslA(context *c){ //hacky implementation for accumulator-mode addressing for ASL
@@ -297,9 +298,9 @@ void OP_aslA(context *c){ //hacky implementation for accumulator-mode addressing
     : c->registers->P | FLAGS_Z_MASK; // set zero if zero
 }
 void OP_lsr(context *c){
-  c->registers->P = (c->registers->P & ~FLAGS_C_MASK) | (c->RAM[c->ea] & BIT_0_MASK); //set c to old bit 0
-  c->RAM[c->ea] >>= 1; //do the shift right
-  c->registers->P = (c->RAM[c->ea] > 0) ? c->registers->P & ~FLAGS_Z_MASK
+  c->registers->P = (c->registers->P & ~FLAGS_C_MASK) | (bus_read(c->ea) & BIT_0_MASK); //set c to old bit 0
+  bus_write(c->ea, bus_read(c->ea)>>1); //do the shift right TODO: factor function call out
+  c->registers->P = (bus_read(c->ea) > 0) ? c->registers->P & ~FLAGS_Z_MASK
     : c->registers->P | FLAGS_Z_MASK; // set zero if zero
 }
 void OP_lsrA(context *c){ //hacky implementation for accumulator-mode addressing for ASL
@@ -309,12 +310,14 @@ void OP_lsrA(context *c){ //hacky implementation for accumulator-mode addressing
     : c->registers->P | FLAGS_Z_MASK; // set zero if zero
 }
 void OP_rol(context *c){
+  uint8_t data = bus_read(c->ea);
   c->registers->P = (c->registers->P & ~FLAGS_C_MASK); //clear old C
-  c->registers->P |= (c->RAM[c->ea] & BIT_7_MASK)>>7; //set c to old bit 7
-  uint8_t mask = (c->RAM[c->ea]&0x80)>>7;
-  c->RAM[c->ea] <<= 1;
-  c->RAM[c->ea] += mask;
-  c->registers->P = (c->RAM[c->ea] > 0) ? c->registers->P & ~FLAGS_Z_MASK
+  c->registers->P |= (data & BIT_7_MASK)>>7; //set c to old bit 7
+  uint8_t mask = (data&0x80)>>7;
+  data <<= 1;
+  data += mask;
+  bus_write(c->ea, data);
+  c->registers->P = (data > 0) ? c->registers->P & ~FLAGS_Z_MASK
     : c->registers->P | FLAGS_Z_MASK; // set zero if zero
 }
 void OP_rolA(context *c){
@@ -327,14 +330,16 @@ void OP_rolA(context *c){
     : c->registers->P | FLAGS_Z_MASK; // set zero if zero
 }
 void OP_ror(context *c){
+  uint8_t d = bus_read(c->ea); //data to shift
   c->registers->P = (c->registers->P & ~FLAGS_C_MASK); //clear old C
-  c->registers->P |= (c->RAM[c->ea] & BIT_0_MASK); //set c to old bit 0
-  uint8_t mask = (c->RAM[c->ea]&0x01)<<7; //store old bit 7 and move to 0
-  c->RAM[c->ea] >>= 1; //shift right
-  c->RAM[c->ea] += mask; //add old bit 7 back
+  c->registers->P |= (d & BIT_0_MASK); //set c to old bit 0
+  uint8_t mask = (d&0x01)<<7; //store old bit 7 and move to 0
+  d >>= 1; //shift right
+  d += mask; //add old bit 7 back
+  bus_write(c->ea, d);
   c->registers->P = (c->registers->P & ~FLAGS_N_MASK); //clear old N
-  c->registers->P |= (c->RAM[c->ea] & BIT_7_MASK); //set N to bit 7
-  c->registers->P = (c->RAM[c->ea] > 0) ? c->registers->P & ~FLAGS_Z_MASK
+  c->registers->P |= (d & BIT_7_MASK); //set N to bit 7
+  c->registers->P = (d > 0) ? c->registers->P & ~FLAGS_Z_MASK
     : c->registers->P | FLAGS_Z_MASK; // set zero if zero
 }
 void OP_rorA(context *c){
@@ -349,33 +354,33 @@ void OP_rorA(context *c){
     : c->registers->P | FLAGS_Z_MASK; // set zero if zero
 }
 void OP_and(context *c){
-  c->registers->A &= c->RAM[c->ea];
+  c->registers->A &= bus_read(c->ea);
   c->registers->P = (c->registers->A > 0) ? c->registers->P & ~FLAGS_Z_MASK
     : c->registers->P | FLAGS_Z_MASK; // set zero if zero
   c->registers->P = (c->registers->A & BIT_7_MASK ) > 0 ? c->registers->P & FLAGS_N_MASK : c->registers->P | ~FLAGS_N_MASK; // set negative
 }
 void OP_bit(context *c){
-  uint8_t res = c->registers->A & c->RAM[c->ea];
+  uint8_t res = c->registers->A & bus_read(c->ea);
  c->registers->P = (res > 0) ? c->registers->P & ~FLAGS_Z_MASK
    : c->registers->P | FLAGS_Z_MASK; // set zero if zero
-  c->registers->P &= (~FLAGS_N_MASK)+(c->RAM[c->ea] & BIT_7_MASK); //set N (7th bit) to bit 7 of memory val
-  c->registers->P &= (~FLAGS_V_MASK)+(c->RAM[c->ea] & BIT_6_MASK); //set V (6th bit) to bit 6 of memory val
+  c->registers->P &= (~FLAGS_N_MASK)+(bus_read(c->ea) & BIT_7_MASK); //set N (7th bit) to bit 7 of memory val
+  c->registers->P &= (~FLAGS_V_MASK)+(bus_read(c->ea) & BIT_6_MASK); //set V (6th bit) to bit 6 of memory val
 }
 void OP_eor(context *c){
-  c->registers->A ^= c->RAM[c->ea];
+  c->registers->A ^= bus_read(c->ea);
   c->registers->P = (c->registers->A > 0) ? c->registers->P & ~FLAGS_Z_MASK
     : c->registers->P | FLAGS_Z_MASK; // set zero if zero
   c->registers->P &= (~FLAGS_N_MASK)+(c->registers->A & BIT_7_MASK); //set N (7th bit) to bit 7 of memory val
 }
 void OP_ora(context *c){
-  c->registers->A |= c->RAM[c->ea];
+  c->registers->A |= bus_read(c->ea);
   
   c->registers->P = (c->registers->A > 0) ? c->registers->P & ~FLAGS_Z_MASK
     : c->registers->P | FLAGS_Z_MASK; // set zero if zero
   c->registers->P &= (~FLAGS_N_MASK)+(c->registers->A & BIT_7_MASK); //set N (7th bit) to bit 7 of A
 }
 void OP_adc(context *c){
-  uint8_t M = c->RAM[c->ea];
+  uint8_t M = bus_read(c->ea);
   uint8_t C = c->registers->P & FLAGS_C_MASK;
   uint16_t res = c->registers->A + M + C; //size promotion to handle overflows (carries)
   c->registers->A = res & 0xFF;
@@ -387,7 +392,7 @@ void OP_adc(context *c){
     : c->registers->P & ~FLAGS_C_MASK; //set carry flag if theres an overflow
 }
 void OP_sbc(context *c){
-  uint8_t M = c->RAM[c->ea];
+  uint8_t M = bus_read(c->ea);
   uint8_t C = c->registers->P & FLAGS_C_MASK;
 
   //c->registers->A = c->registers->A + ~(M + (1-C))+1; <-- FULL 2s COMPLEMENT VERSION  
@@ -405,36 +410,36 @@ void OP_sbc(context *c){
 
 /*-------- COMPARE CALLS --------*/
 void OP_cpx(context *c){
-  uint8_t ret = c->registers->X - c->RAM[c->ea];
+  uint8_t ret = c->registers->X - bus_read(c->ea);
   c->registers->P = (ret & BIT_7_MASK) > 0 ? c->registers->P | FLAGS_N_MASK
     : c->registers->P & ~FLAGS_N_MASK; // set negative if bit 7 set
   
-  c->registers->P = c->registers->X >= c->RAM[c->ea] ? c->registers->P | FLAGS_C_MASK
+  c->registers->P = c->registers->X >= bus_read(c->ea) ? c->registers->P | FLAGS_C_MASK
     : c->registers->P & ~FLAGS_C_MASK; // set carry if y >= ms
   
-  c->registers->P = c->registers->X == c->RAM[c->ea] ? c->registers->P | FLAGS_Z_MASK
+  c->registers->P = c->registers->X == bus_read(c->ea) ? c->registers->P | FLAGS_Z_MASK
     : c->registers->P & ~FLAGS_Z_MASK;  // set zero if y = m
 }
 
 void OP_cpy(context *c){
-  uint8_t ret = c->registers->Y - c->RAM[c->ea];
+  uint8_t ret = c->registers->Y - bus_read(c->ea);
   c->registers->P = (ret & BIT_7_MASK) > 0 ? c->registers->P | FLAGS_N_MASK
     : c->registers->P & ~FLAGS_N_MASK; // set negative if bit 7 set
   
-  c->registers->P = c->registers->Y >= c->RAM[c->ea] ? c->registers->P | FLAGS_C_MASK
+  c->registers->P = c->registers->Y >= bus_read(c->ea) ? c->registers->P | FLAGS_C_MASK
     : c->registers->P & ~FLAGS_C_MASK; // set carry if y >= ms
   
-  c->registers->P = c->registers->Y == c->RAM[c->ea] ? c->registers->P | FLAGS_Z_MASK
+  c->registers->P = c->registers->Y == bus_read(c->ea) ? c->registers->P | FLAGS_Z_MASK
     : c->registers->P & ~FLAGS_Z_MASK;  // set zero if y = m
 }
 
 void OP_cmp(context *c){
-  uint8_t ret = c->registers->A - c->RAM[c->ea];
+  uint8_t ret = c->registers->A - bus_read(c->ea);
   
-  c->registers->P = c->registers->A >= c->RAM[c->ea] ? c->registers->P | FLAGS_C_MASK
+  c->registers->P = c->registers->A >= bus_read(c->ea) ? c->registers->P | FLAGS_C_MASK
     : c->registers->P & ~FLAGS_C_MASK; // set carry if a >= m
   
-  c->registers->P = c->registers->A == c->RAM[c->ea] ? c->registers->P | FLAGS_Z_MASK
+  c->registers->P = c->registers->A == bus_read(c->ea) ? c->registers->P | FLAGS_Z_MASK
     : c->registers->P & ~FLAGS_Z_MASK;  // set zero if a = m
 
   c->registers->P = c->registers->P & ~FLAGS_N_MASK; //reset n bit
@@ -443,19 +448,19 @@ void OP_cmp(context *c){
 
 /*-------- LOAD CALLS --------*/
 void OP_ldx(context *c){
-  c->registers->X = c->RAM[c->ea];
+  c->registers->X = bus_read(c->ea);
   c->registers->P = (c->registers->X > 0) ? c->registers->P & ~FLAGS_Z_MASK
     : c->registers->P | FLAGS_Z_MASK; // set zero if zero
   c->registers->P &= (~FLAGS_N_MASK)+(c->registers->X & BIT_7_MASK); //set N (7th bit) to bit 7 of X
 }
 void OP_lda(context *c){
-  c->registers->A = c->RAM[c->ea];
+  c->registers->A = bus_read(c->ea);
   c->registers->P = (c->registers->A > 0) ? c->registers->P & ~FLAGS_Z_MASK
     : c->registers->P | FLAGS_Z_MASK; // set zero if zero
   c->registers->P &= (~FLAGS_N_MASK)+(c->registers->A & BIT_7_MASK); //set N (7th bit) to bit 7 of A
 }
 void OP_ldy(context *c){
-  c->registers->Y = c->RAM[c->ea];
+  c->registers->Y = bus_read(c->ea);
   c->registers->P = (c->registers->Y > 0) ? c->registers->P & ~FLAGS_Z_MASK
     : c->registers->P | FLAGS_Z_MASK; // set zero if zero
   c->registers->P &= (~FLAGS_N_MASK)+(c->registers->Y & BIT_7_MASK); //set N (7th bit) to bit 7 of A
@@ -491,16 +496,20 @@ void OP_iny(context *c){
   c->registers->P &= (~FLAGS_N_MASK)+(c->registers->Y & BIT_7_MASK); //set N (7th bit) to bit 7 of A
 }
 void OP_inc(context *c){
-  c->RAM[c->ea]++;
-  c->registers->P = (c->RAM[c->ea] > 0) ? c->registers->P & ~FLAGS_Z_MASK
+  uint8_t data = bus_read(c->ea);
+  data++;
+  c->registers->P = (data > 0) ? c->registers->P & ~FLAGS_Z_MASK
     : c->registers->P | FLAGS_Z_MASK; // set zero if zero
-  c->registers->P &= (~FLAGS_N_MASK)+(c->RAM[c->ea] & BIT_7_MASK); //set N (7th bit) to bit 7 of A
+  c->registers->P &= (~FLAGS_N_MASK)+(data & BIT_7_MASK); //set N (7th bit) to bit 7 of A
+  bus_write(c->ea, data);
 }
 void OP_dec(context *c){
-  c->RAM[c->ea]--;
-  c->registers->P = (c->RAM[c->ea] > 0) ? c->registers->P & ~FLAGS_Z_MASK
+  uint8_t data = bus_read(c->ea);
+  data--;
+  c->registers->P = data > 0 ? c->registers->P & ~FLAGS_Z_MASK
     : c->registers->P | FLAGS_Z_MASK; // set zero if zero
-  c->registers->P &= (~FLAGS_N_MASK)+(c->RAM[c->ea] & BIT_7_MASK); //set N (7th bit) to bit 7 of A
+  c->registers->P &= (~FLAGS_N_MASK)+(data & BIT_7_MASK); //set N (7th bit) to bit 7 of A
+  bus_write(c->ea, data);
 }
 void OP_tay(context *c){
   c->registers->Y = c->registers->A;
@@ -542,19 +551,19 @@ void OP_txs(context *c){ //no flags affected
 }
 void OP_brk(context *c){ //brk has a 2 byte opcode code
   c->registers->P |= FLAGS_B_MASK; //set break
-  uint16_t pc_hi_byte = (c->registers->PC)& 0xFF00;
-  uint16_t pc_lo_byte = (c->registers->PC)& 0xFF;
+  uint16_t pc_hi_byte = (c->registers->PC+1)& 0xFF00; //+1 offset to make space for brk pad
+  uint16_t pc_lo_byte = (c->registers->PC+1)& 0xFF;
   c->registers->S --;
-  c->RAM[STACK_BOTTOM + c->registers->S] = pc_hi_byte >> 8; //push hi byte
+  bus_write(STACK_BOTTOM + c->registers->S, pc_hi_byte >> 8); //push hi byte, c);
   c->registers->S --;
-  c->RAM[STACK_BOTTOM + c->registers->S] = pc_lo_byte; //push lo byte
+  bus_write(STACK_BOTTOM + c->registers->S, pc_lo_byte); //push lo byte, c);
   c->registers->S --;
-  c->RAM[STACK_BOTTOM + c->registers->S] = c->registers->P; //push flags to stack
-  
+  bus_write(STACK_BOTTOM + c->registers->S, c->registers->P); //push flags to stack
+  c->final_addr = bus_read(c->registers->PC); //for loggin
   c->registers->PC = get_16_bit_from(IRQB_VEC, c); //jump to vector location
 }
 void OP_rti(context *c){ //return from interrupt
-  c->registers->P = c->RAM[STACK_BOTTOM + c->registers->S]; //pop flags
+  c->registers->P = bus_read(STACK_BOTTOM + c->registers->S); //pop flags
   c->registers->S ++;
   c->ea = get_16_bit_from(STACK_BOTTOM + c->registers->S, c); //pop address from stack
   c->registers->S += 2;
