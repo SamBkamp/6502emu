@@ -1,6 +1,3 @@
-# THIS BRANCH IS A WEIRD IDEA IM WORKING ON
-# I wanted to see if I could emulate the address and data bus in a more accurate way such that you could extend the program with your own virtual chips that have read and write functions
-
 [![C CI](https://github.com/SamBkamp/6502emu/actions/workflows/c-CI.yml/badge.svg?branch=main)](https://github.com/SamBkamp/6502emu/actions/workflows/c-CI.yml)
 [![Example Binaries](https://github.com/SamBkamp/6502emu/actions/workflows/example_bin.yml/badge.svg)](https://github.com/SamBkamp/6502emu/actions/workflows/example_bin.yml)
 # 65C02 Emu
@@ -14,9 +11,11 @@ Usage:
 
 My designs are based on [this spec](https://www.westerndesigncenter.com/wdc/documentation/w65c02s.pdf) documentation from Western Design Center
 
-## Compilation
+## Running the emulator
 
-You can compile this emulator with `make`. There is also a `make clean` to clean up executable and object files.
+You can compile this emulator with `make`. There is also a `make clean` to clean up executable and object files and `make cleanobj` if you want to get rid of leftover object files.
+
+There are also pre-compiled binaries for linux on the [releases](https://github.com/SamBkamp/6502emu/releases) page
 
 ### Compiling for this emulator
 
@@ -24,21 +23,13 @@ I suggest compiling binaries for this emulator with [vasm](http://sun.hasenbrate
 
 ## How it works
 
-This emulator seeks to emulate a 65C02 connected via data and address bus to a 65k RAM chip.
+This emulator seeks to emulate a 65C02 connected via data and address bus to a 32k ROM chip (at 0x8000-0xFFFF) and a 32k RAM chip (0x0000-0x7FFF). You can change, extend and implement your own chips fairly easily.
 
 The "chip" starts with a reset function that reads an address at 0xFFFC/D which it will jump to and begin execution. Execution starts in the `step()` function where it reads the opcode at the program counter, then uses a look-up table declared in `opcode_table.h` to call 2 functions. First, the addressing mode function, these functions format the addressing mode for the opcode to process. Then the opcode function is called. Each opcode and addressing mode corresponds to a function call declared in `opcodes.h` and defined in `opcodes.c`.
 
-There exists a CPU context/state struct defined in the main function. It contains registers, ea and a pointer to the RAM (which is allocated with an mmap call). c.registers is a pointer to a cpu_registers struct (all relevant structs are typedef'd in `prot.h`) and contains all the registers. ea is a 16-bit unsigned integer referring to a calculated effective address. This is how the addressing functions pass their calculations onto the opcodes.
+There exists a CPU context/state struct defined in the main function. It contains `registers` and `ea`. `c.registers` is a pointer to a cpu_registers struct (all relevant structs are typedef'd in `prot.h`) and contains all the registers. `ea` is a 16-bit unsigned integer referring to a calculated effective address. This is how the addressing functions pass their calculations onto the opcodes.
 
-The address bus and data bus are not explicitly emulated, but you can imagine a read from the bus to look like:
-```c
-data_bus = cpu_context->RAM[address_bus]; //data bus read from ram
-```
-and a write to look like:
-```c
-cpu_context->RAM[address_bus] = data_bus; //ram write through busses
-```
-Its all abstracted away but you can still see its shadow in the design.
+the data bus and address bus are emulated in the functions bus_write and bus_read. They function both as the bus on the 6502 and as an address decoder to put the address and data info to the correct virtual chip.
 
 ## TODO
 - [ ] helper functions for common flag setting (set n flag to b7 of operand/register & set z flag)
@@ -47,19 +38,7 @@ Its all abstracted away but you can still see its shadow in the design.
 - [ ] implement remaining illegal opcodes
 - [ ] more example programs
 
-## Implementation progress:
-
-#### Addressing modes:
-
-All implemented! :)
-
-#### op codes implemented:
-
-Unimplemented:
-- Standard opcodes:
-  - All implemented! :)
-  
-- Illegal Opcodes:
+#### Unimplemented Opcodes
   - slo
   - rla
   - sre
