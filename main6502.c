@@ -16,12 +16,12 @@
 
 uint8_t *address_space;
 chip chips[BUCKETS];
-
+cmd_flags flags;
 
 
 void bus_write(uint16_t address, uint8_t data){
   uint16_t a = address - (address%BUCKET_SIZE); //round down to closest bucket
-  a >>= BUCKET_LOG;  //make a equal to MSB
+  a >>= BUCKET_LOG;  //place a inside index range
   return (*chips[a].chip_write)(address-(BUCKET_SIZE<<(1-a)), data);
 }
 uint8_t bus_read(uint16_t address){
@@ -48,10 +48,20 @@ int step(context *c){
   }
   //↓ this is so ugly please im sure this can be done better
   //for cases where opcode doesn't use data from program (eg NOP) AND BRK AND NOT RTI
-  if((c->registers->PC - current_pc > 1 || current_opcode == 0) && current_opcode != 0x40)
-    printf("0x%04X : 0x%02X %s 0x%x\n", current_pc, current_opcode, opcodes[current_opcode].name, c->final_addr);
-  else
-    printf("0x%04X : 0x%02X %s\n", current_pc, current_opcode, opcodes[current_opcode].name);
+  if(flags.logging_level > 2
+     && (c->registers->PC - current_pc > 1 || current_opcode == 0)
+     && current_opcode != 0x40){
+    printf("0x%04X : 0x%02X %s 0x%x\n",
+	   current_pc,
+	   current_opcode,
+	   opcodes[current_opcode].name,
+	   c->final_addr);
+  }else if (flags.logging_level > 2){
+    printf("0x%04X : 0x%02X %s\n",
+	   current_pc,
+	   current_opcode,
+	   opcodes[current_opcode].name);
+  }
 
   return 1;
 }
@@ -66,7 +76,7 @@ int main(int argc, char* argv[]){
     .ea = 0,
   };
   
-  cmd_flags flags = read_cmd_line(argc, argv);
+  flags = read_cmd_line(argc, argv);
 
   //check if infile supplied
   if(flags.infile == NULL){
@@ -95,7 +105,6 @@ int main(int argc, char* argv[]){
     return 1;
   //print license
   license();
-  printf("-------------- program start --------------\n");
   reset(&c);
   int q = step(&c);
   int max_step = 100;
