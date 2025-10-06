@@ -3,8 +3,12 @@ name: Example Binaries
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - "example_bins/**"
   pull_request:
     branches: [ "main" ]
+    paths:
+      - "example_bins/**"
 
 jobs:
   build:
