@@ -1,0 +1,33 @@
+
+	.org $8000
+	LDA #'H'
+	STA $200
+	LDA #'e'
+	STA $200
+	LDA #$'l'
+	STA $200
+	LDA #$'l'
+	STA $200
+	LDA #$'o'
+	STA $200
+	LDA #$','
+	STA $200
+	LDA #$' '
+	STA $200
+	LDA #$'w'
+	STA $200
+	LDA #$'o'
+	STA $200
+	LDA #$'r'
+	STA $200
+	LDA #$'l'
+	STA $200
+	LDA #$'d'
+	STA $200
+	LDA #$'!'
+	STA $200
+	LDA #$A
+	STA $200
+	.byte $bb
+	.org $FFFC
+	.word $8000
