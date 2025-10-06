@@ -11,27 +11,22 @@
 #include "modules/RAM.h"
 #include "modules/screen.h"
 
-#define BUCKETS 2 //how many address buckets
-#define BUCKET_SIZE 65536/BUCKETS //each address bucket size
+#define BUCKETS 256 //how many address buckets
+#define BUCKET_SIZE 256 //each address bucket size
 #define BUCKET_LOG 15 //log2 BUCKET_SIZE, for easy division to turn buckets into array offsets
 
 uint8_t *address_space;
-chip chips[3];
+chip *chips[BUCKETS];
 cmd_flags flags;
 
 
 void bus_write(uint16_t address, uint8_t data){
-  if(address == 0x200){
-    screen_write(address, data);
-  }
   uint16_t a = address - (address%BUCKET_SIZE); //round down to closest bucket
-  a >>= BUCKET_LOG;  //place a inside index range
-  return (*chips[a].chip_write)(address-(BUCKET_SIZE<<(1-a)), data);
+  return (*chips[a>>8]->chip_write)(address, data);
 }
 uint8_t bus_read(uint16_t address){
   uint16_t a = address - (address%BUCKET_SIZE);
-  a >>= BUCKET_LOG;
-  return (*chips[a].chip_read)(address-(BUCKET_SIZE<<(1-a)));
+  return (*chips[a>>8]->chip_read)(address);
 }
 
 void reset(context *c){
@@ -83,20 +78,34 @@ int main(int argc, char* argv[]){
 
 
   // INIT EXTERNAL CHIPS
-  chips[0] = (chip){
+  
+  chip RAM= (chip){
     .name = "RAM",
     .chip_read = RAM_read,
     .chip_write = RAM_write,
     .chip_init = RAM_init
   };
-  chips[1] = (chip){
+  chip ROM = (chip){
     .name = "ROM",
     .chip_read = ROM_read,
     .chip_write = ROM_write,
     .chip_init = ROM_init
   };
-  uint8_t *add = (*chips[1].chip_init)();
-  (*chips[0].chip_init)();
+  chip screen_chip = (chip){
+    .name = "screen",
+    .chip_read = NULL,
+    .chip_write = screen_write,
+    .chip_init = NULL
+  };
+  for(int i = 0; i < 0x8000; i+=256){
+    chips[i>>8] = &RAM;
+  }
+  for(int i = 0x8000; i < 0x10000; i+=256){
+    chips[i>>8] = &RAM;
+  }
+  chips[0x200>>8] = &screen_chip;
+  uint8_t *add = (*ROM.chip_init)();  
+  (*RAM.chip_init)();
   //END INIT EXTNERNAL CHIPS
 
   //load file into memory
