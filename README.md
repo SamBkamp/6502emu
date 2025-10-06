@@ -9,23 +9,28 @@ Usage:
 ./s65C02 -f <bin>
 ```
 
-My designs are based on [this spec](https://www.westerndesigncenter.com/wdc/documentation/w65c02s.pdf) documentation from Western Design Center
+## Compilation
 
-## Running the emulator
-
-You can compile this emulator with `make`. There is also a `make clean` to clean up executable and object files and `make cleanobj` if you want to get rid of leftover object files.
+```bash
+make
+```
+you can reset the directory with
+```bash
+make clean
+```
+and you can remove all uneeded object files after compilation with
+```bash
+make cleanobj
+```
 
 There are also pre-compiled binaries for linux on the [releases](https://github.com/SamBkamp/6502emu/releases) page
-
-### Compiling for this emulator
-
-I suggest compiling binaries for this emulator with [vasm](http://sun.hasenbraten.de/vasm/). For now you can (and should) end your program with 0xbb; this unused opcode signals to the emulator that execution has ended. You can do this with `.byte $bb` (make sure you compile with -dotdir). This quitting mechanism will change with the first Beta release though. 
 
 ## How it works
 
 You can read more information about the inner workings of the emulator in the [wiki](https://github.com/SamBkamp/6502emu/wiki)
 
 ## TODO
+- [ ] better address decoding logic for bus functions / vChip registration
 - [ ] helper functions for common flag setting (set n flag to b7 of operand/register & set z flag)
 - [ ] virtual LED pins
 - [ ] cycle accuracy (+ memory page implementation / cross page read penalty)
