@@ -4,27 +4,27 @@
 	STA $200
 	LDA #'e'
 	STA $200
-	LDA #$'l'
+	LDA #'l'
 	STA $200
-	LDA #$'l'
+	LDA #'l'
 	STA $200
-	LDA #$'o'
+	LDA #'o'
 	STA $200
-	LDA #$','
+	LDA #','
 	STA $200
-	LDA #$' '
+	LDA #' '
 	STA $200
-	LDA #$'w'
+	LDA #'w'
 	STA $200
-	LDA #$'o'
+	LDA #'o'
 	STA $200
-	LDA #$'r'
+	LDA #'r'
 	STA $200
-	LDA #$'l'
+	LDA #'l'
 	STA $200
-	LDA #$'d'
+	LDA #'d'
 	STA $200
-	LDA #$'!'
+	LDA #'!'
 	STA $200
 	LDA #$A
 	STA $200
