@@ -9,17 +9,21 @@
 #include "opcode_table.h"
 #include "modules/ROM.h"
 #include "modules/RAM.h"
+#include "modules/screen.h"
 
 #define BUCKETS 2 //how many address buckets
 #define BUCKET_SIZE 65536/BUCKETS //each address bucket size
 #define BUCKET_LOG 15 //log2 BUCKET_SIZE, for easy division to turn buckets into array offsets
 
 uint8_t *address_space;
-chip chips[BUCKETS];
+chip chips[3];
 cmd_flags flags;
 
 
 void bus_write(uint16_t address, uint8_t data){
+  if(address == 0x200){
+    screen_write(address, data);
+  }
   uint16_t a = address - (address%BUCKET_SIZE); //round down to closest bucket
   a >>= BUCKET_LOG;  //place a inside index range
   return (*chips[a].chip_write)(address-(BUCKET_SIZE<<(1-a)), data);
@@ -108,6 +112,8 @@ int main(int argc, char* argv[]){
     q = step(&c);
     steps++;
   }
-  printf("-------------- program complete --------------\n");
-  print_registers(&c);
+  if(flags.logging_level > 0){
+      printf("-------------- program complete --------------\n");
+      print_registers(&c);
+  }
 }

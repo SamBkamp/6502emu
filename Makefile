@@ -1,5 +1,5 @@
 FLAGS := -Wall -Werror -ggdb
-FILES := main6502.c opcodes.c prot.c ${MODULES}/ROM.c ${MODULES}/RAM.c
+FILES := main6502.c opcodes.c prot.c ${MODULES}/ROM.c ${MODULES}/RAM.c ${MODULES}/screen.c
 OBJ_FOLDER := obj
 OBJECTS := $(foreach var, ${FILES},${OBJ_FOLDER}/$(basename $(notdir ${var})).o)
 
