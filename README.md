@@ -23,13 +23,7 @@ I suggest compiling binaries for this emulator with [vasm](http://sun.hasenbrate
 
 ## How it works
 
-This emulator seeks to emulate a 65C02 connected via data and address bus to a 32k ROM chip (at 0x8000-0xFFFF) and a 32k RAM chip (0x0000-0x7FFF). You can change, extend and implement your own chips fairly easily.
-
-The "chip" starts with a reset function that reads an address at 0xFFFC/D which it will jump to and begin execution. Execution starts in the `step()` function where it reads the opcode at the program counter, then uses a look-up table declared in `opcode_table.h` to call 2 functions. First, the addressing mode function, these functions format the addressing mode for the opcode to process. Then the opcode function is called. Each opcode and addressing mode corresponds to a function call declared in `opcodes.h` and defined in `opcodes.c`.
-
-There exists a CPU context/state struct defined in the main function. It contains `registers` and `ea`. `c.registers` is a pointer to a cpu_registers struct (all relevant structs are typedef'd in `prot.h`) and contains all the registers. `ea` is a 16-bit unsigned integer referring to a calculated effective address. This is how the addressing functions pass their calculations onto the opcodes.
-
-the data bus and address bus are emulated in the functions bus_write and bus_read. They function both as the bus on the 6502 and as an address decoder to put the address and data info to the correct virtual chip.
+You can read more information about the inner workings of the emulator in the [wiki](https://github.com/SamBkamp/6502emu/wiki)
 
 ## TODO
 - [ ] helper functions for common flag setting (set n flag to b7 of operand/register & set z flag)
