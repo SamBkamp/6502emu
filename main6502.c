@@ -10,22 +10,24 @@
 #include "modules/ROM.h"
 #include "modules/RAM.h"
 
+#define BUCKETS 2 //how many address buckets
+#define BUCKET_SIZE 65536/BUCKETS //each address bucket size
+#define BUCKET_LOG 15 //log2 BUCKET_SIZE, for easy division to turn buckets into array offsets
+
 uint8_t *address_space;
-chip chips[2];
+chip chips[BUCKETS];
 
 
 
 void bus_write(uint16_t address, uint8_t data){
-  uint16_t a = address%0x8000; //0x8000 is bucket size
-  a = address-a; //round down to closest bucket (either 0x0 or 0x8000)
-  a >>= 15;  //make a equal to MSB
-  return (*chips[a].chip_write)(address-(0x8000*a), data);
+  uint16_t a = address - (address%BUCKET_SIZE); //round down to closest bucket
+  a >>= BUCKET_LOG;  //make a equal to MSB
+  return (*chips[a].chip_write)(address-(BUCKET_SIZE<<(1-a)), data);
 }
 uint8_t bus_read(uint16_t address){
-  uint16_t a = address%0x8000;
-  a = address-a;
-  a >>= 15;  
-  return (*chips[a].chip_read)(address-(0x8000*a));
+  uint16_t a = address - (address%BUCKET_SIZE);
+  a >>= BUCKET_LOG;  
+  return (*chips[a].chip_read)(address-(BUCKET_SIZE<<(1-a)));
 }
 
 void reset(context *c){
