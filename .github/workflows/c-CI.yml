@@ -8,7 +8,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -17,6 +16,7 @@ jobs:
       - name: make clean
         run: make clean
 
+  build-macos:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
