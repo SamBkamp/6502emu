@@ -41,7 +41,7 @@ void print_stack_addr(context *c, uint16_t addr){
 //loads file filename into dest
 uint16_t load_file(void *dest, const char *filename, size_t max_size) {
     if (!filename) {
-      fprintf(stderr, "File I/O Error: No filename provided.\n");
+      fprintf(stderr, "Usage: ./s65C02 -f <bin>\n");
       return 0;
     }
     FILE *fp = fopen(filename, "rb");
@@ -64,14 +64,8 @@ uint16_t load_file(void *dest, const char *filename, size_t max_size) {
         return 0;
     }
 
-    if (len > 0x10000) { // larger than 6502 address space
-        fprintf(stderr, "File I/O Error: File too large (max 65536b)\n");
-        fclose(fp);
-        return 0;
-    }
-
     uint16_t file_len = (uint16_t)len;
-    if (file_len > max_size) {
+    if (file_len > max_size || len > 0x10000) {
         fprintf(stderr, "File I/O Error: File too large (max %zub)\n", max_size);
         fclose(fp);
         return 0;

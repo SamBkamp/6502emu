@@ -69,7 +69,6 @@ int step(context *c){
 
 
 int main(int argc, char* argv[]){
-  size_t memory_size = 0xffff; 
   cpu_registers r = {0};
   context c = {
     .registers = &r,
@@ -78,11 +77,7 @@ int main(int argc, char* argv[]){
   
   flags = read_cmd_line(argc, argv);
 
-  //check if infile supplied
-  if(flags.infile == NULL){
-    fprintf(stderr, "Usage: %s -f [filename]\n", argv[0]);
-    return 1;
-  }
+
   // INIT EXTERNAL CHIPS
   chips[0] = (chip){
     .name = "RAM",
@@ -109,11 +104,10 @@ int main(int argc, char* argv[]){
   int q = step(&c);
   int max_step = 100;
   int steps = 0;
-  while(q > 0 && c.registers->PC < memory_size && steps < max_step){    
+  while(q > 0 && c.registers->PC < 65536 && steps < max_step){    
     q = step(&c);
     steps++;    
   }
   printf("-------------- program complete --------------\n");
   print_registers(&c);
-  //munmap(address_space, memory_size); //release heap memory
 }
