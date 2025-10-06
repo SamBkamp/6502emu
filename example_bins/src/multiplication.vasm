@@ -13,11 +13,14 @@ calc:
 	STX $E ;store first operand to 0xE
 	LDX #0 ;init x with 0
 	CLC
+	CPX $F ;check if y operand is 0
+	BCS finish	
 add:
 	INX ;increase x
 	ADC $E
 	CPX $F
 	BCC add
+finish:
 	LDX $E ;reset x
 	LDY $F ;set y
 	RTS
