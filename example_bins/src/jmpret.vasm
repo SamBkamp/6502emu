@@ -1,10 +1,10 @@
-	.org 0	
-	JSR $FF
+	.org $8000	
+	JSR $80FF
 	LDY #$20
 	.byte $bb
 	
-	.org $ff
+	.org $80ff
 	LDA #$69
 	RTS
 	.org $FFFC
-	.word 0
+	.word $8000

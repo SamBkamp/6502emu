@@ -1,9 +1,12 @@
-	.org $0
-	.org $1
-	LDA #$02
-	RTI
-
 	.org $8000
+	;first we have to bootstrap the brk vector code
+	LDA #$A9 ;lda(#) instruction in lda
+	STA $01
+	LDA #$02 ;number to load into a at brk 
+	STA $02
+	LDA #$40 ;RTI instruction opcode	
+	STA $03
+	; bootstrapping done, normal program can run
 	LDA #$01
 	BRK 
 	.byte $05
