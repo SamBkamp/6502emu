@@ -28,6 +28,7 @@
 
 typedef struct{
   char* infile;
+  uint8_t logging_level;
 }cmd_flags;
 
 typedef struct{

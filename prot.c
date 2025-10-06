@@ -94,12 +94,17 @@ cmd_flags read_cmd_line(int argc, char** argv){
   cmd_flags flags = {0}; // in C everything has to be initialized to *something*
                         // otherwise it will contain garbage data until it is filled
                        // with something at runtime.
+  flags.logging_level = 3; //def value
   //read command line arguments
   for(int i = 1; i < argc; i++){
     // we dont need to check argv[0] since its always the program name;
     // instead, start at argv[1]
     if (strcmp(argv[i], "-f") == 0 && i + 1 < argc) {
         flags.infile = argv[++i];
+    }
+    if(strcmp(argv[i], "-log") == 0 && i + 1< argc){
+      //TODO: add boundary checks and/or use lib function
+      flags.logging_level = *argv[++i] - 0x30; //very rudimentary way to turn single digit char to int
     }
   }
   return flags;
