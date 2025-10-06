@@ -47,7 +47,7 @@ int step(context *c){
   }
   //↓ this is so ugly please im sure this can be done better
   //for cases where opcode doesn't use data from program (eg NOP) AND BRK AND NOT RTI
-  if(flags.logging_level > 2
+  if(flags.logging_level > 1
      && (c->registers->PC - current_pc > 1 || current_opcode == 0)
      && current_opcode != 0x40){
     printf("0x%04X : 0x%02X %s 0x%x\n",
@@ -55,7 +55,7 @@ int step(context *c){
 	   current_opcode,
 	   opcodes[current_opcode].name,
 	   c->final_addr);
-  }else if (flags.logging_level > 2){
+  }else if (flags.logging_level > 1){
     printf("0x%04X : 0x%02X %s\n",
 	   current_pc,
 	   current_opcode,
