@@ -74,13 +74,13 @@ uint16_t load_file(void *dest, const char *filename, size_t max_size) {
     rewind(fp);
 
     size_t bytes_read = fread(dest, 1, file_len, fp);
-    fclose(fp);
 
-    if (bytes_read != file_len) {
-        fprintf(stderr, "File I/O Error: Short read (%zu/%u)\n", bytes_read, file_len);
-        return 0;
+    if (bytes_read != file_len || ferror(fp) != 0) {
+      fprintf(stderr, "File I/O Error: Short read (%zu/%u)\n", bytes_read, file_len);
+      return 0;
     }
-
+    
+    fclose(fp);
     return file_len;
 }
 

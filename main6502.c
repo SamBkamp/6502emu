@@ -104,12 +104,19 @@ int main(int argc, char* argv[]){
     chips[i>>8] = &RAM;
   }
   chips[0x200>>8] = &screen_chip;
-  uint8_t *add = (*ROM.chip_init)();  
-  (*RAM.chip_init)();
+  uint8_t *ROM_loc = (*ROM.chip_init)();
+  if(ROM_loc == (uint8_t*) 0){
+    fprintf(stderr,"Couldn't initalised %s chip\n", ROM.name);
+    return 1;
+  }
+  if((*RAM.chip_init)() == (uint8_t*) 0){
+    fprintf(stderr,"Couldn't initalised %s chip\n", RAM.name);
+    return 1;
+  }
   //END INIT EXTNERNAL CHIPS
 
   //load file into memory
-  if(load_file(add, flags.infile, 32768+1) == 0)
+  if(load_file(ROM_loc, flags.infile, 32768+1) == 0)
     return 1;
   //print license
   license();
